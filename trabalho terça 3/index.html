@@ -721,28 +721,690 @@
         
         <ul style="margin-left: 1.5rem; margin-top: 1rem; line-height: 1.8;">
           <li><strong>WCAG 2.1 AAA (Web Content Accessibility Guidelines):</strong> Contraste mínimo de 7:1 nas cores de texto e fundo, permitindo leitura confortável para pessoas com baixa visão ou daltonismo.</li>
-          <li><strong>Navegação sem Mouse:</strong> Todos os elementos e botões possuem foco bem visível (borda amarela de alto contraste) e podem ser navegados via tecla TAB.</li>
-          <li><strong>ABNT NBR 9050:</strong> Padrões técnicos seguidos na avaliação física das vias (largura mínima de calçadas de 1,20m, inclinação máxima de rampas de 8,33% e pisos táteis alerta/direcional).</li>
-        </ul>
+          <li><strong>Navegação sem Mouse:</strong> Todos os elementos e botões possuem foco bem visível (borda amarela de alto contraste) e podem ser n<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Cidadão - Monitoramento Urbano e Inteligência Artificial</title>
+
+  <style>
+    /* ==========================================================================
+       1. VARIÁVEIS E CONFIGURAÇÕES GERAIS (WCAG Nível AAA)
+       ========================================================================== */
+    :root {
+      --bg-color: #ffffff;
+      --bg-surface: #f4f6f8;
+      --text-color: #1a1a1a;
+      --primary-color: #004d99;
+      --primary-hover: #003366;
+      --focus-outline: #ffbf47; /* Amarelo alto contraste para foco */
+
+      /* Alertas de Ocorrência */
+      --cor-buraco: #d9534f;        /* Vermelho */
+      --cor-alagamento: #0275d8;    /* Azul */
+      --cor-recape: #d97706;        /* Laranja Escuro */
+      --cor-acessibilidade: #7e22ce; /* Roxo/Lilás Alto Contraste */
+
+      --font-family: Arial, Helvetica, sans-serif;
+      --font-base: 1.125rem; /* ~18px para facilitar a leitura */
+      --line-height: 1.6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-family);
+      font-size: var(--font-base);
+      line-height: var(--line-height);
+    }
+
+    /* Utilitário para Leitores de Tela (NVDA / TalkBack) */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Foco Visível Teclado (Mobilidade / Deficiência Visual) */
+    a:focus, button:focus, input:focus, select:focus, textarea:focus, iframe:focus {
+      outline: 4px solid var(--focus-outline) !important;
+      outline-offset: 3px;
+    }
+
+    /* Atalho de Teclado */
+    .link-atalho {
+      position: absolute;
+      top: -40px;
+      left: 10px;
+      background: var(--focus-outline);
+      color: #000;
+      padding: 8px 16px;
+      font-weight: bold;
+      z-index: 9999;
+      transition: top 0.2s;
+    }
+    .link-atalho:focus {
+      top: 10px;
+    }
+
+    /* ==========================================================================
+       2. BARRA DE ACESSIBILIDADE E CABEÇALHO
+       ========================================================================== */
+    .barra-acessibilidade {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 0.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .marca-sistema {
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .controles-acessibilidade {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-acessivel {
+      background-color: #333333;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      padding: 0.4rem 0.8rem;
+      min-height: 44px;
+      min-width: 44px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    header.header-principal {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #ffffff;
+      text-decoration: underline;
+      font-weight: bold;
+      font-size: 1.05rem;
+      cursor: pointer;
+    }
+
+    /* Lógica de exibição das 10 páginas */
+    .pagina-modulo {
+      display: none;
+    }
+    .pagina-modulo.ativa {
+      display: block;
+    }
+
+    /* ==========================================================================
+       3. HERO SECTION (APRESENTAÇÃO HOME PAGE)
+       ========================================================================== */
+    .hero {
+      background-color: var(--bg-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 4px solid var(--primary-color);
+    }
+
+    .hero h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      max-width: 800px;
+      margin: 0 auto 1.5rem auto;
+      font-size: 1.25rem;
+    }
+
+    .btn-cta {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      min-height: 48px;
+      border: 2px solid var(--primary-hover);
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       4. CONTEÚDO PRINCIPAL & LAYOUT DO MAPA INTERATIVO EXPANDIDO (SÃO PAULO)
+       ========================================================================== */
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .grid-home {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-home {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mapa-box {
+      background-color: var(--bg-surface);
+      border: 2px solid var(--text-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    /* MAPA VETORIAL EXPANDIDO SP */
+    .mapa-container-sp {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      background-color: #e2e8f0;
+      border: 2px solid var(--text-color);
+      border-radius: 8px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .mapa-svg-sp {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Marcadores Animados e Efeito Pulsante */
+    .pino-sp {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .pino-bolinha {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .pino-bolinha.buraco { background-color: var(--cor-buraco); }
+    .pino-bolinha.alagamento { background-color: var(--cor-alagamento); }
+    .pino-bolinha.recape { background-color: var(--cor-recape); }
+    .pino-bolinha.acessibilidade { background-color: var(--cor-acessibilidade); }
+
+    .pino-pulso {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid var(--cor-buraco);
+      animation: animacaoPulso 1.5s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes animacaoPulso {
+      0% {
+        transform: scale(0.4);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.7);
+        opacity: 0;
+      }
+    }
+
+    /* Card Informativo Pop-up no Mapa */
+    .popup-info-sp {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: var(--bg-surface);
+      border: 2px solid var(--text-color);
+      padding: 0.9rem 1.2rem;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      font-size: 0.95rem;
+      z-index: 20;
+    }
+
+    .card-problema {
+      border: 3px solid var(--text-color);
+      border-left-width: 12px;
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      background-color: var(--bg-surface);
+    }
+
+    .card-problema.buraco { border-left-color: var(--cor-buraco); }
+    .card-problema.alagamento { border-left-color: var(--cor-alagamento); }
+    .card-problema.recapeamento { border-left-color: var(--cor-recape); }
+    .card-problema.acessibilidade { border-left-color: var(--cor-acessibilidade); }
+
+    .tag-status {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      background-color: var(--text-color);
+      color: var(--bg-color);
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ==========================================================================
+       5. FORMULÁRIO DE REGISTRO E COMPONENTES
+       ========================================================================== */
+    .form-container {
+      background-color: var(--bg-surface);
+      border: 2px solid var(--text-color);
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    .campo-form {
+      margin-bottom: 1.2rem;
+    }
+
+    .campo-form label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+    }
+
+    .campo-form input, 
+    .campo-form select, 
+    .campo-form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 2px solid #555;
+      border-radius: 4px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .tabela-dados {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .tabela-dados th, .tabela-dados td {
+      border: 2px solid var(--text-color);
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .tabela-dados th {
+      background-color: var(--primary-color);
+      color: #ffffff;
+    }
+
+    .barra-progresso-container {
+      background-color: #e2e8f0;
+      border: 2px solid var(--text-color);
+      border-radius: 6px;
+      height: 24px;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }
+
+    .barra-progresso-preenchimento {
+      height: 100%;
+      background-color: var(--primary-color);
+      text-align: center;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.85rem;
+      line-height: 22px;
+    }
+
+    /* Estilização para o módulo AI Data Detective */
+    .ai-box {
+      background: #f0f9ff;
+      border: 2px solid #0284c7;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    /* ==========================================================================
+       6. RODAPÉ
+       ========================================================================== */
+    footer {
+      background-color: var(--text-color);
+      color: var(--bg-color);
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Atalho de Teclado -->
+  <a href="#conteudo-principal" class="link-atalho">Ir para o conteúdo principal</a>
+
+  <!-- BARRA DE ACESSIBILIDADE -->
+  <div class="barra-acessibilidade" role="region" aria-label="Barra de Acessibilidade">
+    <span class="marca-sistema">Portal Cidadão de Acessibilidade Urbana - São Paulo</span>
+    <div class="controles-acessibilidade">
+      <button class="btn-acessivel" onclick="toggleAltoContraste()">Alto Contraste</button>
+      <button class="btn-acessivel" onclick="alterarFonte(1)" aria-label="Aumentar Fonte">A+</button>
+      <button class="btn-acessivel" onclick="alterarFonte(-1)" aria-label="Diminuir Fonte">A-</button>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO COM NAVEGAÇÃO DAS 10 PÁGINAS -->
+  <header class="header-principal">
+    <h1>Portal Cidadão SP</h1>
+    <nav aria-label="Navegação Principal">
+      <ul>
+        <li><a onclick="navegarPara('pag-1')">1. Início</a></li>
+        <li><a onclick="navegarPara('pag-2')">2. Novo Relato</a></li>
+        <li><a onclick="navegarPara('pag-3')">3. Mapa Interativo</a></li>
+        <li><a onclick="navegarPara('pag-4')">4. Meus Relatos</a></li>
+        <li><a onclick="navegarPara('pag-5')">5. Transparência</a></li>
+        <li><a onclick="navegarPara('pag-6')">6. Obras Programadas</a></li>
+        <li><a onclick="navegarPara('pag-7')">7. Guia Acessibilidade</a></li>
+        <li><a onclick="navegarPara('pag-8')">8. Notícias</a></li>
+        <li><a onclick="navegarPara('pag-9')">9. Contato / Ouvidoria</a></li>
+        <li><a onclick="navegarPara('pag-10')">10. Perfil & AI Agent</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo-principal">
+
+    <!-- PÁGINA 1: INÍCIO (HOME) -->
+    <section id="pag-1" class="pagina-modulo ativa">
+      <div class="hero">
+        <h2>Monitoramento e Melhora do Espaço Urbano de São Paulo</h2>
+        <p>Plataforma oficial para cidadãos registrarem buracos, alagamentos, recapeamentos e necessidades de acessibilidade em todas as subprefeituras da capital paulista com padrão WCAG AAA.</p>
+        <button class="btn-cta" onclick="navegarPara('pag-2')">Registrar Nova Ocorrência</button>
+      </div>
+
+      <div class="grid-home" style="margin-top: 2rem;">
+        <div class="mapa-box">
+          <h3>Resumo do Mapeamento na Capital</h3>
+          <p style="margin-top:0.5rem; margin-bottom: 1rem;">Mapeamento interativo ativo cobrindo a Zona Central, Oeste, Leste, Norte e Sul de São Paulo.</p>
+          <button class="btn-submit" onclick="navegarPara('pag-3')">🗺️ Abrir Mapa Interativo de São Paulo</button>
+        </div>
+
+        <div>
+          <h3>Ocorrências Recentes por Região</h3>
+          <div class="card-problema buraco">
+            <span class="tag-status">Em Aberto</span>
+            <h4>Buraco em Via Arterial</h4>
+            <p><strong>Local:</strong> Av. Paulista, 1000 - Bela Vista (Centro)</p>
+          </div>
+          <div class="card-problema alagamento">
+            <span class="tag-status">Em Análise</span>
+            <h4>Acúmulo de Água / Drenagem</h4>
+            <p><strong>Local:</strong> Marginal Pinheiros, próx. Ponte Cidade Jardim (Zona Sul)</p>
+          </div>
+          <div class="card-problema recapeamento">
+            <span class="tag-status">Programado</span>
+            <h4>Asfaltamento Novo</h4>
+            <p><strong>Local:</strong> Radial Leste - Tatuapé (Zona Leste)</p>
+          </div>
+          <div class="card-problema acessibilidade">
+            <span class="tag-status">Concluído</span>
+            <h4>Instalação de Piso Tátil e Rampa</h4>
+            <p><strong>Local:</strong> Praça da Sé (Centro Histórico)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 2: REGISTRAR OCORRÊNCIA -->
+    <section id="pag-2" class="pagina-modulo">
+      <h2>2. Registrar Nova Ocorrência Urbana</h2>
+      <div class="form-container" style="margin-top: 1rem;">
+        <form onsubmit="event.preventDefault(); alert('Ocorrência registrada com sucesso! Seu protocolo de acompanhamento foi gerado.');">
+          <div class="campo-form">
+            <label for="tipo-problema">Tipo de Ocorrência:</label>
+            <select id="tipo-problema" required>
+              <option value="">Selecione a categoria do problema...</option>
+              <option value="buraco">Buraco no Asfalto / Deformação</option>
+              <option value="alagamento">Ponto de Alagamento / Bueiro Entupido</option>
+              <option value="recapeamento">Necessidade de Recapeamento Asfáltico</option>
+              <option value="acessibilidade">Falta de Acessibilidade / Calçada Quebrada</option>
+            </select>
+          </div>
+          <div class="campo-form">
+            <label for="regiao-sp">Subprefeitura / Região de São Paulo:</label>
+            <select id="regiao-sp" required>
+              <option value="">Selecione a região...</option>
+              <option value="centro">Centro (Sé, Bela Vista, República)</option>
+              <option value="zona-leste">Zona Leste (Itaquera, Tatuapé, Mooca)</option>
+              <option value="zona-oeste">Zona Oeste (Pinheiros, Lapa, Butantã)</option>
+              <option value="zona-norte">Zona Norte (Santana, Tucuruvi, Vila Maria)</option>
+              <option value="zona-sul">Zona Sul (Santo Amaro, Jabaquara, Moema)</option>
+            </select>
+          </div>
+          <div class="campo-form">
+            <label for="endereco">Endereço Completo ou Ponto de Referência em SP:</label>
+            <input type="text" id="endereco" placeholder="Ex: Av. Brigadeiro Faria Lima, 1500" required>
+          </div>
+          <div class="campo-form">
+            <label for="descricao">Descrição Detalhada do Problema:</label>
+            <textarea id="descricao" rows="4" placeholder="Informe detalhes adicionais, tais como riscos ao trânsito ou profundidade do buraco..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Enviar Registro e Gerar Protocolo</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PÁGINA 3: MAPA INTERATIVO EXPANDIDO DE SÃO PAULO -->
+    <section id="pag-3" class="pagina-modulo">
+      <h2>3. Mapa Interativo Geral da Capital (São Paulo)</h2>
+      <div class="mapa-box" style="margin-top: 1rem;">
+        <p>Navegue pelo mapa ampliado cobrindo as principais vias da capital (Marginal Pinheiros, Marginal Tietê, Av. Paulista, Radial Leste). Clique nos pontos coloridos para ver os detalhes da ocorrência:</p>
+        
+        <!-- MAPA VETORIAL EXPANDIDO SP -->
+        <div class="mapa-container-sp" id="area-mapa-sp">
+          <svg class="mapa-svg-sp" viewBox="0 0 1000 500" preserveAspectRatio="none">
+            <!-- Rio Tietê -->
+            <path d="M 0 80 Q 300 120 600 60 T 1000 100" stroke="#93c5fd" stroke-width="26" fill="none" />
+            <text x="80" y="70" font-size="12" fill="#1e3a8a" font-weight="bold">Rio Tietê / Marginal Tietê</text>
+
+            <!-- Rio Pinheiros -->
+            <path d="M 250 110 Q 220 300 180 500" stroke="#93c5fd" stroke-width="22" fill="none" />
+            <text x="260" y="250" font-size="12" fill="#1e3a8a" font-weight="bold">Rio Pinheiros / Marginal Pinheiros</text>
+
+            <!-- Vias Principais de SP -->
+            <path d="M 500 250 L 1000 200" stroke="#ffffff" stroke-width="12" fill="none" />
+            <path d="M 500 250 L 1000 200" stroke="#cbd5e1" stroke-width="16" fill="none" style="z-index:-1;" />
+            <text x="750" y="210" font-size="11" fill="#475569" font-weight="bold">Radial Leste</text>
+
+            <path d="M 500 100 L 520 500" stroke="#ffffff" stroke-width="12" fill="none" />
+            <text x="530" y="380" font-size="11" fill="#475569" font-weight="bold">Av. 23 de Maio</text>
+
+            <path d="M 400 280 L 580 240" stroke="#ffffff" stroke-width="14" fill="none" />
+            <text x="440" y="260" font-size="11" fill="#000000" font-weight="bold">Av. Paulista</text>
+
+            <path d="M 300 320 L 420 420" stroke="#ffffff" stroke-width="12" fill="none" />
+
+            <!-- Parques -->
+            <rect x="420" y="340" width="80" height="60" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="2" />
+            <text x="460" y="375" font-size="10" fill="#166534" text-anchor="middle" font-weight="bold">Ibirapuera</text>
+
+            <rect x="220" y="180" width="70" height="50" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="2" />
+            <text x="255" y="210" font-size="10" fill="#166534" text-anchor="middle" font-weight="bold">Villa-Lobos</text>
+          </svg>
+
+          <!-- Marcadores de Ocorrência em SP -->
+          <div class="pino-sp" style="top: 50%; left: 48%;" onclick="mostrarInfoSP('Buraco em Via Principal', 'Av. Paulista, 1000 - Bela Vista (Centro)', 'Em Aberto')">
+            <div class="pino-pulso"></div>
+            <div class="pino-bolinha buraco" title="Buraco na Av. Paulista"></div>
+          </div>
+
+          <div class="pino-sp" style="top: 60%; left: 23%;" onclick="mostrarInfoSP('Ponto de Alagamento na Marginal', 'Marginal Pinheiros x Ponte Cidade Jardim', 'Em Análise')">
+            <div class="pino-bolinha alagamento" title="Alagamento em Pinheiros"></div>
+          </div>
+
+          <div class="pino-sp" style="top: 45%; left: 75%;" onclick="mostrarInfoSP('Recapeamento Asfáltico Extenso', 'Radial Leste - Itaquera', 'Programado')">
+            <div class="pino-bolinha recape" title="Recapeamento na Zona Leste"></div>
+          </div>
+
+          <div class="pino-sp" style="top: 48%; left: 52%;" onclick="mostrarInfoSP('Rampa e Piso Tátil Concluídos', 'Praça da Sé - Centro Histórico', 'Concluído')">
+            <div class="pino-bolinha acessibilidade" title="Acessibilidade na Sé"></div>
+          </div>
+
+          <!-- Popup Informativo -->
+          <div class="popup-info-sp" id="popup-detalhes-sp">
+            <strong>📍 Clique em qualquer ponto do mapa de São Paulo</strong> para consultar os dados da ocorrência registrada.
+          </div>
+        </div>
+
+        <button onclick="simularNovoPinoSP()" class="btn-submit" style="margin-top: 1.2rem; width: auto; padding: 0.8rem 1.5rem;">
+          🚨 Simular Novo Alerta em SP
+        </button>
+      </div>
+    </section>
+
+    <!-- PÁGINA 4: MEUS RELATOS -->
+    <section id="pag-4" class="pagina-modulo">
+      <h2>4. Meus Relatos e Protocolos de Acompanhamento</h2>
+      <table class="tabela-dados">
+        <thead>
+          <tr>
+            <th>Protocolo</th>
+            <th>Tipo</th>
+            <th>Local / Região</th>
+            <th>Data de Envio</th>
+            <th>Prazo Estimado</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#SP-2026-001</td>
+            <td>Buraco na Via</td>
+            <td>Av. Paulista, 1000 - Bela Vista</td>
+            <td>12/10/2026</td>
+            <td>48 horas</td>
+            <td><strong>Em Atendimento</strong></td>
+          </tr>
+          <tr>
+            <td>#SP-2026-045</td>
+            <td>Problema de Acessibilidade</td>
+            <td>Rua Augusta x Al. Santos</td>
+            <td>05/09/2026</td>
+            <td>Concluído</td>
+            <td><span style="color:#059669; font-weight:bold;">Resolvido</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PÁGINA 5: TRANSPARÊNCIA -->
+    <section id="pag-5" class="pagina-modulo">
+      <h2>5. Painel de Transparência e Orçamento Urbano</h2>
+      <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:2px solid var(--text-color); border-radius:8px; text-align:center;">
+          <h3 style="font-size: 2.2rem; color: var(--primary-color);">14.280</h3>
+          <p>Ocorrências Resolvidas em 2026</p>
+        </div>
+        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:2px solid var(--text-color); border-radius:8px; text-align:center;">
+          <h3 style="font-size: 2.2rem; color: #059669;">89.4%</h3>
+          <p>Taxa de Resolução Dentro do Prazo</p>
+        </div>
+      </div>
+
+      <div class="form-container" style="margin-top: 1.5rem;">
+        <h3>Metas do SP Asfalto e Acessibilidade</h3>
+        <p style="margin-top: 1rem;"><strong>Meta de Recapeamento:</strong> 85% Concluído</p>
+        <div class="barra-progresso-container">
+          <div class="barra-progresso-preenchimento" style="width: 85%;">85%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 6: OBRAS PROGRAMADAS -->
+    <section id="pag-6" class="pagina-modulo">
+      <h2>6. Cronograma Oficial de Obras e Recapeamento SP</h2>
+      <div class="card-problema recapeamento" style="margin-top: 1rem;">
+        <span class="tag-status">Em Andamento - Noturno</span>
+        <h4>Programa SP Asfalto - Av. Rebouças (Pinheiros)</h4>
+        <p><strong>Trecho:</strong> Entre a Av. Brigadeiro Faria Lima e a Rua da Consolação.</p>
+        <p><strong>Horário de Trabalho:</strong> Das 22h00 às 05h00 (Interdição de duas faixas).</p>
+      </div>
+    </section>
+
+    <!-- PÁGINA 7: GUIA ACESSIBILIDADE -->
+    <section id="pag-7" class="pagina-modulo">
+      <h2>7. Guia de Acessibilidade Urbana e Normas WCAG AAA</h2>
+      <div class="card-problema acessibilidade" style="margin-top: 1rem;">
+        <h4>Diretrizes Técnicas de Acessibilidade Física e Digital</h4>
+        <p style="margin-top:0.5rem;">Este portal atende às exigências das normas WCAG 2.1 AAA e da ABNT NBR 9050 para navegação acessível e mobilidade urbana inclusiva.</p>
       </div>
     </section>
 
     <!-- PÁGINA 8: NOTÍCIAS -->
     <section id="pag-8" class="pagina-modulo">
       <h2>8. Notícias e Comunicados Oficiais</h2>
-      
       <article class="card-problema alagamento" style="margin-top: 1rem;">
         <span class="tag-status">Destaque - Prevenção</span>
         <h4>Prefeitura Intensifica Mutirão de Limpeza de Bueiros Antes do Período de Chuvas</h4>
         <p><small>Publicado em 24 de Outubro de 2026</small></p>
-        <p style="margin-top: 0.5rem;">Equipes de limpeza urbana já desobstruíram mais de 12 mil bocas de lobo nas subprefeituras da Mooca, Vila Mariana e Lapa para reduzir os pontos de alagamento na capital.</p>
-      </article>
-
-      <article class="card-problema buraco" style="margin-top: 1rem;">
-        <span class="tag-status">Tecnologia</span>
-        <h4>Novos Caminhões com Asfalto a Quente Reduzem Tempo de Tapa-Buraco</h4>
-        <p><small>Publicado em 18 de Outubro de 2026</small></p>
-        <p style="margin-top: 0.5rem;">Veículos equipados com tecnologia térmica garantem maior durabilidade do reparo asfáltico em vias de tráfego intenso na cidade.</p>
       </article>
     </section>
 
@@ -750,53 +1412,64 @@
     <section id="pag-9" class="pagina-modulo">
       <h2>9. Canais de Contato e Ouvidoria Geral</h2>
       <div class="form-container" style="margin-top: 1rem;">
-        <h3>Canais Diretos de Atendimento ao Cidadão</h3>
-        <p style="margin-top: 0.8rem;"><strong>Central SP 156:</strong> Telefone 156 (Ligação Gratuita 24 horas)</p>
-        <p style="margin-top: 0.5rem;"><strong>Atendimento Presencial Descomplica SP:</strong> Unidades Sé, Butantã, Santana, Itaquera e Santo Amaro.</p>
-        <p style="margin-top: 0.5rem;"><strong>Ouvidoria Geral do Município:</strong> Rua Libero Badaró, 293 - Centro, São Paulo - SP</p>
-
-        <hr style="margin: 1.5rem 0; border: 1px solid var(--text-color);">
-
-        <h3>Envie uma Mensagem à Ouvidoria</h3>
-        <form onsubmit="event.preventDefault(); alert('Sua mensagem foi enviada à Ouvidoria com sucesso!');">
-          <div class="campo-form">
-            <label for="nome-contato">Seu Nome:</label>
-            <input type="text" id="nome-contato" placeholder="Digite seu nome completo" required>
-          </div>
-          <div class="campo-form">
-            <label for="email-contato">E-mail de Contato:</label>
-            <input type="email" id="email-contato" placeholder="exemplo@email.com" required>
-          </div>
-          <div class="campo-form">
-            <label for="msg-contato">Mensagem / Sugestão:</label>
-            <textarea id="msg-contato" rows="3" placeholder="Escreva sua mensagem..." required></textarea>
-          </div>
-          <button type="submit" class="btn-submit">Enviar para a Ouvidoria</button>
-        </form>
+        <p><strong>Central SP 156:</strong> Telefone 156 (Atendimento 24 horas)</p>
+        <p style="margin-top: 0.5rem;"><strong>Ouvidoria Geral do Município:</strong> Rua Libero Badaró, 293 - Centro, SP</p>
       </div>
     </section>
 
-    <!-- PÁGINA 10: PERFIL -->
+    <!-- PÁGINA 10: PERFIL & AI AGENT INTEGRATION (DATA DETECTIVE & TINY WORLDS) -->
     <section id="pag-10" class="pagina-modulo">
-      <h2>10. Perfil do Cidadão e Preferências de Notificação</h2>
+      <h2>10. Perfil do Cidadão & Módulo de Inteligência Artificial</h2>
+      
       <div class="form-container" style="margin-top: 1rem;">
+        <h3>Configurações do Perfil</h3>
         <div class="campo-form">
           <label for="nome-usuario">Nome do Cidadão:</label>
           <input type="text" id="nome-usuario" value="Pedro Henrique">
         </div>
         <div class="campo-form">
-          <label for="bairro-fav">Bairro / Região Principal de Acompanhamento:</label>
+          <label for="bairro-fav">Região de Acompanhamento:</label>
           <input type="text" id="bairro-fav" value="Penha - Zona Leste (São Paulo)">
         </div>
+      </div>
+
+      <!-- Módulo Integrado de Migração OpenAI (Data Detective / Agents API) -->
+      <div class="ai-box">
+        <h3>📊 Módulo AI Agent: Data Detective (Análise de Dados de SP)</h3>
+        <p style="margin-bottom: 1rem;">Módulo integrado utilizando a **OpenAI Agents API / Code Interpreter** (Modelo recomendado: <code>gpt-4o</code> / <code>o3-mini</code>) para análise automatizada de arquivos CSV de ocorrências da prefeitura.</p>
+
         <div class="campo-form">
-          <label for="pref-notif">Receber Alertas de Obras e Alagamentos via E-mail/SMS?</label>
-          <select id="pref-notif">
-            <option value="sim">Sim, receber notificações diárias</option>
-            <option value="apenas-urgentes">Apenas alertas urgentes de trânsito</option>
-            <option value="nao">Não enviar notificações</option>
-          </select>
+          <label for="csv-upload">Carregar Base de Dados (Arquivo CSV):</label>
+          <input type="file" id="csv-upload" accept=".csv">
         </div>
-        <button class="btn-submit" onclick="alert('Suas preferências foram salvas com sucesso!')">Salvar Configurações do Perfil</button>
+        
+        <div class="campo-form">
+          <label for="prompt-agent">Pergunta para o AI Agent (Sandbox Python / Pandas):</label>
+          <input type="text" id="prompt-agent" placeholder="Ex: Qual subprefeitura teve a maior taxa de resolução de buracos em 2026?">
+        </div>
+
+        <button class="btn-submit" onclick="simularAgenteAI()">🤖 Executar Análise via Agents API (o3-mini / gpt-4o)</button>
+
+        <div id="status-agent" style="margin-top: 1rem; font-weight: bold; display: none;"></div>
+      </div>
+
+      <!-- Módulo Integrado de Migração OpenAI (Tiny Worlds / Storybook / Responses API) -->
+      <div class="ai-box" style="margin-top: 1.5rem; background: #faf5ff; border-color: #7e22ce;">
+        <h3 style="color: #7e22ce;">📖 Módulo Storybook: Tiny Worlds (Gerador de Cenários Interativos)</h3>
+        <p style="margin-bottom: 1rem;">Integração com a **OpenAI Responses API** e **DALL-E 3** (Modelo: <code>gpt-4o</code>) para simulação e geração de histórias ilustradas de planejamento urbano.</p>
+
+        <div class="campo-form">
+          <label for="personagem-story">Personagem:</label>
+          <input type="text" id="personagem-story" value="Engenheira Sofia">
+        </div>
+        <div class="campo-form">
+          <label for="cenario-story">Cenário em SP:</label>
+          <input type="text" id="cenario-story" value="Reforma da Praça da Sé com Piso Tátil">
+        </div>
+
+        <button class="btn-submit" style="background-color: #7e22ce;" onclick="simularTinyWorlds()">🎨 Gerar Cenário Ilustrado via Responses API (gpt-4o + DALL-E 3)</button>
+
+        <div id="status-story" style="margin-top: 1rem; display: none;"></div>
       </div>
     </section>
 
@@ -869,6 +1542,45 @@
       if (tamanhoAtual < 0.9) tamanhoAtual = 0.9;
       if (tamanhoAtual > 1.6) tamanhoAtual = 1.6;
       document.body.style.fontSize = tamanhoAtual + 'rem';
+    }
+
+    /* Simulação Módulo AI Agent - Data Detective */
+    function simularAgenteAI() {
+      const status = document.getElementById('status-agent');
+      status.style.display = 'block';
+      status.style.color = '#0284c7';
+      status.innerHTML = '⏳ [Agents API]: Inicializando sandbox Python com o modelo <code>o3-mini</code>...';
+
+      setTimeout(() => {
+        status.innerHTML = '⚙️ [Code Interpreter]: Executando <code>pandas.read_csv()</code> e gerando gráficos...';
+      }, 1500);
+
+      setTimeout(() => {
+        status.style.color = '#059669';
+        status.innerHTML = '✅ <strong>Relatório Concluído!</strong><br>A Subprefeitura da Sé registrou a maior taxa de resolução (92%), seguida por Pinheiros (88%). Gráfico compilado e exportado com sucesso.';
+      }, 3500);
+    }
+
+    /* Simulação Módulo OpenAI - Tiny Worlds */
+    function simularTinyWorlds() {
+      const status = document.getElementById('status-story');
+      status.style.display = 'block';
+      status.innerHTML = '<p style="color: #7e22ce; font-weight: bold;">⏳ [Responses API - gpt-4o]: Processando cena e enviando prompt estruturado para DALL-E 3...</p>';
+
+      setTimeout(() => {
+        status.innerHTML = `
+          <div style="border: 2px solid #7e22ce; padding: 1rem; border-radius: 8px; background: white; margin-top: 0.5rem;">
+            <h4>📖 Capítulo 1: A Praça Transformada</h4>
+            <p>Sofia segurava a planta do projeto enquanto observava a instalação dos pisos táteis no coração de São Paulo...</p>
+            <p><strong>Escolhas a seguir:</strong></p>
+            <ul>
+              <li>1. Inspecionar o rebaixamento das rampas na esquina.</li>
+              <li>2. Conversar com os moradores da região sobre o impacto da obra.</li>
+              <li>3. Testar a sinalização sonora para travessia de pedestres.</li>
+            </ul>
+          </div>
+        `;
+      }, 2500);
     }
   </script>
 </body>
