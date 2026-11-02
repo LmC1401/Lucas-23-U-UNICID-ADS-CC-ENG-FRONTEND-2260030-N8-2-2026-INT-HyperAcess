@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Cidadão - Monitoramento Urbano SP &amp; Google Maps</title>
+  <title>Sistema Cidadão - Monitoramento Urbano SP &amp; Google Maps Interativo</title>
 
   <style>
     /* ==========================================================================
@@ -250,7 +250,7 @@
     }
 
     /* ==========================================================================
-       4. MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS LIMPO)
+       4. MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS)
        ========================================================================== */
     main {
       max-width: 1200px;
@@ -306,9 +306,9 @@
       flex-wrap: wrap;
     }
 
-    .mapa-toolbar input {
+    .mapa-toolbar input, .mapa-toolbar select {
       flex: 1;
-      min-width: 220px;
+      min-width: 200px;
       padding: 0.7rem 1rem;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
@@ -318,11 +318,33 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
-    /* Container do Mapa */
+    .filtros-mapa {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-filtro {
+      background-color: #e2e8f0;
+      color: #1e293b;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-filtro.ativo {
+      background-color: var(--primary-color);
+      color: #ffffff;
+    }
+
     .google-maps-container {
       position: relative;
       width: 100%;
-      height: 700px; /* Mapa ainda maior e mais detalhado */
+      height: 700px;
       background-color: #f8f9fa;
       border-radius: 10px;
       overflow: hidden;
@@ -341,7 +363,6 @@
       height: 100%;
     }
 
-    /* Controles Flutuantes do Mapa */
     .mapa-controles-flutuantes {
       position: absolute;
       top: 16px;
@@ -388,6 +409,10 @@
       padding: 0;
       min-width: 36px;
       min-height: 36px;
+      transition: transform 0.2s;
+    }
+    .pino-sp:hover {
+      transform: translate(-50%, -50%) scale(1.2);
     }
 
     .pino-bolinha {
@@ -443,6 +468,23 @@
       background: #000000;
       border-color: #ffff00;
       color: #ffff00;
+    }
+
+    .mapa-stats-footer {
+      display: flex;
+      justify-content: space-around;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    body.alto-contraste .mapa-stats-footer {
+      background: #000000;
+      border-color: #ffff00;
     }
 
     .card-problema {
@@ -774,14 +816,14 @@
     <section id="pag-1" class="pagina-modulo ativa">
       <div class="hero">
         <h2>Monitoramento e Melhora do Espaço Urbano de São Paulo</h2>
-        <p>Plataforma oficial para cidadãos registrarem ocorrências urbanas com validação via API, mapa imersivo de alta precisão em parceria com o Google Maps e assistente virtual por IA.</p>
+        <p>Plataforma oficial interativa para cidadãos registrarem ocorrências urbanas com validação via API, mapa imersivo de alta precisão em parceria com o Google Maps e assistente virtual por IA com voz falante.</p>
         <button type="button" class="btn-cta" onclick="navegarPara('pag-2')">Registrar Nova Ocorrência</button>
       </div>
 
       <div class="grid-home" style="margin-top: 2rem;">
         <div class="mapa-box">
           <h3>Resumo da Capital</h3>
-          <p style="margin-top:0.5rem; margin-bottom: 1rem;">Monitoramento territorial integrado de todas as subprefeituras de São Paulo.</p>
+          <p style="margin-top:0.5rem; margin-bottom: 1rem;">Monitoramento territorial integrado de todas as subprefeituras de São Paulo em tempo real.</p>
           <button type="button" class="btn-submit" onclick="navegarPara('pag-3')">🗺️ Abrir Mapa Interativo Completo</button>
         </div>
 
@@ -842,7 +884,7 @@
       </div>
     </section>
 
-    <!-- PÁGINA 3: MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS - TEXTOS EM CAMADA SUPERIOR) -->
+    <!-- PÁGINA 3: MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS) -->
     <section id="pag-3" class="pagina-modulo">
       <h2>3. Mapa Interativo Expandido (Google Maps Architecture)</h2>
       <div class="mapa-box" style="margin-top: 1rem;">
@@ -851,18 +893,33 @@
           <div class="google-logo-tag">
             <span>📍 Google Maps Platform &bull; São Paulo Engine</span>
           </div>
-          <span style="font-size: 0.9rem; color: #5f6368;">Zoom ativo: 100% &bull; Camada de Ocorrências</span>
+          <span style="font-size: 0.9rem; color: #5f6368;" id="status-zoom-txt">Zoom ativo: 100% &bull; Interativo</span>
         </div>
 
         <div class="mapa-toolbar">
           <input type="text" id="busca-mapa-sp" placeholder="Pesquisar endereço, via ou subprefeitura em São Paulo..." onkeyup="filtrarMapaInput(event)">
-          <button type="button" class="btn-submit" onclick="simularNovoPinoSP()" style="width: auto; padding: 0.6rem 1.4rem; font-size: 0.95rem;">
-            📍 Adicionar Alerta GPS
+          <select id="filtra-subprefeitura" onchange="selecionarSubprefeitura(this.value)">
+            <option value="">Selecione uma Região...</option>
+            <option value="centro">Região Central</option>
+            <option value="zona-leste">Zona Leste</option>
+            <option value="zona-oeste">Zona Oeste</option>
+            <option value="zona-norte">Zona Norte</option>
+            <option value="zona-sul">Zona Sul</option>
+          </select>
+          <button type="button" class="btn-submit" onclick="simularNovoPinoSP()" style="width: auto; padding: 0.6rem 1.2rem; font-size: 0.95rem;">
+            📍 Adicionar Alerta
           </button>
         </div>
 
+        <div class="filtros-mapa">
+          <button type="button" class="btn-filtro ativo" onclick="filtrarCategoria('todos')">🌐 Todas</button>
+          <button type="button" class="btn-filtro" onclick="filtrarCategoria('buraco')">🔴 Buracos</button>
+          <button type="button" class="btn-filtro" onclick="filtrarCategoria('alagamento')">🔵 Alagamentos</button>
+          <button type="button" class="btn-filtro" onclick="filtrarCategoria('recape')">🟠 Recapeamento</button>
+          <button type="button" class="btn-filtro" onclick="filtrarCategoria('acessibilidade')">🟣 Acessibilidade</button>
+        </div>
+
         <div class="google-maps-container" id="area-mapa-sp" onclick="criarPinoNoClique(event)">
-          <!-- Controles Flutuantes -->
           <div class="mapa-controles-flutuantes">
             <button type="button" class="btn-mapa-layer" onclick="event.stopPropagation(); zoomMapa(1.1);" title="Aproximar Zoom">+</button>
             <button type="button" class="btn-mapa-layer" onclick="event.stopPropagation(); zoomMapa(0.9);" title="Afastar Zoom">-</button>
@@ -870,7 +927,7 @@
           </div>
 
           <svg class="mapa-svg-canvas" viewBox="0 0 1400 700" preserveAspectRatio="none" id="svg-canvas-map">
-            <!-- 1. CAMADA INFERIOR: Grid e Fundo de Ruas Secundárias -->
+            <!-- 1. CAMADA INFERIOR: Grid e Rios -->
             <defs>
               <pattern id="grid-google" width="55" height="55" patternUnits="userSpaceOnUse">
                 <path d="M 55 0 L 0 0 0 55" fill="none" stroke="#e2e8f0" stroke-width="1.2"/>
@@ -878,17 +935,14 @@
             </defs>
             <rect width="1400" height="700" fill="url(#grid-google)" />
 
-            <!-- Rios de São Paulo -->
             <path d="M 0 140 Q 450 180 900 90 T 1400 160" stroke="#93c5fd" stroke-width="32" fill="none" opacity="0.9" />
-            
             <path d="M 380 160 Q 330 420 260 700" stroke="#93c5fd" stroke-width="30" fill="none" opacity="0.9" />
             
-            <!-- Vias Principais (Traçado base) -->
             <path d="M 520 380 L 820 310" stroke="#ffffff" stroke-width="22" fill="none" />
             <path d="M 680 340 L 1350 260" stroke="#ffffff" stroke-width="20" fill="none" />
             <path d="M 400 500 L 980 210" stroke="#ffffff" stroke-width="20" fill="none" />
 
-            <!-- 2. CAMADA SUPERIOR EXCLUSIVA PARA TEXTOS (GARANTE NENHUMA LINHA POR CIMA) -->
+            <!-- 2. CAMADA SUPERIOR EXCLUSIVA PARA TEXTOS (NENHUMA LINHA POR CIMA) -->
             <text x="600" y="115" font-size="15" fill="#1d4ed8" font-weight="bold" letter-spacing="0.5">Rio Tietê</text>
             <text x="270" y="375" font-size="15" fill="#1d4ed8" font-weight="bold" transform="rotate(-45 270 375)" letter-spacing="0.5">Rio Pinheiros</text>
             
@@ -898,23 +952,23 @@
           </svg>
 
           <!-- Pinos Georeferenciados -->
-          <button type="button" class="pino-sp" style="top: 52%; left: 55%;" onclick="mostrarInfoSP('Buraco no Asfalto', 'Av. Paulista, 1000 - Bela Vista', 'Em Aberto', event)">
+          <button type="button" class="pino-sp" data-tipo="buraco" style="top: 52%; left: 55%;" onclick="mostrarInfoSP('Buraco no Asfalto', 'Av. Paulista, 1000 - Bela Vista', 'Em Aberto', event)">
             <span class="pino-pulso"></span>
             <span class="pino-bolinha buraco"></span>
             <span class="sr-only">Alerta de Buraco na Av. Paulista</span>
           </button>
 
-          <button type="button" class="pino-sp" style="top: 68%; left: 30%;" onclick="mostrarInfoSP('Ponto de Alagamento', 'Marginal Pinheiros x Ponte Cidade Jardim', 'Em Análise', event)">
+          <button type="button" class="pino-sp" data-tipo="alagamento" style="top: 68%; left: 30%;" onclick="mostrarInfoSP('Ponto de Alagamento', 'Marginal Pinheiros x Ponte Cidade Jardim', 'Em Análise', event)">
             <span class="pino-bolinha alagamento"></span>
             <span class="sr-only">Alerta de Alagamento na Marginal Pinheiros</span>
           </button>
 
-          <button type="button" class="pino-sp" style="top: 42%; left: 82%;" onclick="mostrarInfoSP('Recapeamento Asfáltico', 'Radial Leste - Itaquera', 'Programado', event)">
+          <button type="button" class="pino-sp" data-tipo="recape" style="top: 42%; left: 82%;" onclick="mostrarInfoSP('Recapeamento Asfáltico', 'Radial Leste - Itaquera', 'Programado', event)">
             <span class="pino-bolinha recape"></span>
             <span class="sr-only">Recapeamento na Radial Leste</span>
           </button>
 
-          <button type="button" class="pino-sp" style="top: 36%; left: 60%;" onclick="mostrarInfoSP('Calçada Danificada (Acessibilidade)', 'Rua Augusta - Consolação', 'Em Atendimento', event)">
+          <button type="button" class="pino-sp" data-tipo="acessibilidade" style="top: 36%; left: 60%;" onclick="mostrarInfoSP('Calçada Danificada (Acessibilidade)', 'Rua Augusta - Consolação', 'Em Atendimento', event)">
             <span class="pino-bolinha acessibilidade"></span>
             <span class="sr-only">Acessibilidade na Rua Augusta</span>
           </button>
@@ -923,6 +977,14 @@
             <span id="txt-popup-info">Clique em qualquer pino ou área do mapa para inspecionar os detalhes urbanos de São Paulo.</span>
             <button type="button" class="btn-falar-msg" onclick="falarTexto(document.getElementById('txt-popup-info').innerText)">🔊 Ouvir</button>
           </div>
+        </div>
+
+        <div class="mapa-stats-footer">
+          <span>📊 Total Ativo: <strong id="stat-total">4</strong></span>
+          <span>🔴 Buracos: <strong id="stat-buraco">1</strong></span>
+          <span>🔵 Alagamentos: <strong id="stat-alagamento">1</strong></span>
+          <span>🟠 Recapeamentos: <strong id="stat-recape">1</strong></span>
+          <span>🟣 Acessibilidade: <strong id="stat-acessibilidade">1</strong></span>
         </div>
 
       </div>
@@ -1007,18 +1069,19 @@
       </div>
     </section>
 
-    <!-- PÁGINA 10: PERFIL -->
+    <!-- PÁGINA 10: PERFIL EDITÁVEL -->
     <section id="pag-10" class="pagina-modulo">
       <h2>10. Perfil do Cidadão e Configurações</h2>
       <div class="form-container" style="margin-top:1rem;">
         <div class="campo-form">
           <label for="nome-perfil">Nome do Usuário:</label>
-          <input type="text" id="nome-perfil" value="Pedro Henrique" readonly>
+          <input type="text" id="nome-perfil" value="Pedro Henrique">
         </div>
         <div class="campo-form">
           <label for="regiao-perfil">Região de Acompanhamento:</label>
-          <input type="text" id="regiao-perfil" value="Penha - Zona Leste (São Paulo)" readonly>
+          <input type="text" id="regiao-perfil" value="Penha - Zona Leste (São Paulo)">
         </div>
+        <button type="button" class="btn-submit" onclick="salvarPerfil()">Salvar Alterações do Perfil</button>
       </div>
     </section>
 
@@ -1113,8 +1176,33 @@
     }
 
     /* ==========================================================================
-       2. VALIDAÇÃO DE API (FETCH)
+       2. VALIDAÇÃO DE API (FETCH) & SALVAR PERFIL
        ========================================================================== */
+    function salvarPerfil() {
+      const novoNome = document.getElementById('nome-perfil').value.trim();
+      const novaRegiao = document.getElementById('regiao-perfil').value.trim();
+      
+      if (!novoNome || !novaRegiao) {
+        alert("Preencha todos os campos do perfil.");
+        return;
+      }
+
+      localStorage.setItem('user_nome', novoNome);
+      localStorage.setItem('user_regiao', novaRegiao);
+      
+      const msg = "Perfil de " + novoNome + " atualizado com sucesso!";
+      alert(msg);
+      falarTexto(msg);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const nomeSalvo = localStorage.getItem('user_nome');
+      const regiaoSalva = localStorage.getItem('user_regiao');
+      if (nomeSalvo) document.getElementById('nome-perfil').value = nomeSalvo;
+      if (regiaoSalva) document.getElementById('regiao-perfil').value = regiaoSalva;
+      atualizarEstatisticasMapa();
+    });
+
     async function validarEEnviarAPI(event) {
       event.preventDefault();
 
@@ -1243,9 +1331,31 @@
     }
 
     /* ==========================================================================
-       4. MAPA INTERATIVO CONTROLES E ZOOM
+       4. MAPA INTERATIVO CONTROLES, ZOOM E ESTATÍSTICAS
        ========================================================================== */
     let escalaMapa = 1.0;
+
+    function atualizarEstatisticasMapa() {
+      const pinos = document.querySelectorAll('.pino-sp');
+      let total = 0, buracos = 0, alagamentos = 0, recapes = 0, acessibilidade = 0;
+
+      pinos.forEach(p => {
+        if (p.style.display !== 'none') {
+          total++;
+          const tipo = p.getAttribute('data-tipo');
+          if (tipo === 'buraco') buracos++;
+          if (tipo === 'alagamento') alagamentos++;
+          if (tipo === 'recape') recapes++;
+          if (tipo === 'acessibilidade') acessibilidade++;
+        }
+      });
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-buraco').innerText = buracos;
+      document.getElementById('stat-alagamento').innerText = alagamentos;
+      document.getElementById('stat-recape').innerText = recapes;
+      document.getElementById('stat-acessibilidade').innerText = acessibilidade;
+    }
 
     function mostrarInfoSP(titulo, local, status, event) {
       if (event) event.stopPropagation();
@@ -1266,6 +1376,7 @@
       const novoPino = document.createElement('button');
       novoPino.type = 'button';
       novoPino.className = 'pino-sp';
+      novoPino.setAttribute('data-tipo', 'buraco');
       novoPino.style.top = pctY + '%';
       novoPino.style.left = pctX + '%';
       
@@ -1277,6 +1388,7 @@
       novoPino.innerHTML = '<span class="pino-pulso"></span><span class="pino-bolinha buraco"></span>';
 
       container.appendChild(novoPino);
+      atualizarEstatisticasMapa();
       mostrarInfoSP(titulo, local, status);
     }
 
@@ -1285,21 +1397,59 @@
       const topPos = Math.floor(Math.random() * 65) + 15;
       const leftPos = Math.floor(Math.random() * 70) + 15;
 
+      const tipos = ['buraco', 'alagamento', 'recape', 'acessibilidade'];
+      const tipoEscolhido = tipos[Math.floor(Math.random() * tipos.length)];
+
       const novoPino = document.createElement('button');
       novoPino.type = 'button';
       novoPino.className = 'pino-sp';
+      novoPino.setAttribute('data-tipo', tipoEscolhido);
       novoPino.style.top = topPos + '%';
       novoPino.style.left = leftPos + '%';
       
-      const titulo = "Alerta Georreferenciado";
+      const titulo = "Alerta Georreferenciado (" + tipoEscolhido.toUpperCase() + ")";
       const local = "Subprefeitura SP";
       const status = "Registrado via Google Maps Engine";
 
       novoPino.onclick = function(e) { mostrarInfoSP(titulo, local, status, e); };
-      novoPino.innerHTML = '<span class="pino-pulso"></span><span class="pino-bolinha alagamento"></span>';
+      novoPino.innerHTML = '<span class="pino-pulso"></span><span class="pino-bolinha ' + tipoEscolhido + '"></span>';
 
       container.appendChild(novoPino);
+      atualizarEstatisticasMapa();
       mostrarInfoSP(titulo, local, status);
+    }
+
+    function filtrarCategoria(categoria) {
+      document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
+      event.target.classList.add('ativo');
+
+      const pinos = document.querySelectorAll('.pino-sp');
+      pinos.forEach(p => {
+        const tipo = p.getAttribute('data-tipo');
+        if (categoria === 'todos' || tipo === categoria) {
+          p.style.display = 'block';
+        } else {
+          p.style.display = 'none';
+        }
+      });
+      atualizarEstatisticasMapa();
+      falarTexto("Filtrando mapa por categoria: " + categoria);
+    }
+
+    function selecionarSubprefeitura(regiao) {
+      if (!regiao) return;
+      const nomes = {
+        'centro': 'Região Central (Sé e Bela Vista)',
+        'zona-leste': 'Zona Leste (Itaquera e Tatuapé)',
+        'zona-oeste': 'Zona Oeste (Pinheiros e Lapa)',
+        'zona-norte': 'Zona Norte (Santana e Tucuruvi)',
+        'zona-sul': 'Zona Sul (Santo Amaro e Moema)'
+      };
+      const nomeRegiao = nomes[regiao] || regiao;
+      const msg = "Centralizando visualização GPS na " + nomeRegiao;
+      document.getElementById('txt-popup-info').innerText = msg;
+      falarTexto(msg);
+      zoomMapa(1.2);
     }
 
     function zoomMapa(fator) {
@@ -1309,12 +1459,14 @@
       const canvas = document.getElementById('svg-canvas-map');
       canvas.style.transform = 'scale(' + escalaMapa + ')';
       canvas.style.transition = 'transform 0.3s ease';
+      document.getElementById('status-zoom-txt').innerText = 'Zoom ativo: ' + Math.round(escalaMapa * 100) + '%';
     }
 
     function centralizarMapaSP() {
       escalaMapa = 1.0;
       const canvas = document.getElementById('svg-canvas-map');
       canvas.style.transform = 'scale(1)';
+      document.getElementById('status-zoom-txt').innerText = 'Zoom ativo: 100% &bull; Centralizado';
       falarTexto("Mapa centralizado na região central de São Paulo.");
     }
 
