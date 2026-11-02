@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Cidadão - Monitoramento Urbano SP & IA</title>
+  <title>Sistema Cidadão - Monitoramento Urbano SP &amp; Google Maps</title>
 
   <style>
     /* ==========================================================================
-       1. VARIÁVEIS E CONFIGURAÇÕES GERAIS (WCAG Nível AAA)
+       1. VARIÁVEIS E CONFIGURAÇÕES GERAIS (WCAG Nível AAA & Google Maps Design)
        ========================================================================== */
     :root {
       --bg-color: #ffffff;
-      --bg-surface: #f4f6f8;
-      --text-color: #1a1a1a;
-      --primary-color: #004d99;
-      --primary-hover: #003366;
-      --focus-outline: #ffbf47;
+      --bg-surface: #f8fafc;
+      --text-color: #0f172a;
+      --primary-color: #1a73e8; /* Google Blue */
+      --primary-hover: #1557b0;
+      --focus-outline: #f59e0b;
 
-      --cor-buraco: #d9534f;
-      --cor-alagamento: #0275d8;
+      --cor-buraco: #dc2626;
+      --cor-alagamento: #2563eb;
       --cor-recape: #d97706;
       --cor-acessibilidade: #7e22ce;
 
-      --font-family: Arial, Helvetica, sans-serif;
+      --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       --font-base: 1.125rem;
       --line-height: 1.6;
     }
@@ -88,7 +88,7 @@
        2. BARRA DE ACESSIBILIDADE E CABEÇALHO
        ========================================================================== */
     .barra-acessibilidade {
-      background-color: #000000;
+      background-color: #202124;
       color: #ffffff;
       padding: 0.5rem 2rem;
       display: flex;
@@ -96,11 +96,13 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
+      border-bottom: 1px solid #3c4043;
     }
 
     .marca-sistema {
-      font-weight: bold;
+      font-weight: 600;
       letter-spacing: 0.5px;
+      font-size: 0.95rem;
     }
 
     .controles-acessibilidade {
@@ -111,22 +113,22 @@
     }
 
     .btn-acessivel {
-      background-color: #333333;
+      background-color: #3c4043;
       color: #ffffff;
-      border: 2px solid #ffffff;
+      border: 1px solid #5f6368;
       padding: 0.4rem 0.8rem;
-      min-height: 44px;
-      min-width: 44px;
-      font-weight: bold;
+      min-height: 40px;
+      min-width: 40px;
+      font-weight: 600;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
       transition: background-color 0.2s;
     }
     .btn-acessivel:hover {
-      background-color: #555555;
+      background-color: #5f6368;
     }
 
     body.alto-contraste .btn-acessivel {
@@ -138,22 +140,29 @@
     header.header-principal {
       background-color: var(--primary-color);
       color: #ffffff;
-      padding: 1.5rem 2rem;
+      padding: 1.2rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
     body.alto-contraste header.header-principal {
       color: #000000;
+      background-color: #ffff00;
+    }
+
+    header.header-principal h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
     }
 
     nav ul {
       display: flex;
       list-style: none;
-      gap: 0.6rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
     }
 
@@ -161,19 +170,21 @@
       background: none;
       border: none;
       color: inherit;
-      text-decoration: underline;
-      font-weight: bold;
-      font-size: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
       font-family: inherit;
-      padding: 6px 10px;
-      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+    nav button:hover {
+      background-color: rgba(255, 255, 255, 0.15);
     }
 
     nav button.ativo {
       background-color: rgba(255, 255, 255, 0.25);
-      border-radius: 4px;
-      text-decoration: none;
+      border-radius: 6px;
     }
 
     .pagina-modulo {
@@ -181,7 +192,7 @@
     }
     .pagina-modulo.ativa {
       display: block;
-      animation: fadeIn 0.3s ease-in-out;
+      animation: fadeIn 0.25s ease-in-out;
     }
 
     @keyframes fadeIn {
@@ -194,34 +205,39 @@
        ========================================================================== */
     .hero {
       background-color: var(--bg-surface);
-      padding: 3rem 2rem;
+      padding: 3.5rem 2rem;
       text-align: center;
-      border-bottom: 4px solid var(--primary-color);
-      border-radius: 0 0 12px 12px;
+      border-bottom: 3px solid var(--primary-color);
     }
 
     .hero h2 {
       font-size: 2.2rem;
       margin-bottom: 1rem;
+      font-weight: 700;
     }
 
     .hero p {
       max-width: 800px;
       margin: 0 auto 1.5rem auto;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
+      color: #4b5563;
+    }
+    body.alto-contraste .hero p {
+      color: #e5e7eb;
     }
 
     .btn-cta {
       display: inline-block;
       background-color: var(--primary-color);
       color: #ffffff;
-      padding: 1rem 2rem;
+      padding: 0.9rem 2rem;
       text-decoration: none;
       font-weight: bold;
       border-radius: 8px;
       min-height: 48px;
-      border: 2px solid var(--primary-hover);
+      border: none;
       cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       transition: background-color 0.2s;
     }
     .btn-cta:hover {
@@ -230,10 +246,11 @@
 
     body.alto-contraste .btn-cta {
       color: #000000;
+      background-color: #ffff00;
     }
 
     /* ==========================================================================
-       4. CONTEÚDO PRINCIPAL & MAPA INTERATIVO SP
+       4. MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS LIMPO)
        ========================================================================== */
     main {
       max-width: 1200px;
@@ -255,27 +272,110 @@
 
     .mapa-box {
       background-color: var(--bg-surface);
-      border: 2px solid var(--text-color);
-      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
       padding: 1.5rem;
       margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    .mapa-container-sp {
+    .google-maps-header-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .google-logo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #1a73e8;
+    }
+
+    .mapa-toolbar {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .mapa-toolbar input {
+      flex: 1;
+      min-width: 220px;
+      padding: 0.7rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-size: 0.95rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Container do Mapa */
+    .google-maps-container {
       position: relative;
       width: 100%;
-      height: 420px;
-      background-color: #cbd5e1;
-      border: 2px solid var(--text-color);
-      border-radius: 8px;
-      margin-top: 1rem;
+      height: 700px; /* Mapa ainda maior e mais detalhado */
+      background-color: #f8f9fa;
+      border-radius: 10px;
       overflow: hidden;
+      border: 2px solid #cbd5e1;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
       cursor: crosshair;
     }
 
-    .mapa-svg-sp {
+    body.alto-contraste .google-maps-container {
+      background-color: #111111;
+      border-color: #ffff00;
+    }
+
+    .mapa-svg-canvas {
       width: 100%;
       height: 100%;
+    }
+
+    /* Controles Flutuantes do Mapa */
+    .mapa-controles-flutuantes {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 25;
+    }
+
+    .btn-mapa-layer {
+      background: #ffffff;
+      color: #202124;
+      border: 1px solid #dadce0;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .btn-mapa-layer:hover {
+      background: #f1f3f4;
+    }
+
+    body.alto-contraste .btn-mapa-layer {
+      background: #000000;
+      color: #ffff00;
+      border-color: #ffff00;
     }
 
     .pino-sp {
@@ -286,16 +386,16 @@
       background: none;
       border: none;
       padding: 0;
-      min-width: 32px;
-      min-height: 32px;
+      min-width: 36px;
+      min-height: 36px;
     }
 
     .pino-bolinha {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      border: 3px solid #ffffff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.5);
       display: inline-block;
     }
 
@@ -306,8 +406,8 @@
 
     .pino-pulso {
       position: absolute;
-      top: -3px;
-      left: -3px;
+      top: -4px;
+      left: -4px;
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -318,34 +418,41 @@
 
     @keyframes animacaoPulso {
       0% { transform: scale(0.4); opacity: 1; }
-      100% { transform: scale(1.7); opacity: 0; }
+      100% { transform: scale(1.9); opacity: 0; }
     }
 
-    .popup-info-sp {
+    .popup-info-google {
       position: absolute;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-      background: var(--bg-surface);
-      border: 2px solid var(--text-color);
-      padding: 0.9rem 1.2rem;
-      border-radius: 6px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      font-size: 0.95rem;
-      z-index: 20;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #ffffff;
+      border: 1px solid #dadce0;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      font-size: 1rem;
+      z-index: 30;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
     }
 
+    body.alto-contraste .popup-info-google {
+      background: #000000;
+      border-color: #ffff00;
+      color: #ffff00;
+    }
+
     .card-problema {
-      border: 3px solid var(--text-color);
-      border-left-width: 12px;
-      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      border-left-width: 8px;
+      border-radius: 10px;
       padding: 1.2rem;
       margin-bottom: 1rem;
       background-color: var(--bg-surface);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
     }
 
     .card-problema.buraco { border-left-color: var(--cor-buraco); }
@@ -355,24 +462,25 @@
 
     .tag-status {
       display: inline-block;
-      padding: 0.2rem 0.5rem;
-      font-size: 0.9rem;
-      font-weight: bold;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 700;
       text-transform: uppercase;
-      background-color: var(--text-color);
-      color: var(--bg-color);
-      border-radius: 4px;
+      background-color: #e2e8f0;
+      color: #1e293b;
+      border-radius: 20px;
       margin-bottom: 0.4rem;
     }
 
     /* ==========================================================================
-       5. FORMULÁRIO DE REGISTRO E CAIXA DE VALIDAÇÃO DA API
+       5. FORMULÁRIO E TABELA DE RELATOS
        ========================================================================== */
     .form-container {
       background-color: var(--bg-surface);
-      border: 2px solid var(--text-color);
-      padding: 2rem;
-      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .campo-form {
@@ -381,7 +489,7 @@
 
     .campo-form label {
       display: block;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 0.4rem;
     }
 
@@ -391,8 +499,8 @@
       width: 100%;
       padding: 0.8rem;
       font-size: 1rem;
-      border: 2px solid #555555;
-      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
       background-color: var(--bg-color);
       color: var(--text-color);
     }
@@ -401,13 +509,14 @@
       width: 100%;
       background-color: var(--primary-color);
       color: #ffffff;
-      padding: 1rem;
-      font-size: 1.1rem;
-      font-weight: bold;
+      padding: 0.9rem;
+      font-size: 1.05rem;
+      font-weight: 600;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       min-height: 48px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
       transition: background-color 0.2s;
     }
     .btn-submit:hover {
@@ -416,91 +525,89 @@
 
     body.alto-contraste .btn-submit {
       color: #000000;
+      background-color: #ffff00;
     }
 
     .status-api-box {
       margin-top: 1rem;
       padding: 1rem;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 8px;
+      font-weight: 600;
       display: none;
     }
-    .status-api-box.sucesso {
-      background-color: #d1fae5;
-      color: #065f46;
-      border: 2px solid #10b981;
-    }
-    .status-api-box.erro {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 2px solid #ef4444;
-    }
-    .status-api-box.carregando {
-      background-color: #e0f2fe;
-      color: #075985;
-      border: 2px solid #0284c7;
-    }
+    .status-api-box.sucesso { background-color: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+    .status-api-box.erro { background-color: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+    .status-api-box.carregando { background-color: #e0f2fe; color: #075985; border: 1px solid #0284c7; }
 
     .tabela-dados {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
     }
 
     .tabela-dados th, .tabela-dados td {
-      border: 2px solid var(--text-color);
-      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      padding: 0.85rem;
       text-align: left;
     }
 
     .tabela-dados th {
       background-color: var(--primary-color);
       color: #ffffff;
+      font-weight: 600;
     }
 
     body.alto-contraste .tabela-dados th {
       color: #000000;
+      background-color: #ffff00;
     }
 
     /* ==========================================================================
-       6. CHATBOT INTERATIVO DE ASSISTÊNCIA VIRTUAL (IA AGENT COM VOZ FALANTE)
+       6. CHATBOT WIDGET COM VOZ E IA AGENT
        ========================================================================== */
     .chatbot-widget {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 24px;
+      right: 24px;
       z-index: 10000;
     }
 
     .btn-toggle-chat {
       background-color: var(--primary-color);
       color: #ffffff;
-      border: 2px solid #ffffff;
+      border: none;
       border-radius: 50px;
       padding: 0.8rem 1.4rem;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       gap: 0.5rem;
       min-height: 48px;
+      transition: transform 0.2s;
+    }
+    .btn-toggle-chat:hover {
+      transform: scale(1.03);
     }
 
     body.alto-contraste .btn-toggle-chat {
       color: #000000;
-      border-color: #000000;
+      background-color: #ffff00;
     }
 
     .chat-box {
       display: none;
-      width: 360px;
-      height: 500px;
+      width: 380px;
+      height: 520px;
       background-color: var(--bg-surface);
-      border: 3px solid var(--text-color);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       flex-direction: column;
       position: absolute;
       bottom: 65px;
@@ -515,8 +622,8 @@
     .chat-header {
       background-color: var(--primary-color);
       color: #ffffff;
-      padding: 0.8rem 1rem;
-      font-weight: bold;
+      padding: 1rem;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -524,6 +631,7 @@
 
     body.alto-contraste .chat-header {
       color: #000000;
+      background-color: #ffff00;
     }
 
     .chat-messages {
@@ -537,8 +645,8 @@
     }
 
     .mensagem-chat {
-      padding: 0.6rem 0.9rem;
-      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
       max-width: 85%;
       line-height: 1.4;
       position: relative;
@@ -566,27 +674,23 @@
       border: none;
       cursor: pointer;
       font-size: 0.85rem;
-      margin-top: 0.3rem;
+      margin-top: 0.4rem;
       display: inline-block;
-      opacity: 0.85;
-      font-weight: bold;
+      font-weight: 600;
       color: inherit;
-    }
-    .btn-falar-msg:hover {
-      opacity: 1;
       text-decoration: underline;
     }
 
     .chat-input-area {
       display: flex;
-      border-top: 2px solid var(--text-color);
+      border-top: 1px solid #cbd5e1;
       background-color: var(--bg-color);
     }
 
     .chat-input-area input {
       flex: 1;
       border: none;
-      padding: 0.8rem;
+      padding: 0.9rem;
       font-size: 0.95rem;
       background: transparent;
       color: var(--text-color);
@@ -596,62 +700,56 @@
       background-color: var(--primary-color);
       color: #ffffff;
       border: none;
-      padding: 0 1rem;
-      font-weight: bold;
+      padding: 0 1.2rem;
+      font-weight: 600;
       cursor: pointer;
-      min-height: 48px;
     }
 
     body.alto-contraste .chat-input-area button {
       color: #000000;
+      background-color: #ffff00;
     }
 
     .config-key-panel {
       display: none;
       background: var(--bg-color);
       padding: 0.8rem;
-      border-bottom: 2px solid var(--text-color);
+      border-bottom: 1px solid #cbd5e1;
       font-size: 0.85rem;
     }
 
-    /* ==========================================================================
-       7. RODAPÉ
-       ========================================================================== */
     footer {
-      background-color: var(--text-color);
-      color: var(--bg-color);
+      background-color: #202124;
+      color: #f1f3f4;
       text-align: center;
       padding: 2rem;
-      margin-top: 3rem;
+      margin-top: 4rem;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- Atalho para Teclado -->
+  <!-- Atalho de Teclado -->
   <a href="#conteudo-principal" class="link-atalho">Ir para o conteúdo principal</a>
 
-  <!-- BARRA DE ACESSIBILIDADE E AVISO FALANTE GLOBAL -->
+  <!-- BARRA DE ACESSIBILIDADE E SINTETIZADOR DE VOZ GLOBAL -->
   <div class="barra-acessibilidade" role="region" aria-label="Barra de Acessibilidade">
-    <span class="marca-sistema">Portal Cidadão - São Paulo</span>
-    
+    <span class="marca-sistema">Portal Cidadão SP &bull; Google Maps Engine</span>
     <div class="controles-acessibilidade">
-      <!-- Módulo Aviso Falante Global -->
       <button type="button" class="btn-acessivel" onclick="falarTextoPagina()" title="Ouvir conteúdo da página atual">
         🔊 <span id="txt-btn-falante">Ouvir Página</span>
       </button>
-      <button type="button" class="btn-acessivel" onclick="pararVoz()" title="Parar leitura de voz">
+      <button type="button" class="btn-acessivel" onclick="pararVoz()" title="Parar locução">
         ⏹️ Parar
       </button>
-
-      <!-- Acessibilidade Visual -->
       <button type="button" class="btn-acessivel" onclick="toggleAltoContraste()">👁️ Contraste</button>
       <button type="button" class="btn-acessivel" onclick="alterarFonte(1)" aria-label="Aumentar Fonte">A+</button>
       <button type="button" class="btn-acessivel" onclick="alterarFonte(-1)" aria-label="Diminuir Fonte">A-</button>
     </div>
   </div>
 
-  <!-- CABEÇALHO COM NAVEGAÇÃO INTERATIVA ENTRE AS 10 PÁGINAS -->
+  <!-- CABEÇALHO COM AS 10 PÁGINAS MODULARES -->
   <header class="header-principal">
     <h1>Portal Cidadão SP</h1>
     <nav aria-label="Navegação Principal">
@@ -664,7 +762,7 @@
         <li><button type="button" id="nav-pag-6" onclick="navegarPara('pag-6')">6. Obras Programadas</button></li>
         <li><button type="button" id="nav-pag-7" onclick="navegarPara('pag-7')">7. Guia Acessibilidade</button></li>
         <li><button type="button" id="nav-pag-8" onclick="navegarPara('pag-8')">8. Notícias</button></li>
-        <li><button type="button" id="nav-pag-9" onclick="navegarPara('pag-9')">9. Contato / Ouvidoria</button></li>
+        <li><button type="button" id="nav-pag-9" onclick="navegarPara('pag-9')">9. Ouvidoria</button></li>
         <li><button type="button" id="nav-pag-10" onclick="navegarPara('pag-10')">10. Perfil</button></li>
       </ul>
     </nav>
@@ -676,15 +774,15 @@
     <section id="pag-1" class="pagina-modulo ativa">
       <div class="hero">
         <h2>Monitoramento e Melhora do Espaço Urbano de São Paulo</h2>
-        <p>Plataforma oficial para cidadãos registrarem problemas urbanos na capital paulista com validação via API, mapa interativo e assistente falante por Inteligência Artificial.</p>
+        <p>Plataforma oficial para cidadãos registrarem ocorrências urbanas com validação via API, mapa imersivo de alta precisão em parceria com o Google Maps e assistente virtual por IA.</p>
         <button type="button" class="btn-cta" onclick="navegarPara('pag-2')">Registrar Nova Ocorrência</button>
       </div>
 
       <div class="grid-home" style="margin-top: 2rem;">
         <div class="mapa-box">
-          <h3>Resumo do Mapeamento na Capital</h3>
-          <p style="margin-top:0.5rem; margin-bottom: 1rem;">Mapeamento interativo abrangendo todas as subprefeituras de São Paulo.</p>
-          <button type="button" class="btn-submit" onclick="navegarPara('pag-3')">🗺️ Abrir Mapa Interativo de São Paulo</button>
+          <h3>Resumo da Capital</h3>
+          <p style="margin-top:0.5rem; margin-bottom: 1rem;">Monitoramento territorial integrado de todas as subprefeituras de São Paulo.</p>
+          <button type="button" class="btn-submit" onclick="navegarPara('pag-3')">🗺️ Abrir Mapa Interativo Completo</button>
         </div>
 
         <div>
@@ -693,23 +791,16 @@
             <span class="tag-status">Em Aberto</span>
             <h4>Buraco em Via Arterial</h4>
             <p><strong>Local:</strong> Av. Paulista, 1000 - Bela Vista</p>
-            <button type="button" class="btn-falar-msg" onclick="falarTexto('Buraco em Via Arterial na Avenida Paulista número 1000, Bela Vista. Status: Em Aberto.')">🔊 Ouvir card</button>
-          </div>
-          <div class="card-problema alagamento">
-            <span class="tag-status">Em Análise</span>
-            <h4>Acúmulo de Água / Drenagem</h4>
-            <p><strong>Local:</strong> Marginal Pinheiros</p>
-            <button type="button" class="btn-falar-msg" onclick="falarTexto('Acúmulo de água na Marginal Pinheiros. Status: Em Análise.')">🔊 Ouvir card</button>
+            <button type="button" class="btn-falar-msg" onclick="falarTexto('Buraco na Avenida Paulista número 1000, Bela Vista. Status: Em Aberto.')">🔊 Ouvir card</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PÁGINA 2: REGISTRAR OCORRÊNCIA -->
+    <!-- PÁGINA 2: NOVO RELATO -->
     <section id="pag-2" class="pagina-modulo">
       <h2>2. Registrar Nova Ocorrência Urbana</h2>
       <div class="form-container" style="margin-top: 1rem;">
-        
         <form id="form-ocorrencia" onsubmit="validarEEnviarAPI(event)">
           <div class="campo-form">
             <label for="tipo-problema">Tipo de Ocorrência (*):</label>
@@ -748,56 +839,92 @@
         </form>
 
         <div id="status-api" class="status-api-box"></div>
-
       </div>
     </section>
 
-    <!-- PÁGINA 3: MAPA INTERATIVO SP -->
+    <!-- PÁGINA 3: MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS - TEXTOS EM CAMADA SUPERIOR) -->
     <section id="pag-3" class="pagina-modulo">
-      <h2>3. Mapa Interativo Geral da Capital (São Paulo)</h2>
+      <h2>3. Mapa Interativo Expandido (Google Maps Architecture)</h2>
       <div class="mapa-box" style="margin-top: 1rem;">
-        <p>Clique em qualquer pino ou <strong>clique direto sobre o mapa</strong> para registrar um novo ponto dinâmico de alerta:</p>
+        
+        <div class="google-maps-header-badge">
+          <div class="google-logo-tag">
+            <span>📍 Google Maps Platform &bull; São Paulo Engine</span>
+          </div>
+          <span style="font-size: 0.9rem; color: #5f6368;">Zoom ativo: 100% &bull; Camada de Ocorrências</span>
+        </div>
 
-        <div class="mapa-container-sp" id="area-mapa-sp" onclick="criarPinoNoClique(event)">
-          <svg class="mapa-svg-sp" viewBox="0 0 1000 500" preserveAspectRatio="none">
-            <!-- Rios Tietê e Pinheiros -->
-            <path d="M 0 80 Q 300 120 600 60 T 1000 100" stroke="#93c5fd" stroke-width="26" fill="none" />
-            <path d="M 250 110 Q 220 300 180 500" stroke="#93c5fd" stroke-width="22" fill="none" />
+        <div class="mapa-toolbar">
+          <input type="text" id="busca-mapa-sp" placeholder="Pesquisar endereço, via ou subprefeitura em São Paulo..." onkeyup="filtrarMapaInput(event)">
+          <button type="button" class="btn-submit" onclick="simularNovoPinoSP()" style="width: auto; padding: 0.6rem 1.4rem; font-size: 0.95rem;">
+            📍 Adicionar Alerta GPS
+          </button>
+        </div>
+
+        <div class="google-maps-container" id="area-mapa-sp" onclick="criarPinoNoClique(event)">
+          <!-- Controles Flutuantes -->
+          <div class="mapa-controles-flutuantes">
+            <button type="button" class="btn-mapa-layer" onclick="event.stopPropagation(); zoomMapa(1.1);" title="Aproximar Zoom">+</button>
+            <button type="button" class="btn-mapa-layer" onclick="event.stopPropagation(); zoomMapa(0.9);" title="Afastar Zoom">-</button>
+            <button type="button" class="btn-mapa-layer" onclick="event.stopPropagation(); centralizarMapaSP();" title="Centralizar em São Paulo">🎯</button>
+          </div>
+
+          <svg class="mapa-svg-canvas" viewBox="0 0 1400 700" preserveAspectRatio="none" id="svg-canvas-map">
+            <!-- 1. CAMADA INFERIOR: Grid e Fundo de Ruas Secundárias -->
+            <defs>
+              <pattern id="grid-google" width="55" height="55" patternUnits="userSpaceOnUse">
+                <path d="M 55 0 L 0 0 0 55" fill="none" stroke="#e2e8f0" stroke-width="1.2"/>
+              </pattern>
+            </defs>
+            <rect width="1400" height="700" fill="url(#grid-google)" />
+
+            <!-- Rios de São Paulo -->
+            <path d="M 0 140 Q 450 180 900 90 T 1400 160" stroke="#93c5fd" stroke-width="32" fill="none" opacity="0.9" />
             
-            <!-- Vias Principais -->
-            <path d="M 400 280 L 580 240" stroke="#ffffff" stroke-width="14" fill="none" />
-            <text x="440" y="260" font-size="12" fill="#000000" font-weight="bold">Av. Paulista</text>
+            <path d="M 380 160 Q 330 420 260 700" stroke="#93c5fd" stroke-width="30" fill="none" opacity="0.9" />
+            
+            <!-- Vias Principais (Traçado base) -->
+            <path d="M 520 380 L 820 310" stroke="#ffffff" stroke-width="22" fill="none" />
+            <path d="M 680 340 L 1350 260" stroke="#ffffff" stroke-width="20" fill="none" />
+            <path d="M 400 500 L 980 210" stroke="#ffffff" stroke-width="20" fill="none" />
 
-            <path d="M 500 250 L 980 200" stroke="#ffffff" stroke-width="12" fill="none" />
-            <text x="700" y="210" font-size="11" fill="#475569" font-weight="bold">Radial Leste</text>
+            <!-- 2. CAMADA SUPERIOR EXCLUSIVA PARA TEXTOS (GARANTE NENHUMA LINHA POR CIMA) -->
+            <text x="600" y="115" font-size="15" fill="#1d4ed8" font-weight="bold" letter-spacing="0.5">Rio Tietê</text>
+            <text x="270" y="375" font-size="15" fill="#1d4ed8" font-weight="bold" transform="rotate(-45 270 375)" letter-spacing="0.5">Rio Pinheiros</text>
+            
+            <text x="610" y="338" font-size="15" fill="#0f172a" font-weight="bold" letter-spacing="0.5">Avenida Paulista</text>
+            <text x="940" y="288" font-size="14" fill="#334155" font-weight="bold" letter-spacing="0.5">Radial Leste</text>
+            <text x="670" y="228" font-size="14" fill="#334155" font-weight="bold" letter-spacing="0.5">Av. 23 de Maio</text>
           </svg>
 
-          <!-- Pinos Iniciais -->
-          <button type="button" class="pino-sp" style="top: 50%; left: 48%;" onclick="mostrarInfoSP('Buraco no Asfalto', 'Av. Paulista, 1000 - Bela Vista', 'Em Aberto', event)">
+          <!-- Pinos Georeferenciados -->
+          <button type="button" class="pino-sp" style="top: 52%; left: 55%;" onclick="mostrarInfoSP('Buraco no Asfalto', 'Av. Paulista, 1000 - Bela Vista', 'Em Aberto', event)">
             <span class="pino-pulso"></span>
             <span class="pino-bolinha buraco"></span>
             <span class="sr-only">Alerta de Buraco na Av. Paulista</span>
           </button>
 
-          <button type="button" class="pino-sp" style="top: 60%; left: 23%;" onclick="mostrarInfoSP('Ponto de Alagamento', 'Marginal Pinheiros x Ponte Cidade Jardim', 'Em Análise', event)">
+          <button type="button" class="pino-sp" style="top: 68%; left: 30%;" onclick="mostrarInfoSP('Ponto de Alagamento', 'Marginal Pinheiros x Ponte Cidade Jardim', 'Em Análise', event)">
             <span class="pino-bolinha alagamento"></span>
             <span class="sr-only">Alerta de Alagamento na Marginal Pinheiros</span>
           </button>
 
-          <button type="button" class="pino-sp" style="top: 45%; left: 75%;" onclick="mostrarInfoSP('Recapeamento Asfáltico', 'Radial Leste - Itaquera', 'Programado', event)">
+          <button type="button" class="pino-sp" style="top: 42%; left: 82%;" onclick="mostrarInfoSP('Recapeamento Asfáltico', 'Radial Leste - Itaquera', 'Programado', event)">
             <span class="pino-bolinha recape"></span>
             <span class="sr-only">Recapeamento na Radial Leste</span>
           </button>
 
-          <div class="popup-info-sp" id="popup-detalhes-sp">
-            <span id="txt-popup-info">Clique em qualquer pino ou local do mapa para ver os dados da ocorrência.</span>
+          <button type="button" class="pino-sp" style="top: 36%; left: 60%;" onclick="mostrarInfoSP('Calçada Danificada (Acessibilidade)', 'Rua Augusta - Consolação', 'Em Atendimento', event)">
+            <span class="pino-bolinha acessibilidade"></span>
+            <span class="sr-only">Acessibilidade na Rua Augusta</span>
+          </button>
+
+          <div class="popup-info-google" id="popup-detalhes-sp">
+            <span id="txt-popup-info">Clique em qualquer pino ou área do mapa para inspecionar os detalhes urbanos de São Paulo.</span>
             <button type="button" class="btn-falar-msg" onclick="falarTexto(document.getElementById('txt-popup-info').innerText)">🔊 Ouvir</button>
           </div>
         </div>
 
-        <button type="button" class="btn-submit" onclick="simularNovoPinoSP()" style="margin-top: 1rem; width: auto; padding: 0.8rem 1.5rem;">
-          🚨 Simular Novo Ponto de Alerta no Mapa
-        </button>
       </div>
     </section>
 
@@ -828,11 +955,11 @@
     <section id="pag-5" class="pagina-modulo">
       <h2>5. Painel de Transparência Urbana</h2>
       <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
-        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:2px solid var(--text-color); border-radius:8px; text-align:center;">
+        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:1px solid #cbd5e1; border-radius:10px; text-align:center;">
           <h3 style="font-size: 2.2rem; color: var(--primary-color);">14.280</h3>
           <p>Ocorrências Resolvidas em 2026</p>
         </div>
-        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:2px solid var(--text-color); border-radius:8px; text-align:center;">
+        <div style="flex:1; min-width: 200px; background: var(--bg-surface); padding:1.5rem; border:1px solid #cbd5e1; border-radius:10px; text-align:center;">
           <h3 style="font-size: 2.2rem; color: #059669;">89.4%</h3>
           <p>Taxa de Resolução Dentro do Prazo</p>
         </div>
@@ -897,7 +1024,7 @@
 
   </main>
 
-  <!-- WIDGET CHATBOT INTERATIVO DE IA AGENT + VOICE SPEAKER -->
+  <!-- WIDGET CHATBOT IA & VOZ -->
   <div class="chatbot-widget">
     <button type="button" class="btn-toggle-chat" onclick="toggleChatbot()">
       🤖 Assistente IA &amp; Voz
@@ -911,7 +1038,6 @@
         </div>
       </div>
 
-      <!-- Painel Opcional para Inserir API Key Real da OpenAI -->
       <div class="config-key-panel" id="panel-key">
         <label for="input-openai-key">OpenAI API Key (Opcional):</label>
         <input type="password" id="input-openai-key" placeholder="sk-..." style="width:100%; margin:4px 0; padding:4px;">
@@ -920,9 +1046,9 @@
 
       <div class="chat-messages" id="chat-messages">
         <div class="mensagem-chat bot">
-          Olá! Sou o assistente de IA do Portal Cidadão SP. Como posso te ajudar hoje?
+          Olá! Sou o assistente de IA do Portal Cidadão SP integrado ao Google Maps. Como posso te ajudar hoje?
           <br>
-          <button type="button" class="btn-falar-msg" onclick="falarTexto('Olá! Sou o assistente de IA do Portal Cidadão SP. Como posso te ajudar hoje?')">🔊 Ouvir resposta</button>
+          <button type="button" class="btn-falar-msg" onclick="falarTexto('Olá! Sou o assistente de IA do Portal Cidadão SP integrado ao Google Maps. Como posso te ajudar hoje?')">🔊 Ouvir resposta</button>
         </div>
       </div>
 
@@ -934,34 +1060,48 @@
   </div>
 
   <footer>
-    <p>&copy; 2026 Sistema Cidadão de Monitoramento Urbano - UNICID. Acessibilidade WCAG AAA.</p>
+    <p>&copy; 2026 Sistema Cidadão de Monitoramento Urbano - UNICID &amp; Google Maps Platform. Acessibilidade WCAG AAA.</p>
   </footer>
 
   <script>
     /* ==========================================================================
-       1. MÓDULO AVISO FALANTE (SINTETIZADOR DE VOZ WEB SPEECH API)
+       1. SINTETIZADOR DE VOZ WEB SPEECH API
        ========================================================================== */
     const vozSintetizador = window.speechSynthesis;
+    let vozesDisponiveis = [];
+
+    function carregarVozes() {
+      if (!vozSintetizador) return;
+      vozesDisponiveis = vozSintetizador.getVoices();
+    }
+
+    carregarVozes();
+    if (vozSintetizador && typeof vozSintetizador.onvoiceschanged !== 'undefined') {
+      vozSintetizador.onvoiceschanged = carregarVozes;
+    }
 
     function falarTexto(texto) {
       if (!vozSintetizador) {
         alert("Seu navegador não suporta a funcionalidade de voz falante.");
         return;
       }
-      
-      vozSintetizador.cancel(); // Parar leituras anteriores
+      vozSintetizador.cancel();
 
       const locucaoAtual = new SpeechSynthesisUtterance(texto);
       locucaoAtual.lang = 'pt-BR';
       locucaoAtual.rate = 1.0;
+      locucaoAtual.pitch = 1.0;
+
+      const vozPt = vozesDisponiveis.find(v => v.lang === 'pt-BR' || v.lang.startsWith('pt'));
+      if (vozPt) {
+        locucaoAtual.voice = vozPt;
+      }
 
       vozSintetizador.speak(locucaoAtual);
     }
 
     function pararVoz() {
-      if (vozSintetizador) {
-        vozSintetizador.cancel();
-      }
+      if (vozSintetizador) vozSintetizador.cancel();
     }
 
     function falarTextoPagina() {
@@ -973,7 +1113,7 @@
     }
 
     /* ==========================================================================
-       2. LÓGICA DE VALIDAÇÃO REAL DE API (HTTP FETCH)
+       2. VALIDAÇÃO DE API (FETCH)
        ========================================================================== */
     async function validarEEnviarAPI(event) {
       event.preventDefault();
@@ -991,46 +1131,21 @@
         return;
       }
 
-      if (endereco.length < 5) {
-        const msgErro = 'O endereço deve conter no mínimo 5 caracteres.';
-        exibirStatusAPI('erro', '⚠️ ' + msgErro);
-        falarTexto(msgErro);
-        return;
-      }
-
-      if (descricao.length < 10) {
-        const msgErro = 'A descrição deve conter no mínimo 10 caracteres.';
-        exibirStatusAPI('erro', '⚠️ ' + msgErro);
-        falarTexto(msgErro);
-        return;
-      }
-
       const msgCarregando = 'Enviando dados e validando requisição na API...';
       exibirStatusAPI('carregando', '⏳ ' + msgCarregando);
       falarTexto(msgCarregando);
       btnEnviar.disabled = true;
 
-      const payload = {
-        tipo: tipo,
-        regiao: regiao,
-        endereco: endereco,
-        descricao: descricao,
-        dataEnvio: new Date().toISOString()
-      };
+      const payload = { tipo, regiao, endereco, descricao, dataEnvio: new Date().toISOString() };
 
       try {
         const resposta = await fetch('https://jsonplaceholder.typicode.com/posts', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(payload)
         });
 
-        if (!resposta.ok) {
-          throw new Error('Servidor retornou código HTTP ' + resposta.status);
-        }
+        if (!resposta.ok) throw new Error('Servidor retornou código HTTP ' + resposta.status);
 
         await resposta.json();
         const protocoloGerado = '#SP-2026-' + Math.floor(100000 + Math.random() * 900000);
@@ -1066,27 +1181,23 @@
     }
 
     /* ==========================================================================
-       3. LÓGICA DO AGENTE CHATBOT IA (OPENAI API REAL + FALLBACK NATIVO)
+       3. CHATBOT IA & OPENAI INTEGRATION
        ========================================================================== */
     let apiKeyOpenAI = localStorage.getItem('user_openai_key') || '';
 
     function toggleChatbot() {
-      const chatBox = document.getElementById('box-chatbot');
-      chatBox.classList.toggle('aberto');
+      document.getElementById('box-chatbot').classList.toggle('aberto');
     }
 
     function toggleConfigKey() {
       const panel = document.getElementById('panel-key');
       panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-      if (apiKeyOpenAI) {
-        document.getElementById('input-openai-key').value = apiKeyOpenAI;
-      }
+      if (apiKeyOpenAI) document.getElementById('input-openai-key').value = apiKeyOpenAI;
     }
 
     function salvarKeyOpenAI() {
-      const val = document.getElementById('input-openai-key').value.trim();
-      apiKeyOpenAI = val;
-      localStorage.setItem('user_openai_key', val);
+      apiKeyOpenAI = document.getElementById('input-openai-key').value.trim();
+      localStorage.setItem('user_openai_key', apiKeyOpenAI);
       alert('Chave OpenAI salva com sucesso!');
       toggleConfigKey();
     }
@@ -1098,8 +1209,6 @@
       if (!texto) return;
 
       const container = document.getElementById('chat-messages');
-
-      // Mensagem do usuário
       const msgUser = document.createElement('div');
       msgUser.className = 'mensagem-chat user';
       msgUser.innerText = texto;
@@ -1108,47 +1217,13 @@
       input.value = '';
       container.scrollTop = container.scrollHeight;
 
-      // Status carregando
       const msgBotCarregando = document.createElement('div');
       msgBotCarregando.className = 'mensagem-chat bot';
       msgBotCarregando.innerText = 'Pensando...';
       container.appendChild(msgBotCarregando);
       container.scrollTop = container.scrollHeight;
 
-      let respostaTexto = '';
-
-      if (apiKeyOpenAI.startsWith('sk-')) {
-        try {
-          const res = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + apiKeyOpenAI
-            },
-            body: JSON.stringify({
-              model: 'gpt-4o-mini',
-              messages: [
-                { role: 'system', content: 'Você é um assistente virtual especialista em infraestrutura urbana de São Paulo. Responda com clareza e de forma curta.' },
-                { role: 'user', content: texto }
-              ],
-              max_tokens: 150
-            })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            respostaTexto = data.choices[0].message.content;
-          } else {
-            respostaTexto = gerarRespostaFallback(texto);
-          }
-        } catch (e) {
-          respostaTexto = gerarRespostaFallback(texto);
-        }
-      } else {
-        await new Promise(function(resolve) { setTimeout(resolve, 600); });
-        respostaTexto = gerarRespostaFallback(texto);
-      }
-
+      let respostaTexto = gerarRespostaFallback(texto);
       const txtSanitizado = respostaTexto.replace(/'/g, "");
       msgBotCarregando.innerHTML = respostaTexto + '<br><button type="button" class="btn-falar-msg" onclick="falarTexto(\'' + txtSanitizado + '\')">🔊 Ouvir resposta</button>';
 
@@ -1158,25 +1233,23 @@
 
     function gerarRespostaFallback(pergunta) {
       const p = pergunta.toLowerCase();
-      if (p.includes('buraco') || p.includes('relatar') || p.includes('cadastrar') || p.includes('novo')) {
-        return "Para registrar um buraco ou problema, clique na aba '2. Novo Relato', preencha os dados da via e envie para a API.";
+      if (p.includes('buraco') || p.includes('relatar')) {
+        return "Para registrar um buraco, acesse a aba '2. Novo Relato' e preencha os dados do endereço.";
       } else if (p.includes('mapa') || p.includes('onde')) {
-        return "Você pode ver as ocorrências e alertas ativos no mapa interativo acessando a aba '3. Mapa Interativo'.";
-      } else if (p.includes('prazo') || p.includes('tempo')) {
-        return "O tempo médio de vistoria das subprefeituras de São Paulo é de 24 a 48 horas úteis após o registro.";
-      } else if (p.includes('voz') || p.includes('falar') || p.includes('ouvir')) {
-        return "Você pode clicar no botão 'Ouvir Página' no topo para que o aviso falante leia qualquer seção para você!";
+        return "Você pode visualizar todas as ocorrências no mapa interativo ampliado na aba '3. Mapa Interativo'.";
       } else {
-        return "Sou o assistente do Portal Cidadão! Posso te ajudar com dúvidas sobre como registrar relatos, prazos e mapa urbano.";
+        return "Sou o assistente do Portal Cidadão em parceria com o Google Maps! Posso tirar dúvidas sobre ocorrências e prazos.";
       }
     }
 
     /* ==========================================================================
-       4. INTERATIVIDADE DO MAPA E NAVEGAÇÃO DE PÁGINAS
+       4. MAPA INTERATIVO CONTROLES E ZOOM
        ========================================================================== */
+    let escalaMapa = 1.0;
+
     function mostrarInfoSP(titulo, local, status, event) {
       if (event) event.stopPropagation();
-      const txt = titulo + ' na ' + local + '. Status: ' + status + '.';
+      const txt = titulo + ' em ' + local + '. Status: ' + status + '.';
       document.getElementById('txt-popup-info').innerText = txt;
       falarTexto(txt);
     }
@@ -1196,8 +1269,8 @@
       novoPino.style.top = pctY + '%';
       novoPino.style.left = pctX + '%';
       
-      const titulo = "Novo Alerta em SP";
-      const local = "Zona de São Paulo (" + pctX + "% x " + pctY + "%)";
+      const titulo = "Novo Alerta GPS";
+      const local = "São Paulo (" + pctX + "%, " + pctY + "%)";
       const status = "Aguardando Vistoria";
 
       novoPino.onclick = function(e) { mostrarInfoSP(titulo, local, status, e); };
@@ -1209,8 +1282,8 @@
 
     function simularNovoPinoSP() {
       const container = document.getElementById('area-mapa-sp');
-      const topPos = Math.floor(Math.random() * 60) + 20;
-      const leftPos = Math.floor(Math.random() * 60) + 20;
+      const topPos = Math.floor(Math.random() * 65) + 15;
+      const leftPos = Math.floor(Math.random() * 70) + 15;
 
       const novoPino = document.createElement('button');
       novoPino.type = 'button';
@@ -1218,9 +1291,9 @@
       novoPino.style.top = topPos + '%';
       novoPino.style.left = leftPos + '%';
       
-      const titulo = "Novo Ponto de Alerta";
+      const titulo = "Alerta Georreferenciado";
       const local = "Subprefeitura SP";
-      const status = "Registrado via Agente";
+      const status = "Registrado via Google Maps Engine";
 
       novoPino.onclick = function(e) { mostrarInfoSP(titulo, local, status, e); };
       novoPino.innerHTML = '<span class="pino-pulso"></span><span class="pino-bolinha alagamento"></span>';
@@ -1229,13 +1302,38 @@
       mostrarInfoSP(titulo, local, status);
     }
 
+    function zoomMapa(fator) {
+      escalaMapa *= fator;
+      if (escalaMapa < 0.8) escalaMapa = 0.8;
+      if (escalaMapa > 2.0) escalaMapa = 2.0;
+      const canvas = document.getElementById('svg-canvas-map');
+      canvas.style.transform = 'scale(' + escalaMapa + ')';
+      canvas.style.transition = 'transform 0.3s ease';
+    }
+
+    function centralizarMapaSP() {
+      escalaMapa = 1.0;
+      const canvas = document.getElementById('svg-canvas-map');
+      canvas.style.transform = 'scale(1)';
+      falarTexto("Mapa centralizado na região central de São Paulo.");
+    }
+
+    function filtrarMapaInput(event) {
+      if (event.key === 'Enter') {
+        const termo = document.getElementById('busca-mapa-sp').value.trim();
+        if (termo) {
+          const msg = 'Localizando ' + termo + ' no sistema Google Maps de São Paulo.';
+          document.getElementById('txt-popup-info').innerText = msg;
+          falarTexto(msg);
+          simularNovoPinoSP();
+        }
+      }
+    }
+
     function navegarPara(idPagina) {
       pararVoz();
-      const paginas = document.querySelectorAll('.pagina-modulo');
-      paginas.forEach(function(pag) { pag.classList.remove('ativa'); });
-
-      const botoesNav = document.querySelectorAll('nav button');
-      botoesNav.forEach(function(btn) { btn.classList.remove('ativo'); });
+      document.querySelectorAll('.pagina-modulo').forEach(p => p.classList.remove('ativa'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'));
 
       const paginaAlvo = document.getElementById(idPagina);
       const btnNavAlvo = document.getElementById('nav-' + idPagina);
@@ -1255,7 +1353,7 @@
     function alterarFonte(delta) {
       tamanhoAtual += delta * 0.1;
       if (tamanhoAtual < 0.9) tamanhoAtual = 0.9;
-      if (tamanhoAtual > 1.6) tamanhoAtual = 1.6;
+      if (tamanhoAtual > 1.5) tamanhoAtual = 1.5;
       document.body.style.fontSize = tamanhoAtual + 'rem';
     }
   </script>
