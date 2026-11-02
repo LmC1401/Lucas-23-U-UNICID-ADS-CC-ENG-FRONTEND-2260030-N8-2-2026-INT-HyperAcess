@@ -39,6 +39,7 @@
       font-family: var(--font-family);
       font-size: var(--font-base);
       line-height: var(--line-height);
+      transition: background-color 0.3s, color 0.3s;
     }
 
     body.alto-contraste {
@@ -69,14 +70,15 @@
 
     .link-atalho {
       position: absolute;
-      top: -40px;
+      top: -50px;
       left: 10px;
       background: var(--focus-outline);
       color: #000000;
       padding: 8px 16px;
       font-weight: bold;
       z-index: 9999;
-      transition: top 0.2s;
+      transition: top 0.2s ease;
+      border-radius: 4px;
     }
     .link-atalho:focus {
       top: 10px;
@@ -121,6 +123,10 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
+      transition: background-color 0.2s;
+    }
+    .btn-acessivel:hover {
+      background-color: #555555;
     }
 
     body.alto-contraste .btn-acessivel {
@@ -137,6 +143,7 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      gap: 1rem;
     }
 
     body.alto-contraste header.header-principal {
@@ -159,11 +166,12 @@
       font-size: 1rem;
       cursor: pointer;
       font-family: inherit;
-      padding: 4px 8px;
+      padding: 6px 10px;
+      min-height: 44px;
     }
 
     nav button.ativo {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.25);
       border-radius: 4px;
       text-decoration: none;
     }
@@ -173,6 +181,12 @@
     }
     .pagina-modulo.ativa {
       display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ==========================================================================
@@ -183,6 +197,7 @@
       padding: 3rem 2rem;
       text-align: center;
       border-bottom: 4px solid var(--primary-color);
+      border-radius: 0 0 12px 12px;
     }
 
     .hero h2 {
@@ -207,6 +222,10 @@
       min-height: 48px;
       border: 2px solid var(--primary-hover);
       cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .btn-cta:hover {
+      background-color: var(--primary-hover);
     }
 
     body.alto-contraste .btn-cta {
@@ -267,6 +286,8 @@
       background: none;
       border: none;
       padding: 0;
+      min-width: 32px;
+      min-height: 32px;
     }
 
     .pino-bolinha {
@@ -275,7 +296,7 @@
       border-radius: 50%;
       border: 2px solid #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-      display: block;
+      display: inline-block;
     }
 
     .pino-bolinha.buraco { background-color: var(--cor-buraco); }
@@ -285,10 +306,10 @@
 
     .pino-pulso {
       position: absolute;
-      top: -7px;
-      left: -7px;
-      width: 36px;
-      height: 36px;
+      top: -3px;
+      left: -3px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: 3px solid var(--cor-buraco);
       animation: animacaoPulso 1.5s infinite ease-out;
@@ -296,14 +317,8 @@
     }
 
     @keyframes animacaoPulso {
-      0% {
-        transform: scale(0.4);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1.7);
-        opacity: 0;
-      }
+      0% { transform: scale(0.4); opacity: 1; }
+      100% { transform: scale(1.7); opacity: 0; }
     }
 
     .popup-info-sp {
@@ -393,6 +408,10 @@
       border-radius: 6px;
       cursor: pointer;
       min-height: 48px;
+      transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: var(--primary-hover);
     }
 
     body.alto-contraste .btn-submit {
@@ -466,6 +485,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      min-height: 48px;
     }
 
     body.alto-contraste .btn-toggle-chat {
@@ -550,6 +570,7 @@
       display: inline-block;
       opacity: 0.85;
       font-weight: bold;
+      color: inherit;
     }
     .btn-falar-msg:hover {
       opacity: 1;
@@ -578,6 +599,7 @@
       padding: 0 1rem;
       font-weight: bold;
       cursor: pointer;
+      min-height: 48px;
     }
 
     body.alto-contraste .chat-input-area button {
@@ -683,7 +705,7 @@
       </div>
     </section>
 
-    <!-- PÁGINA 2: REGISTRAR OCORRÊNCIA (VALIDAÇÃO REAL DE API + AVISO FALANTE) -->
+    <!-- PÁGINA 2: REGISTRAR OCORRÊNCIA -->
     <section id="pag-2" class="pagina-modulo">
       <h2>2. Registrar Nova Ocorrência Urbana</h2>
       <div class="form-container" style="margin-top: 1rem;">
@@ -875,7 +897,7 @@
 
   </main>
 
-  <!-- WIDGET CHATBOT INTERATIVO DE IA AGENT + VOICE SPEAKER + REAL OPENAI API -->
+  <!-- WIDGET CHATBOT INTERATIVO DE IA AGENT + VOICE SPEAKER -->
   <div class="chatbot-widget">
     <button type="button" class="btn-toggle-chat" onclick="toggleChatbot()">
       🤖 Assistente IA &amp; Voz
@@ -1044,7 +1066,7 @@
     }
 
     /* ==========================================================================
-       3. LÓGICA DO AGENTE CHATBOT IA (OPENAI API REAL + FALLBACK NATIVO INTERATIVO)
+       3. LÓGICA DO AGENTE CHATBOT IA (OPENAI API REAL + FALLBACK NATIVO)
        ========================================================================== */
     let apiKeyOpenAI = localStorage.getItem('user_openai_key') || '';
 
