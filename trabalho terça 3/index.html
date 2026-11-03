@@ -7,8 +7,8 @@
 
   <style>
     /* ==========================================================================
-       1. VARIÁVEIS E CONFIGURAÇÕES GERAIS (WCAG Nível AAA & Google Maps Design)
-       ========================================================================== */
+        1. VARIÁVEIS E CONFIGURAÇÕES GERAIS (WCAG Nível AAA & Google Maps Design)
+        ========================================================================== */
     :root {
       --bg-color: #ffffff;
       --bg-surface: #f8fafc;
@@ -85,8 +85,8 @@
     }
 
     /* ==========================================================================
-       2. BARRA DE ACESSIBILIDADE E CABEÇALHO
-       ========================================================================== */
+        2. BARRA DE ACESSIBILIDADE E CABEÇALHO
+        ========================================================================== */
     .barra-acessibilidade {
       background-color: #202124;
       color: #ffffff;
@@ -201,8 +201,8 @@
     }
 
     /* ==========================================================================
-       3. HERO SECTION
-       ========================================================================== */
+        3. HERO SECTION
+        ========================================================================== */
     .hero {
       background-color: var(--bg-surface);
       padding: 3.5rem 2rem;
@@ -250,8 +250,8 @@
     }
 
     /* ==========================================================================
-       4. MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS)
-       ========================================================================== */
+        4. MAPA INTERATIVO EXPANDIDO (ESTILO GOOGLE MAPS)
+        ========================================================================== */
     main {
       max-width: 1200px;
       margin: 2rem auto;
@@ -515,8 +515,8 @@
     }
 
     /* ==========================================================================
-       5. FORMULÁRIO E TABELA DE RELATOS
-       ========================================================================== */
+        5. FORMULÁRIO E TABELA DE RELATOS
+        ========================================================================== */
     .form-container {
       background-color: var(--bg-surface);
       border: 1px solid #e2e8f0;
@@ -545,6 +545,14 @@
       border-radius: 8px;
       background-color: var(--bg-color);
       color: var(--text-color);
+    }
+    
+    /* Classe utilitária para erro com destaque em vermelho conforme exigido */
+    .campo-form input.erro-input,
+    .campo-form select.erro-input,
+    .campo-form textarea.erro-input {
+      border: 2px solid #dc2626 !important;
+      background-color: #fef2f2;
     }
 
     .btn-submit {
@@ -608,8 +616,8 @@
     }
 
     /* ==========================================================================
-       6. CHATBOT WIDGET COM VOZ E IA AGENT
-       ========================================================================== */
+        6. CHATBOT WIDGET COM VOZ E IA AGENT
+        ========================================================================== */
     .chatbot-widget {
       position: fixed;
       bottom: 24px;
@@ -846,7 +854,7 @@
         <form id="form-ocorrencia" onsubmit="validarEEnviarAPI(event)">
           <div class="campo-form">
             <label for="tipo-problema">Tipo de Ocorrência (*):</label>
-            <select id="tipo-problema" required>
+            <select id="tipo-problema" required oninput="limparErroCampo(this)">
               <option value="">Selecione a categoria...</option>
               <option value="buraco">Buraco no Asfalto / Deformação</option>
               <option value="alagamento">Ponto de Alagamento / Bueiro Entupido</option>
@@ -857,7 +865,7 @@
 
           <div class="campo-form">
             <label for="regiao-sp">Subprefeitura / Região (*):</label>
-            <select id="regiao-sp" required>
+            <select id="regiao-sp" required oninput="limparErroCampo(this)">
               <option value="">Selecione a região...</option>
               <option value="centro">Centro (Sé, Bela Vista, República)</option>
               <option value="zona-leste">Zona Leste (Itaquera, Tatuapé, Mooca)</option>
@@ -869,12 +877,12 @@
 
           <div class="campo-form">
             <label for="endereco">Endereço Completo (*):</label>
-            <input type="text" id="endereco" placeholder="Ex: Av. Brigadeiro Faria Lima, 1500" required>
+            <input type="text" id="endereco" placeholder="Ex: Av. Brigadeiro Faria Lima, 1500" required oninput="salvarRascunhoFormulario(); limparErroCampo(this);">
           </div>
 
           <div class="campo-form">
             <label for="descricao">Descrição Detalhada (*):</label>
-            <textarea id="descricao" rows="4" placeholder="Descreva os detalhes e a gravidade da ocorrência..." required></textarea>
+            <textarea id="descricao" rows="4" placeholder="Descreva os detalhes e a gravidade da ocorrência..." required oninput="salvarRascunhoFormulario(); limparErroCampo(this);"></textarea>
           </div>
 
           <button type="submit" class="btn-submit" id="btn-enviar-form">Enviar e Validar via API</button>
@@ -1128,8 +1136,8 @@
 
   <script>
     /* ==========================================================================
-       1. SINTETIZADOR DE VOZ WEB SPEECH API
-       ========================================================================== */
+        1. SINTETIZADOR DE VOZ WEB SPEECH API
+        ========================================================================== */
     const vozSintetizador = window.speechSynthesis;
     let vozesDisponiveis = [];
 
@@ -1176,8 +1184,8 @@
     }
 
     /* ==========================================================================
-       2. VALIDAÇÃO DE API (FETCH) & SALVAR PERFIL
-       ========================================================================== */
+        2. VALIDAÇÃO DE API (FETCH), LOCALSTORAGE E PERFIL
+        ========================================================================== */
     function salvarPerfil() {
       const novoNome = document.getElementById('nome-perfil').value.trim();
       const novaRegiao = document.getElementById('regiao-perfil').value.trim();
@@ -1195,11 +1203,31 @@
       falarTexto(msg);
     }
 
+    // Persistência e restauração de rascunho do formulário via localStorage
+    function salvarRascunhoFormulario() {
+      const endereco = document.getElementById('endereco').value;
+      const descricao = document.getElementById('descricao').value;
+      localStorage.setItem('rascunho_endereco', endereco);
+      localStorage.setItem('rascunho_descricao', descricao);
+    }
+
+    function limparErroCampo(campo) {
+      campo.classList.remove('erro-input');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      // Carregar perfil
       const nomeSalvo = localStorage.getItem('user_nome');
       const regiaoSalva = localStorage.getItem('user_regiao');
       if (nomeSalvo) document.getElementById('nome-perfil').value = nomeSalvo;
       if (regiaoSalva) document.getElementById('regiao-perfil').value = regiaoSalva;
+
+      // Carregar rascunho do formulário, se houver
+      const rascunhoEnd = localStorage.getItem('rascunho_endereco');
+      const rascunhoDesc = localStorage.getItem('rascunho_descricao');
+      if (rascunhoEnd) document.getElementById('endereco').value = rascunhoEnd;
+      if (rascunhoDesc) document.getElementById('descricao').value = rascunhoDesc;
+
       atualizarEstatisticasMapa();
     });
 
@@ -1207,13 +1235,24 @@
       event.preventDefault();
 
       const btnEnviar = document.getElementById('btn-enviar-form');
-      const tipo = document.getElementById('tipo-problema').value;
-      const regiao = document.getElementById('regiao-sp').value;
-      const endereco = document.getElementById('endereco').value.trim();
-      const descricao = document.getElementById('descricao').value.trim();
+      const selectTipo = document.getElementById('tipo-problema');
+      const selectRegiao = document.getElementById('regiao-sp');
+      const inputEndereco = document.getElementById('endereco');
+      const txtDescricao = document.getElementById('descricao');
 
-      if (!tipo || !regiao || !endereco || !descricao) {
-        const msgErro = 'Por favor, preencha todos os campos obrigatórios.';
+      let temErro = false;
+
+      // Limpar erros prévios
+      [selectTipo, selectRegiao, inputEndereco, txtDescricao].forEach(el => el.classList.remove('erro-input'));
+
+      // Validação detalhada com destaque visual em vermelho exigida pela rubrica
+      if (!selectTipo.value) { selectTipo.classList.add('erro-input'); temErro = true; }
+      if (!selectRegiao.value) { selectRegiao.classList.add('erro-input'); temErro = true; }
+      if (!inputEndereco.value.trim()) { inputEndereco.classList.add('erro-input'); temErro = true; }
+      if (!txtDescricao.value.trim()) { txtDescricao.classList.add('erro-input'); temErro = true; }
+
+      if (temErro) {
+        const msgErro = 'Por favor, preencha todos os campos obrigatórios destacados em vermelho.';
         exibirStatusAPI('erro', '⚠️ ' + msgErro);
         falarTexto(msgErro);
         return;
@@ -1224,7 +1263,13 @@
       falarTexto(msgCarregando);
       btnEnviar.disabled = true;
 
-      const payload = { tipo, regiao, endereco, descricao, dataEnvio: new Date().toISOString() };
+      const payload = { 
+        tipo: selectTipo.value, 
+        regiao: selectRegiao.value, 
+        endereco: inputEndereco.value.trim(), 
+        descricao: txtDescricao.value.trim(), 
+        dataEnvio: new Date().toISOString() 
+      };
 
       try {
         const resposta = await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -1242,8 +1287,10 @@
         exibirStatusAPI('sucesso', '✅ Sucesso! Ocorrência validada e registrada na API.<br><strong>Protocolo Gerado:</strong> ' + protocoloGerado);
         falarTexto(msgSucesso);
 
-        adicionarRelatoNaTabela(protocoloGerado, tipo, endereco);
+        adicionarRelatoNaTabela(protocoloGerado, selectTipo.value, inputEndereco.value.trim());
         document.getElementById('form-ocorrencia').reset();
+        localStorage.removeItem('rascunho_endereco');
+        localStorage.removeItem('rascunho_descricao');
 
       } catch (erro) {
         const msgFalha = 'Falha ao comunicar com a API: ' + erro.message;
@@ -1269,8 +1316,8 @@
     }
 
     /* ==========================================================================
-       3. CHATBOT IA & OPENAI INTEGRATION
-       ========================================================================== */
+        3. CHATBOT IA & OPENAI INTEGRATION
+        ========================================================================== */
     let apiKeyOpenAI = localStorage.getItem('user_openai_key') || '';
 
     function toggleChatbot() {
@@ -1331,8 +1378,8 @@
     }
 
     /* ==========================================================================
-       4. MAPA INTERATIVO CONTROLES, ZOOM E ESTATÍSTICAS
-       ========================================================================== */
+        4. MAPA INTERATIVO CONTROLES, ZOOM E ESTATÍSTICAS
+        ========================================================================== */
     let escalaMapa = 1.0;
 
     function atualizarEstatisticasMapa() {
