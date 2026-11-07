@@ -34,7 +34,7 @@ a. Apresentar a proposta do site, destacar o objetivo de inclusão, redução de
 a. Explicar a missão, visão e os objetivos do projeto (mapeamento de infraestruturas deficitárias, inclusão e qualidade de trânsito). Destina-se também a apresentar o valor do projeto para parceiros como a Prefeitura.
 3. Mapa Interativo de Riscos
 a. Mostrar de forma visual as localidades que possuem chamados ativos e áreas de maior risco para pessoas com limitações visuais, sonoras ou de mobilidade.
-4. Central de Chamados (Reportar Problema)
+4. Central de chamados (Reportar Problema)
 a. Permitir que qualquer usuário (com limitação ou não) reporte a localização de ruas com infraestrutura danificada, falta de sinalização ou barreiras físicas.
 5. Planejador de Rotas Acessíveis
 a. Permitir que o usuário com mobilidade reduzida defina seu ponto de partida e de chegada. O sistema calcula o trajeto e avisa quais ruas possuem problemas relatados.
