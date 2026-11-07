@@ -44,6 +44,7 @@
       --cor-recape: #b45309;
       --cor-acessibilidade: #7e22ce;
       --cor-sinalizacao: #0f766e;
+      --cor-barreira: #be185d;
 
       --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       --font-base: 1.125rem;
@@ -71,6 +72,7 @@
       --cor-recape: #e69f00;
       --cor-acessibilidade: #cc79a7;
       --cor-sinalizacao: #009e73;
+      --cor-barreira: #56b4e9;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -277,6 +279,12 @@
     .card-problema.recape { border-left-color: var(--cor-recape); }
     .card-problema.acessibilidade { border-left-color: var(--cor-acessibilidade); }
     .card-problema.semaforo { border-left-color: var(--cor-sinalizacao); }
+    .card-problema.barreira { border-left-color: var(--cor-barreira); }
+    .risco { display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 999px; border: 2px solid currentColor; margin-left: 0.3rem; }
+    .risco.alta { color: var(--perigo); }
+    .risco.media { color: #b45309; }
+    .risco.baixa { color: var(--sucesso); }
+    html.alto-contraste .risco.media { color: #fbbf24; }
     .card-problema h3, .card-problema h4 { font-size: 1.1rem; margin: 0.2rem 0 0.3rem; }
     .meta { display: flex; flex-wrap: wrap; gap: 0.2rem 1.2rem; font-size: 0.95rem; color: var(--text-muted); margin-top: 0.4rem; }
     .tag-status {
@@ -501,10 +509,20 @@
     <section id="pag-1" class="pagina-modulo" aria-labelledby="t-pag-1" tabindex="-1">
       <div class="hero">
         <h2 id="t-pag-1">Mapeamento Urbano Inclusivo de São Paulo e Região Metropolitana</h2>
-        <p>Registre calçadas danificadas, falta de rampas, alagamentos e semáforos sem som. Cobrimos Centro, Zonas Leste, Norte, Sul e Oeste, os extremos da capital e o ABC Paulista.</p>
+        <p>Mapeamos calçadas danificadas e falta de sinalização para que pessoas com deficiência visual, mobilidade reduzida e idosos se desloquem com mais inclusão, menos tempo perdido e mais segurança no trânsito. Cobrimos toda a capital, os extremos e o ABC Paulista.</p>
         <div class="grupo-botoes" style="justify-content:center">
           <a href="#pag-4" class="btn-cta">Registrar uma Ocorrência</a>
           <a href="#pag-3" class="btn-cta btn-sec">Explorar o Mapa</a>
+        </div>
+      </div>
+
+      <div class="secao">
+        <h3>Nossos objetivos</h3>
+        <div class="grid-cards">
+          <div class="card"><h4>⏱️ Reduzir o tempo de locomoção</h4><p>Rotas que evitam ruas com problemas, sem voltas desnecessárias.</p></div>
+          <div class="card"><h4>🗺️ Mapear a infraestrutura deficitária</h4><p>Chamados dos cidadãos mostram onde a cidade precisa de reparo.</p></div>
+          <div class="card"><h4>🚦 Qualidade e segurança no trânsito</h4><p>Lembretes por GPS avisam antes de cada obstáculo.</p></div>
+          <div class="card"><h4>♿ Garantir a inclusão</h4><p>Site acessível: alto contraste, daltonismo, letra maior e leitura em voz alta.</p></div>
         </div>
       </div>
 
@@ -558,10 +576,28 @@
 
     <!-- 2. SOBRE NÓS -->
     <section id="pag-2" class="pagina-modulo" aria-labelledby="t-pag-2" tabindex="-1">
-      <h2 id="t-pag-2">2. Sobre Nós</h2>
+      <h2 id="t-pag-2">2. Sobre o HyperAcess (Quem Somos)</h2>
       <div class="form-container">
-        <p>O <strong>HyperAcess</strong> é um projeto acadêmico que mapeia barreiras urbanas para que pessoas com deficiência visual, mobilidade reduzida e idosos possam se deslocar com mais segurança e autonomia em toda a Grande São Paulo.</p>
-        <p style="margin-top:.75rem">Qualquer pessoa pode registrar um problema. Cada registro entra no mapa, é considerado nas rotas e nos alertas por GPS e é encaminhado aos órgãos responsáveis.</p>
+        <p>O <strong>HyperAcess</strong> mapeia calçadas e sinalizações para pessoas com limitações visuais, sonoras e de mobilidade. Os próprios usuários abrem <strong>chamados</strong> reportando problemas; com eles o site mostra o mapa de riscos, indica rotas mais seguras e envia lembretes por GPS.</p>
+      </div>
+
+      <div class="grid-cards secao">
+        <div class="card"><h3>Missão</h3><p>Facilitar a locomoção de pessoas com limitações físicas e sensoriais, garantindo velocidade e qualidade na viagem.</p></div>
+        <div class="card"><h3>Visão</h3><p>Ser a principal referência colaborativa sobre acessibilidade urbana em São Paulo e no ABC, usada por cidadãos e pelo poder público.</p></div>
+        <div class="card"><h3>Objetivos</h3><ul style="padding-left:1.2rem"><li>Reduzir o tempo de locomoção</li><li>Mapear infraestruturas deficitárias</li><li>Qualidade e segurança no trânsito</li><li>Garantir a inclusão</li></ul></div>
+      </div>
+
+      <div class="grid-home secao">
+        <div class="card">
+          <h3>Valor para a Prefeitura (parceiro)</h3>
+          <p>A Prefeitura quer facilitar o deslocamento de pessoas com limitações de mobilidade, com trajetos mais seguros e confortáveis. O HyperAcess entrega a ela um retrato atualizado, feito pelos cidadãos, de onde estão as barreiras — ajudando a priorizar obras e reparos.</p>
+          <p style="margin-top:.6rem"><a href="#pag-8">Conheça a área para prefeituras</a></p>
+        </div>
+        <div class="card">
+          <h3>Público-alvo</h3>
+          <ul style="padding-left:1.2rem"><li>Pessoas com deficiência de mobilidade</li><li>Pessoas com deficiência visual</li><li>Idosos</li></ul>
+          <p class="texto-apoio" style="margin-top:.5rem">Qualquer cidadão, com ou sem limitação, pode abrir chamados.</p>
+        </div>
       </div>
 
       <div class="secao">
@@ -597,13 +633,14 @@
 
     <!-- 3. MAPA DE RISCOS -->
     <section id="pag-3" class="pagina-modulo" aria-labelledby="t-pag-3" tabindex="-1">
-      <h2 id="t-pag-3">3. Mapa de Riscos</h2>
+      <h2 id="t-pag-3">3. Mapa Interativo de Riscos</h2>
       <div class="mapa-box">
-        <p>Escolha uma região para centralizar o mapa de satélite. Cada marcador tem cor <strong>e letra</strong>, para não depender só da cor.</p>
+        <p>Localidades com <strong>chamados ativos</strong> e áreas de <strong>maior risco</strong> para pessoas com limitações visuais, sonoras ou de mobilidade. Cada marcador tem cor <strong>e letra</strong>, para não depender só da cor.</p>
 
         <div class="barra-chips" role="group" aria-label="Escolher região" id="botoes-regiao"></div>
         <div class="barra-chips" role="group" aria-label="Filtrar por tipo" id="botoes-filtro"></div>
 
+        <label class="opcao"><input type="checkbox" id="so-risco-alto"> Mostrar só as áreas de maior risco</label>
         <label class="opcao"><input type="checkbox" id="modo-adicionar"> Adicionar alerta ao tocar no mapa</label>
         <p id="resumo-mapa" aria-live="polite" style="font-weight:700;margin-top:.5rem"></p>
 
@@ -618,7 +655,8 @@
 
     <!-- 4. CENTRAL CHAMADOS -->
     <section id="pag-4" class="pagina-modulo" aria-labelledby="t-pag-4" tabindex="-1">
-      <h2 id="t-pag-4">4. Central de Chamados</h2>
+      <h2 id="t-pag-4">4. Central de Chamados (Reportar Problema)</h2>
+      <p>Qualquer pessoa, com limitação ou não, pode reportar ruas com infraestrutura danificada, falta de sinalização ou barreiras físicas.</p>
       <div class="grid-home">
         <div class="form-container">
           <h3>Abrir novo chamado</h3>
@@ -636,7 +674,19 @@
                 <option value="alagamento">Ponto de alagamento na via</option>
                 <option value="acessibilidade">Falta de rampa ou guia não rebaixada</option>
                 <option value="recape">Asfalto irregular / falta de recapeamento</option>
-                <option value="semaforo">Semáforo sonoro inoperante</option>
+                <option value="semaforo">Falta de sinalização / semáforo sonoro inoperante</option>
+                <option value="barreira">Barreira física (poste, obra, carro na calçada)</option>
+              </select>
+            </div>
+            <div class="campo-form">
+              <label for="ch-perfil">Você tem alguma limitação? (opcional)</label>
+              <select id="ch-perfil" name="perfil">
+                <option value="">Prefiro não informar</option>
+                <option>Não tenho limitação</option>
+                <option>Mobilidade reduzida</option>
+                <option>Deficiência visual</option>
+                <option>Deficiência auditiva</option>
+                <option>Idoso</option>
               </select>
             </div>
             <div class="campo-form">
@@ -671,10 +721,10 @@
 
     <!-- 5. ROTAS SEGURAS -->
     <section id="pag-5" class="pagina-modulo" aria-labelledby="t-pag-5" tabindex="-1">
-      <h2 id="t-pag-5">5. Rotas Seguras</h2>
+      <h2 id="t-pag-5">5. Planejador de Rotas Acessíveis</h2>
       <div class="grid-home">
         <div class="form-container">
-          <p>Escolha partida e chegada. O sistema compara trajetos e recomenda o que passa perto de menos problemas registrados.</p>
+          <p>Defina o ponto de partida e o de chegada. O sistema calcula o trajeto e avisa <strong>quais ruas têm problemas relatados</strong>, recomendando o caminho com menos barreiras.</p>
           <form id="form-rota" novalidate style="margin-top:1rem">
             <div class="campo-form">
               <label for="r-origem">Ponto de partida *</label>
@@ -700,8 +750,8 @@
 
     <!-- 6. ALERTAS GPS -->
     <section id="pag-6" class="pagina-modulo" aria-labelledby="t-pag-6" tabindex="-1">
-      <h2 id="t-pag-6">6. Alertas GPS</h2>
-      <p>Enquanto você caminha, o sistema acompanha sua posição e avisa com som, voz, vibração e sinal visual antes de um obstáculo. Os obstáculos desta página são fictícios.</p>
+      <h2 id="t-pag-6">6. Sistema de Lembretes e Alertas (GPS)</h2>
+      <p>Com base no GPS, o sistema avisa <strong>antes</strong> de cada obstáculo cadastrado no trajeto, com aviso visual e sonoro (e vibração). Na demonstração, os obstáculos do percurso são fictícios.</p>
 
       <div class="painel-alerta" id="painel-alerta">
         <p class="titulo-alerta" id="alerta-titulo">Alertas desligados</p>
@@ -751,7 +801,8 @@
 
     <!-- 7. MEU PERFIL -->
     <section id="pag-7" class="pagina-modulo" aria-labelledby="t-pag-7" tabindex="-1">
-      <h2 id="t-pag-7">7. Meu Perfil</h2>
+      <h2 id="t-pag-7">7. Perfil e Acessibilidade do Usuário</h2>
+      <p>Seus dados cadastrais e preferências de acessibilidade. O site e os alertas se ajustam a você.</p>
       <form id="form-perfil" class="form-container" novalidate>
         <div class="duas-colunas">
           <div class="campo-form">
@@ -779,59 +830,108 @@
             <input type="text" id="regiao-perfil" name="regiao" placeholder="Ex: Penha - Zona Leste">
           </div>
         </div>
-        <fieldset class="campo-form">
-          <legend>Personalização</legend>
-          <label class="opcao"><input type="checkbox" id="pf-aplicar" checked> Ajustar o site ao meu perfil (contraste, letra, alertas)</label>
-        </fieldset>
+        <div class="campo-form">
+          <label for="tel-perfil">Telefone</label>
+          <input type="tel" id="tel-perfil" name="telefone" autocomplete="tel" placeholder="(11) 90000-0000">
+        </div>
+        <div class="duas-colunas">
+          <fieldset class="campo-form">
+            <legend>Preferências de navegação</legend>
+            <label class="opcao"><input type="checkbox" id="pf-contraste"> Alto contraste</label>
+            <label class="opcao"><input type="checkbox" id="pf-letra"> Letra maior (130%)</label>
+            <label class="opcao"><input type="checkbox" id="pf-daltonismo"> Cores para daltonismo</label>
+          </fieldset>
+          <fieldset class="campo-form">
+            <legend>Como quero receber os alertas</legend>
+            <label class="opcao"><input type="checkbox" id="pf-som"> Alarme sonoro</label>
+            <label class="opcao"><input type="checkbox" id="pf-voz"> Aviso falado</label>
+            <label class="opcao"><input type="checkbox" id="pf-vibracao"> Vibração</label>
+          </fieldset>
+        </div>
+        <p class="dica" style="margin-bottom:1rem">Ao trocar a condição, sugerimos as preferências mais indicadas. Você pode ajustar antes de salvar.</p>
         <button type="submit" class="btn-submit">Salvar preferências da conta</button>
         <div id="msg-perfil" role="status"></div>
       </form>
     </section>
 
-    <!-- 8. PREFEITURAS -->
+    <!-- 8. ÁREA INSTITUCIONAL PARA PREFEITURAS -->
     <section id="pag-8" class="pagina-modulo" aria-labelledby="t-pag-8" tabindex="-1">
-      <h2 id="t-pag-8">8. Prefeituras e Órgãos Parceiros</h2>
-      <p class="aviso">Parcerias ilustrativas (projeto acadêmico). Para registros oficiais e urgências, use a <strong>Central SP156</strong>: ligue <a href="tel:156">156</a> ou acesse <a href="https://sp156.prefeitura.sp.gov.br" target="_blank" rel="noopener">sp156.prefeitura.sp.gov.br</a>.</p>
-      <div class="grid-cards" id="lista-orgaos"></div>
+      <h2 id="t-pag-8">8. Área Institucional para Prefeituras (Parceiros)</h2>
+      <p>Espaço para órgãos públicos conhecerem a plataforma, demonstrarem interesse e usarem os dados mapeados para planejar melhorias urbanas e um deslocamento mais seguro dos cidadãos.</p>
+
+      <div class="secao">
+        <h3>Dados mapeados por região</h3>
+        <p class="texto-apoio">Resumo das ocorrências registradas (base ilustrativa), útil para priorizar obras.</p>
+        <div class="tabela-wrap">
+          <table class="tabela-resp">
+            <caption class="sr-only">Ocorrências por região e tipo</caption>
+            <thead><tr id="cab-painel"></tr></thead>
+            <tbody id="corpo-painel"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="secao">
+        <h3>Parceiros (ilustrativo)</h3>
+        <div class="grid-cards" id="lista-orgaos"></div>
+      </div>
+
       <form id="form-orgao" class="form-container" novalidate>
-        <h3>Enviar sugestão ou reclamação</h3>
+        <h3>Demonstrar interesse na plataforma</h3>
+        <p class="dica">Formulário para órgãos públicos (prefeituras, subprefeituras e secretarias).</p>
         <div class="duas-colunas">
           <div class="campo-form">
             <label for="orgao-pub">Órgão / município *</label>
-            <select id="orgao-pub" name="orgao" required><option value="">Selecione...</option></select>
+            <input type="text" id="orgao-pub" name="orgao" required placeholder="Ex: Prefeitura de Santo André">
           </div>
           <div class="campo-form">
-            <label for="orgao-tipo">Tipo de mensagem *</label>
-            <select id="orgao-tipo" name="tipo" required>
-              <option value="">Selecione...</option>
-              <option>Sugestão</option>
-              <option>Reclamação</option>
-              <option>Elogio</option>
-            </select>
+            <label for="orgao-resp">Nome do responsável *</label>
+            <input type="text" id="orgao-resp" name="nome" required autocomplete="name">
           </div>
+        </div>
+        <div class="duas-colunas">
+          <div class="campo-form">
+            <label for="orgao-cargo">Cargo / setor</label>
+            <input type="text" id="orgao-cargo" name="cargo" placeholder="Ex: Secretaria de Obras">
+          </div>
+          <div class="campo-form">
+            <label for="orgao-email">E-mail institucional *</label>
+            <input type="email" id="orgao-email" name="email" required autocomplete="email">
+          </div>
+        </div>
+        <div class="campo-form">
+          <label for="orgao-tipo">Interesse principal *</label>
+          <select id="orgao-tipo" name="tipo" required>
+            <option value="">Selecione...</option>
+            <option>Acesso aos dados de ocorrências</option>
+            <option>Receber chamados da minha região</option>
+            <option>Parceria para divulgação</option>
+            <option>Apresentação da plataforma</option>
+          </select>
         </div>
         <div class="campo-form">
           <label for="orgao-msg">Mensagem *</label>
           <textarea id="orgao-msg" name="mensagem" rows="4" required minlength="15"></textarea>
         </div>
-        <div class="campo-form">
-          <label for="orgao-email">Seu e-mail *</label>
-          <input type="email" id="orgao-email" name="email" required autocomplete="email">
-        </div>
-        <button type="submit" class="btn-submit">Enviar ao órgão</button>
+        <button type="submit" class="btn-submit">Enviar manifestação de interesse</button>
         <div id="msg-orgao" role="status"></div>
       </form>
+      <p class="aviso">Parcerias ilustrativas (projeto acadêmico). Cidadãos com urgências devem usar a <strong>Central SP156</strong>: ligue <a href="tel:156">156</a> ou acesse <a href="https://sp156.prefeitura.sp.gov.br" target="_blank" rel="noopener">sp156.prefeitura.sp.gov.br</a>.</p>
     </section>
 
     <!-- 9. SUPORTE / FAQ -->
     <section id="pag-9" class="pagina-modulo" aria-labelledby="t-pag-9" tabindex="-1">
-      <h2 id="t-pag-9">9. Suporte / FAQ</h2>
+      <h2 id="t-pag-9">9. Central de Ajuda e Suporte (FAQ)</h2>
+      <p>Dúvidas sobre como usar o mapa, abrir chamados, configurar o GPS e entender as rotas acessíveis.</p>
       <div class="campo-form" style="max-width:560px">
         <label for="busca-faq">Buscar uma dúvida</label>
         <input type="search" id="busca-faq" placeholder="Ex: GPS, contraste, rota">
         <p class="dica" id="resultado-faq" aria-live="polite"></p>
       </div>
       <div id="lista-faq">
+        <details class="faq"><summary>Como uso o mapa?</summary><div><ol><li>Abra o <a href="#pag-3">Mapa Interativo de Riscos</a>.</li><li>Escolha uma região (ex.: Zona Leste ou ABC) e, se quiser, um tipo de problema.</li><li>Marque "Mostrar só as áreas de maior risco" para ver os pontos mais perigosos.</li><li>Toque em um marcador para ver os detalhes, ou leia a lista em texto abaixo do mapa.</li></ol></div></details>
+        <details class="faq"><summary>Como a rota acessível é escolhida?</summary><div><p>O planejador compara três trajetos. Cada problema perto do caminho conta pontos, e os tipos que você marcou em "Evitar ao máximo" contam mais. A rota com menos pontos é a recomendada, mesmo que seja um pouco mais longa.</p></div></details>
+        <details class="faq"><summary>O que significam as linhas no mapa da rota?</summary><div><p>Linha verde contínua: rota recomendada. Linhas cinza tracejadas: alternativas. Os marcadores mostram os problemas no caminho recomendado.</p></div></details>
         <details class="faq"><summary>Como abro o menu no celular?</summary><div><p>Toque em <strong>Menu</strong> no canto superior direito. A gaveta traz primeiro os botões de acessibilidade e, abaixo, as 10 páginas. Feche no ×, tocando fora ou com a tecla Esc.</p></div></details>
         <details class="faq"><summary>Como registro um problema?</summary><div><p>Vá em <a href="#pag-4">Central de Chamados</a>, preencha os campos e toque em Enviar. Você recebe um protocolo. Se sair da página, o rascunho fica salvo.</p></div></details>
         <details class="faq"><summary>Como ativo o GPS no Android?</summary><div><ol><li>Configurações › Localização › ative Usar localização.</li><li>No Chrome, toque no cadeado do endereço › Permissões › Local › Permitir.</li></ol></div></details>
@@ -858,7 +958,8 @@
 
     <!-- 10. CONTATO -->
     <section id="pag-10" class="pagina-modulo" aria-labelledby="t-pag-10" tabindex="-1">
-      <h2 id="t-pag-10">10. Contato, Voluntariado e Apoio</h2>
+      <h2 id="t-pag-10">10. Fale Conosco / Contato Geral</h2>
+      <p>Canal para feedbacks, sugestões de melhoria da plataforma e suporte ao cidadão. Você também pode ser voluntário ou apoiar o projeto.</p>
       <div class="grid-home">
         <form id="form-contato" class="form-container" novalidate>
           <h3>Fale com a administração</h3>
@@ -873,10 +974,10 @@
           <div class="campo-form">
             <label for="f-assunto">Assunto</label>
             <select id="f-assunto" name="assunto">
-              <option>Sugestão de melhoria</option>
-              <option>Crítica</option>
-              <option>Problema técnico no mapa</option>
-              <option>Feedback geral</option>
+              <option>Feedback</option>
+              <option>Sugestão de melhoria da plataforma</option>
+              <option>Suporte ao cidadão</option>
+              <option>Problema técnico no site</option>
             </select>
           </div>
           <div class="campo-form">
@@ -1060,8 +1161,14 @@
       alagamento:     { nome: 'Alagamento',       letra: 'A', css: '--cor-alagamento' },
       recape:         { nome: 'Recapeamento',     letra: 'R', css: '--cor-recape' },
       acessibilidade: { nome: 'Acessibilidade',   letra: 'C', css: '--cor-acessibilidade' },
-      semaforo:       { nome: 'Semáforo sonoro',  letra: 'S', css: '--cor-sinalizacao' }
+      semaforo:       { nome: 'Sinalização',      letra: 'S', css: '--cor-sinalizacao' },
+      barreira:       { nome: 'Barreira física',  letra: 'O', css: '--cor-barreira' }
     };
+    var AFETA = {
+      buraco: 'cadeirantes, idosos e pessoas cegas', alagamento: 'todos os pedestres', recape: 'cadeirantes e idosos',
+      acessibilidade: 'cadeirantes e pessoas cegas', semaforo: 'pessoas cegas e com baixa visão', barreira: 'cadeirantes e pessoas cegas'
+    };
+    var NOME_RISCO = { alta: 'Risco alto', media: 'Risco médio', baixa: 'Risco baixo' };
     var REGIOES = [
       { id: 'todas', nome: '🌐 Toda a Grande SP', lat: -23.58, lng: -46.58, zoom: 10 },
       { id: 'centro', nome: '🏙️ Centro', lat: -23.5505, lng: -46.6333, zoom: 14 },
@@ -1093,17 +1200,23 @@
       { lat: -23.5015, lng: -46.6250, zona: 'norte', tipo: 'alagamento', titulo: 'Acúmulo de água em Santana', desc: 'Próximo ao terminal de ônibus.' },
       { lat: -23.4050, lng: -46.7530, zona: 'extremo-norte', tipo: 'buraco', titulo: 'Calçada irregular em Perus', desc: 'Acesso à estação de trem.' },
       { lat: -23.5669, lng: -46.6935, zona: 'oeste', tipo: 'buraco', titulo: 'Obstrução de calçada em Pinheiros', desc: 'Postes e lixeiras no meio da passagem.' },
-      { lat: -23.5290, lng: -46.6790, zona: 'oeste', tipo: 'alagamento', titulo: 'Alagamento na Rua Turiassu', desc: 'Perto do Allianz Parque em chuvas fortes.' }
+      { lat: -23.5290, lng: -46.6790, zona: 'oeste', tipo: 'alagamento', titulo: 'Alagamento na Rua Turiassu', desc: 'Perto do Allianz Parque em chuvas fortes.' },
+      { lat: -23.5600, lng: -46.6800, zona: 'oeste', tipo: 'barreira', titulo: 'Postes no meio da calçada na Rua Teodoro Sampaio', desc: 'Passagem estreita para cadeira de rodas.' },
+      { lat: -23.5420, lng: -46.6310, zona: 'centro', tipo: 'barreira', titulo: 'Bancas obstruindo a Rua 25 de Março', desc: 'Piso tátil coberto por mercadorias.' }
     ];
+    // Nível de risco de cada ocorrência (na mesma ordem da lista acima); todas são chamados ativos
+    ['alta', 'media', 'alta', 'alta', 'alta', 'media', 'alta', 'alta', 'media', 'alta', 'alta', 'alta', 'media', 'baixa', 'alta', 'media', 'alta', 'media', 'alta', 'media', 'alta']
+      .forEach(function (r, i) { OCORRENCIAS_BASE[i].risco = r; });
     var adicionadas = ler('hyperacess-ocorrencias-extra', []);
+    adicionadas.forEach(function (o) { o.risco = o.risco || 'media'; });
     function ocorrencias() { return OCORRENCIAS_BASE.concat(adicionadas); }
 
     var CHAMADOS_BASE = [
-      { protocolo: 'HA-2026-10481', usuario: 'Mariana Souza', tipo: 'acessibilidade', local: 'Rua Augusta, 1200 — Consolação', abertura: '03/11/2026 07h42', status: 'Em análise' },
-      { protocolo: 'HA-2026-10479', usuario: 'José Carlos Pereira', tipo: 'recape', local: 'Rua Silva Bueno, 300 — Ipiranga', abertura: '02/11/2026 18h15', status: 'Encaminhado' },
-      { protocolo: 'HA-2026-10474', usuario: 'Fernanda Lima', tipo: 'semaforo', local: 'Av. Ipiranga x Av. São João — República', abertura: '02/11/2026 09h03', status: 'Encaminhado' },
+      { protocolo: 'HA-2026-10481', usuario: 'Mariana Souza (cadeirante)', tipo: 'acessibilidade', local: 'Rua Augusta, 1200 — Consolação', abertura: '03/11/2026 07h42', status: 'Em análise' },
+      { protocolo: 'HA-2026-10479', usuario: 'José Carlos Pereira (idoso)', tipo: 'recape', local: 'Rua Silva Bueno, 300 — Ipiranga', abertura: '02/11/2026 18h15', status: 'Encaminhado' },
+      { protocolo: 'HA-2026-10474', usuario: 'Fernanda Lima (deficiência visual)', tipo: 'semaforo', local: 'Av. Ipiranga x Av. São João — República', abertura: '02/11/2026 09h03', status: 'Encaminhado' },
       { protocolo: 'HA-2026-10466', usuario: 'Rafael Oliveira', tipo: 'alagamento', local: 'Rua Turiassu, 1800 — Perdizes', abertura: '01/11/2026 16h27', status: 'Aberto' },
-      { protocolo: 'HA-2026-10458', usuario: 'Luciana Ferreira', tipo: 'buraco', local: 'Estrada de Guaianases, 500 — Guaianases', abertura: '31/10/2026 11h50', status: 'Resolvido' }
+      { protocolo: 'HA-2026-10458', usuario: 'Luciana Ferreira (mobilidade reduzida)', tipo: 'buraco', local: 'Estrada de Guaianases, 500 — Guaianases', abertura: '31/10/2026 11h50', status: 'Resolvido' }
     ];
     var meusChamados = ler('hyperacess-chamados', []);
 
@@ -1169,7 +1282,7 @@
     /* ==========================================================================
        4. NAVEGAÇÃO ENTRE AS 10 PÁGINAS (endereço #pag-N: o botão Voltar funciona)
        ========================================================================== */
-    var PAGINAS = ['Home', 'Sobre Nós', 'Mapa de Riscos', 'Central Chamados', 'Rotas Seguras', 'Alertas GPS', 'Meu Perfil', 'Prefeituras', 'Suporte / FAQ', 'Contato'];
+    var PAGINAS = ['Home', 'Quem Somos', 'Mapa de Riscos', 'Chamados', 'Rotas Acessíveis', 'Lembretes e Alertas', 'Perfil e Acessibilidade', 'Prefeituras', 'Ajuda (FAQ)', 'Fale Conosco'];
     ['menu-desktop', 'menu-gaveta'].forEach(function (id) {
       $(id).innerHTML = PAGINAS.map(function (p, i) {
         return '<li><a href="#pag-' + (i + 1) + '">' + (i + 1) + '. ' + p + '</a></li>';
@@ -1296,30 +1409,57 @@
     /* ==========================================================================
        6. PERFIL DO USUÁRIO
        ========================================================================== */
-    var perfil = ler('hyperacess-perfil', { nome: 'Pedro Henrique de Oliveira', email: 'pedro@email.com', tipo: 'nenhuma', regiao: 'Penha - Zona Leste' });
+    var perfil = ler('hyperacess-perfil', { nome: 'Pedro Henrique de Oliveira', email: 'pedro@email.com', telefone: '', tipo: 'nenhuma', regiao: 'Penha - Zona Leste', alertas: { som: true, voz: true, vibracao: true } });
+    perfil.alertas = perfil.alertas || { som: true, voz: true, vibracao: true };
+    var NOMES_PERFIL = { cadeira: 'mobilidade reduzida', visual: 'deficiência visual', auditiva: 'deficiência auditiva', idoso: 'pessoa idosa', nenhuma: 'voluntário' };
+    var SUGESTAO_PERFIL = {
+      cadeira:  { contraste: false, letra: false, som: true,  voz: true,  vibracao: true },
+      visual:   { contraste: true,  letra: true,  som: true,  voz: true,  vibracao: true },
+      auditiva: { contraste: false, letra: false, som: false, voz: false, vibracao: true },
+      idoso:    { contraste: false, letra: true,  som: true,  voz: true,  vibracao: true },
+      nenhuma:  { contraste: false, letra: false, som: true,  voz: true,  vibracao: true }
+    };
     function atualizarSaudacao() {
-      var nomes = { cadeira: 'mobilidade reduzida', visual: 'deficiência visual', auditiva: 'deficiência auditiva', idoso: 'pessoa idosa', nenhuma: 'voluntário' };
-      $('saudacao').textContent = perfil.nome ? 'Olá, ' + perfil.nome.split(' ')[0] + ' · ' + nomes[perfil.tipo] : '';
+      $('saudacao').textContent = perfil.nome ? 'Olá, ' + perfil.nome.split(' ')[0] + ' · ' + NOMES_PERFIL[perfil.tipo] : '';
+    }
+    function aplicarAlertasDoPerfil() { // preferências de alerta do perfil valem na página de lembretes
+      $('cfg-som').checked = !!perfil.alertas.som;
+      $('cfg-voz').checked = !!perfil.alertas.voz;
+      $('cfg-vibracao').checked = !!perfil.alertas.vibracao;
     }
     (function () {
       var f = $('form-perfil');
+      function preencherPreferencias(p) {
+        $('pf-contraste').checked = p.contraste; $('pf-letra').checked = p.letra;
+        $('pf-som').checked = p.som; $('pf-voz').checked = p.voz; $('pf-vibracao').checked = p.vibracao;
+      }
       f.elements.nome.value = perfil.nome || '';
       f.elements.email.value = perfil.email || '';
+      f.elements.telefone.value = perfil.telefone || '';
       f.elements.tipo.value = perfil.tipo || 'nenhuma';
       f.elements.regiao.value = perfil.regiao || '';
+      preencherPreferencias({ contraste: !!prefs.contraste, letra: (prefs.escala || 1) >= 1.3, som: perfil.alertas.som, voz: perfil.alertas.voz, vibracao: perfil.alertas.vibracao });
+      $('pf-daltonismo').checked = !!prefs.daltonismo;
+      f.elements.tipo.addEventListener('change', function () {
+        preencherPreferencias(SUGESTAO_PERFIL[this.value]);
+        anunciar('Sugerimos as preferências para ' + NOMES_PERFIL[this.value] + '. Ajuste se quiser e salve.');
+      });
       f.addEventListener('submit', function (e) {
         e.preventDefault();
         if (!validarFormulario(f)) return;
-        perfil = { nome: f.elements.nome.value.trim(), email: f.elements.email.value.trim(), tipo: f.elements.tipo.value, regiao: f.elements.regiao.value.trim() };
+        perfil = {
+          nome: f.elements.nome.value.trim(), email: f.elements.email.value.trim(), telefone: f.elements.telefone.value.trim(),
+          tipo: f.elements.tipo.value, regiao: f.elements.regiao.value.trim(),
+          alertas: { som: $('pf-som').checked, voz: $('pf-voz').checked, vibracao: $('pf-vibracao').checked }
+        };
         gravar('hyperacess-perfil', perfil);
-        if ($('pf-aplicar').checked) {
-          if (perfil.tipo === 'visual') { prefs.contraste = true; prefs.escala = 1.3; }
-          if (perfil.tipo === 'idoso') { prefs.escala = 1.3; }
-          if (perfil.tipo === 'auditiva') { $('cfg-som').checked = false; $('cfg-voz').checked = false; $('cfg-vibracao').checked = true; }
-          salvarPrefs();
-        }
+        prefs.contraste = $('pf-contraste').checked;
+        prefs.daltonismo = $('pf-daltonismo').checked;
+        prefs.escala = $('pf-letra').checked ? 1.3 : 1;
+        salvarPrefs();
+        aplicarAlertasDoPerfil();
         atualizarSaudacao();
-        mensagem('msg-perfil', 'sucesso', '✅ Perfil de ' + escapar(perfil.nome) + ' salvo! As preferências valem em todas as páginas.');
+        mensagem('msg-perfil', 'sucesso', '✅ Perfil de ' + escapar(perfil.nome) + ' salvo! A navegação e os alertas já seguem suas preferências.');
         anunciar('Perfil salvo.');
       });
     })();
@@ -1353,25 +1493,28 @@
 
     function noFiltro(o) {
       var zonaOk = zonaAtual === 'todas' || o.zona === zonaAtual;
-      return zonaOk && (filtroAtual === 'todos' || o.tipo === filtroAtual);
+      var riscoOk = !$('so-risco-alto').checked || o.risco === 'alta';
+      return zonaOk && riscoOk && (filtroAtual === 'todos' || o.tipo === filtroAtual);
     }
+    $('so-risco-alto').addEventListener('change', renderizarPinosNoMapa);
 
     function renderizarPinosNoMapa() {
-      var lista = ocorrencias().filter(noFiltro);
+      var ordem = { alta: 0, media: 1, baixa: 2 };
+      var lista = ocorrencias().filter(noFiltro).sort(function (a, b) { return ordem[a.risco] - ordem[b.risco]; });
       if (camadaPinos) {
         camadaPinos.clearLayers();
         lista.forEach(function (o) {
           var m = L.marker([o.lat, o.lng], { icon: iconeTipo(o.tipo), title: TIPOS[o.tipo].nome + ': ' + o.titulo, alt: o.titulo });
-          m.bindPopup('<strong>' + escapar(o.titulo) + '</strong><br>' + escapar(o.desc));
-          m.on('click', function () { falarTexto(o.titulo + '. ' + o.desc); });
+          m.bindPopup('<strong>' + escapar(o.titulo) + '</strong><br>' + NOME_RISCO[o.risco] + ' · Chamado ativo<br>' + escapar(o.desc) + '<br><small>Afeta: ' + AFETA[o.tipo] + '</small>');
+          m.on('click', function () { falarTexto(o.titulo + '. ' + NOME_RISCO[o.risco] + '. ' + o.desc); });
           camadaPinos.addLayer(m);
         });
       }
       $('resumo-mapa').textContent = 'Mostrando ' + lista.length + ' de ' + ocorrencias().length + ' ocorrências.';
       $('lista-ocorrencias').innerHTML = lista.length ? lista.map(function (o) {
-        return '<article class="card-problema ' + o.tipo + '"><span class="tag-status">' + TIPOS[o.tipo].nome + '</span>' +
+        return '<article class="card-problema ' + o.tipo + '"><span class="tag-status">' + TIPOS[o.tipo].nome + '</span><span class="risco ' + o.risco + '">' + NOME_RISCO[o.risco] + '</span>' +
           '<h4>' + escapar(o.titulo) + '</h4><p>' + escapar(o.desc) + '</p>' +
-          '<div class="meta"><span>Região: ' + escapar(REGIOES.filter(function (r) { return r.id === o.zona; })[0].nome.replace(/^\S+\s/, '')) + '</span></div></article>';
+          '<div class="meta"><span>Chamado ativo</span><span>Afeta: ' + AFETA[o.tipo] + '</span><span>Região: ' + escapar(REGIOES.filter(function (r) { return r.id === o.zona; })[0].nome.replace(/^\S+\s/, '')) + '</span></div></article>';
       }).join('') : '<p class="aviso">Nenhuma ocorrência com esse filtro.</p>';
     }
 
@@ -1386,12 +1529,13 @@
         var nova = {
           lat: e.latlng.lat, lng: e.latlng.lng, zona: zonaAtual === 'todas' ? 'centro' : zonaAtual,
           tipo: filtroAtual === 'todos' ? 'buraco' : filtroAtual,
-          titulo: 'Novo alerta colaborativo', desc: 'Coordenadas: ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4)
+          risco: 'media', titulo: 'Novo alerta colaborativo', desc: 'Coordenadas: ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4)
         };
         adicionadas.push(nova);
         gravar('hyperacess-ocorrencias-extra', adicionadas);
         renderizarPinosNoMapa();
         atualizarNumeros();
+        desenharPainel();
         anunciar('Novo alerta adicionado ao mapa.');
       });
     }
@@ -1467,7 +1611,8 @@
       var a = [o.lat, o.lng], b = [d.lat, d.lng], direta = distancia(a, b), lado = Math.max(800, direta * 0.18);
       var candidatas = [[a, b], [a, desvio(a, b, lado), b], [a, desvio(a, b, -lado), b]].map(function (linha) {
         var problemas = ocorrencias().filter(function (x) { return distanciaLinha([x.lat, x.lng], linha) <= 900; });
-        var pontos = problemas.reduce(function (s, x) { return s + (evitar.indexOf(x.tipo) > -1 ? 3 : 1); }, 0);
+        var peso = { alta: 3, media: 2, baixa: 1 };
+        var pontos = problemas.reduce(function (s, x) { return s + peso[x.risco] * (evitar.indexOf(x.tipo) > -1 ? 3 : 1); }, 0);
         var comp = 0; for (var i = 0; i < linha.length - 1; i++) comp += distancia(linha[i], linha[i + 1]);
         return { linha: linha, problemas: problemas, pontos: pontos, distancia: comp * 1.25 };
       });
@@ -1478,7 +1623,7 @@
         return '<div class="rota' + (i === 0 ? ' melhor' : '') + '"><h4>' + (i === 0 ? 'Rota recomendada' : 'Alternativa ' + (i + 1)) + ' ' +
           (r.problemas.length ? '<span class="selo atencao">' + r.problemas.length + ' problema(s)</span>' : '<span class="selo">Sem problemas registrados</span>') + '</h4>' +
           '<p>Distância estimada: ' + formatarKm(r.distancia) + '</p>' +
-          (r.problemas.length ? '<ul style="padding-left:1.2rem">' + r.problemas.map(function (x) { return '<li><strong>' + TIPOS[x.tipo].nome + ':</strong> ' + escapar(x.titulo) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+          (r.problemas.length ? '<p><strong>Ruas com problemas relatados:</strong></p><ul style="padding-left:1.2rem">' + r.problemas.map(function (x) { return '<li><strong>' + TIPOS[x.tipo].nome + '</strong> (' + NOME_RISCO[x.risco].toLowerCase() + '): ' + escapar(x.titulo) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
       }).join('') + '<p class="dica">Trajetos estimados em linha aproximada; problemas a até 900 m do caminho.</p>';
       iniciarMapaRota();
       desenharRota(ultimaRota);
@@ -1590,7 +1735,7 @@
         verificar(pos);
       }, function (err) {
         parar('GPS indisponível');
-        $('alerta-texto').textContent = err.code === 1 ? 'Permissão de localização negada. Veja o Suporte / FAQ.' : 'Sem sinal de GPS. Tente em local aberto.';
+        $('alerta-texto').textContent = err.code === 1 ? 'Permissão de localização negada. Veja a Central de Ajuda (FAQ).' : 'Sem sinal de GPS. Tente em local aberto.';
       }, { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 });
     });
     $('btn-parar').addEventListener('click', function () { parar(); registrar('Alertas desligados.'); });
@@ -1629,7 +1774,7 @@
           if (!res.ok) throw new Error('HTTP ' + res.status);
         } catch (erro) { online = false; } // plano B: guarda só neste aparelho
         var protocolo = 'HA-2026-' + Math.floor(10000 + Math.random() * 89999);
-        meusChamados.unshift({ protocolo: protocolo, usuario: f.elements.nome.value.trim(), tipo: dados.tipo, local: dados.endereco + ' — ' + dados.regiao, abertura: agora(), status: 'Aberto' });
+        meusChamados.unshift({ protocolo: protocolo, usuario: f.elements.nome.value.trim() + (f.elements.perfil.value ? ' (' + f.elements.perfil.value.toLowerCase() + ')' : ''), tipo: dados.tipo, local: dados.endereco + ' — ' + dados.regiao, abertura: agora(), status: 'Aberto' });
         gravar('hyperacess-chamados', meusChamados);
         renderizarChamados(); atualizarNumeros();
         box.className = 'status-api-box sucesso';
@@ -1644,13 +1789,19 @@
        11. PREFEITURAS, CONTATO, VOLUNTARIADO E APOIO
        ========================================================================== */
     $('lista-orgaos').innerHTML = ORGAOS.map(function (o) {
-      return '<div class="card"><h3>' + escapar(o.nome) + '</h3><p>' + escapar(o.area) + '</p><button type="button" class="btn btn-sec" data-orgao="' + o.id + '" style="margin-top:.6rem">Falar com este órgão</button></div>';
+      return '<div class="card"><h4>' + escapar(o.nome) + '</h4><p>' + escapar(o.area) + '</p></div>';
     }).join('');
-    $('orgao-pub').insertAdjacentHTML('beforeend', ORGAOS.map(function (o) { return '<option value="' + o.id + '">' + o.nome + '</option>'; }).join(''));
-    $('lista-orgaos').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-orgao]'); if (!b) return;
-      $('orgao-pub').value = b.getAttribute('data-orgao'); $('orgao-tipo').focus();
-    });
+    function desenharPainel() { // tabela de ocorrências por região e tipo (dados para planejar obras)
+      var tipos = Object.keys(TIPOS);
+      $('cab-painel').innerHTML = '<th scope="col">Região</th>' + tipos.map(function (t) { return '<th scope="col">' + TIPOS[t].nome + '</th>'; }).join('') + '<th scope="col">Risco alto</th><th scope="col">Total</th>';
+      $('corpo-painel').innerHTML = REGIOES.filter(function (r) { return r.id !== 'todas'; }).map(function (r) {
+        var daRegiao = ocorrencias().filter(function (o) { return o.zona === r.id; });
+        var nome = r.nome.replace(/^\S+\s/, '');
+        return '<tr><th scope="row" data-rotulo="Região">' + nome + '</th>' + tipos.map(function (t) {
+          return '<td data-rotulo="' + TIPOS[t].nome + '">' + daRegiao.filter(function (o) { return o.tipo === t; }).length + '</td>';
+        }).join('') + '<td data-rotulo="Risco alto">' + daRegiao.filter(function (o) { return o.risco === 'alta'; }).length + '</td><td data-rotulo="Total"><strong>' + daRegiao.length + '</strong></td></tr>';
+      }).join('');
+    }
 
     function formSimples(id, chave, msgId, sucesso, extra) {
       var f = $(id); if (f.elements.nome) f.elements.nome.value = perfil.nome || '';
@@ -1667,7 +1818,8 @@
       });
       return f;
     }
-    formSimples('form-orgao', 'orgao', 'msg-orgao', function (f) { return f.elements.tipo.value + ' enviada para ' + f.elements.orgao.options[f.elements.orgao.selectedIndex].text + '.'; });
+    formSimples('form-orgao', 'orgao', 'msg-orgao', function (f) { return 'Manifestação de interesse de ' + escapar(f.elements.orgao.value.trim()) + ' recebida. Nossa equipe retornará pelo e-mail institucional.'; });
+    $('orgao-resp').value = ''; $('orgao-email').value = ''; // formulário institucional não usa os dados do cidadão
     var fc = formSimples('form-contato', 'contato', 'msg-contato', function () { return 'Mensagem enviada à administração. Resposta em até 5 dias úteis.'; });
     fc.elements.mensagem.addEventListener('input', function () { $('f-contador').textContent = this.value.length + ' de 1000 caracteres'; });
     formSimples('form-voluntario', 'voluntario', 'msg-voluntario', function (f) { return 'Inscrição recebida! Vamos combinar um mutirão em ' + escapar(f.elements.bairro.value.trim()) + '.'; });
@@ -1718,13 +1870,13 @@
     var BASE_CHAT = [
       { chaves: ['chamado', 'relatar', 'registrar', 'buraco', 'problema', 'reportar'], resp: 'Para registrar um problema, abra a Central de Chamados, preencha os campos e envie. Você recebe um protocolo.', link: '#pag-4' },
       { chaves: ['mapa', 'onde', 'regiao', 'zona', 'abc', 'satelite'], resp: 'O Mapa de Riscos cobre todas as zonas, os extremos e o ABC. Escolha uma região e filtre por tipo.', link: '#pag-3' },
-      { chaves: ['rota', 'caminho', 'trajeto', 'chegar', 'ir'], resp: 'Em Rotas Seguras você escolhe partida e chegada e o sistema recomenda o trajeto com menos problemas.', link: '#pag-5' },
-      { chaves: ['gps', 'alerta', 'alarme', 'som', 'vibracao', 'localizacao'], resp: 'Em Alertas GPS você recebe avisos por som, voz, vibração e sinal visual. Use "Testar alerta" para conferir.', link: '#pag-6' },
+      { chaves: ['rota', 'caminho', 'trajeto', 'chegar', 'ir'], resp: 'No Planejador de Rotas Acessíveis você define partida e chegada, e o sistema avisa quais ruas têm problemas relatados.', link: '#pag-5' },
+      { chaves: ['gps', 'alerta', 'alarme', 'som', 'vibracao', 'localizacao'], resp: 'No Sistema de Lembretes e Alertas, o GPS avisa antes de cada obstáculo com aviso visual e sonoro. Use "Testar alerta" para conferir.', link: '#pag-6' },
       { chaves: ['contraste', 'letra', 'fonte', 'daltonismo', 'cor', 'enxergar', 'ouvir', 'leitor'], resp: 'Use Contraste, Daltonismo, A+ e A- na barra do topo (no celular, dentro do Menu). "Ouvir Página" lê o conteúdo em voz alta.', link: '#pag-9' },
-      { chaves: ['perfil', 'cadastro', 'nome', 'cadeirante', 'idoso', 'cego'], resp: 'Em Meu Perfil você informa sua condição e o site se ajusta: contraste, tamanho da letra e alertas.', link: '#pag-7' },
-      { chaves: ['prefeitura', 'subprefeitura', 'orgao', 'reclamacao', '156'], resp: 'Na página Prefeituras você envia sugestões e reclamações. Para urgências, ligue 156 (Central SP156).', link: '#pag-8' },
+      { chaves: ['perfil', 'cadastro', 'nome', 'cadeirante', 'idoso', 'cego'], resp: 'Em Perfil e Acessibilidade você informa seus dados e preferências: contraste, letra maior e como quer receber os alertas.', link: '#pag-7' },
+      { chaves: ['prefeitura', 'subprefeitura', 'orgao', 'reclamacao', '156'], resp: 'A Área Institucional é para prefeituras e órgãos públicos demonstrarem interesse e verem os dados mapeados. Cidadãos com urgências devem ligar 156.', link: '#pag-8' },
       { chaves: ['voluntario', 'ajudar', 'participar', 'doar', 'doacao', 'apoiar'], resp: 'Na página Contato você pode se inscrever como voluntário ou registrar uma intenção de apoio.', link: '#pag-10' },
-      { chaves: ['contato', 'email', 'falar', 'sugestao', 'critica'], resp: 'Use o formulário da página Contato para falar com a administração do site.', link: '#pag-10' }
+      { chaves: ['contato', 'email', 'falar', 'sugestao', 'critica'], resp: 'Use o Fale Conosco para enviar feedbacks, sugestões de melhoria ou pedir suporte.', link: '#pag-10' }
     ];
     var SUGESTOES = ['Como relato um buraco?', 'Como ativo o GPS?', 'Como aumento a letra?', 'Quero ser voluntário'];
     function responder(texto) {
@@ -1734,7 +1886,7 @@
         var p = palavras.filter(function (w) { return w.length > 1 && item.chaves.some(function (c) { return w === c || (w.length > 3 && c.indexOf(w) === 0); }); }).length;
         if (p > pontos) { pontos = p; melhor = item; }
       });
-      return melhor || { resp: 'Ainda não sei responder isso. Veja o Suporte / FAQ ou escreva para nós na página Contato.', link: '#pag-9' };
+      return melhor || { resp: 'Ainda não sei responder isso. Veja a Central de Ajuda (FAQ) ou escreva no Fale Conosco.', link: '#pag-9' };
     }
     function msgChat(texto, autor, link) {
       var div = document.createElement('div');
@@ -1779,6 +1931,8 @@
     renderizarPinosNoMapa();
     renderizarChamados();
     atualizarNumeros();
+    desenharPainel();
+    aplicarAlertasDoPerfil();
     navegarPara(location.hash.indexOf('#pag-') === 0 ? location.hash.slice(1) : 'pag-1', false);
     if (voz) voz.getVoices();
   })();
