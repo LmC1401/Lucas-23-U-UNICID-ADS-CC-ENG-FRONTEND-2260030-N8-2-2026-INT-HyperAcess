@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -83,17 +84,40 @@
       --focus-outline: #38BDF8;
     }
 
-    html.daltonismo {
-      --primary-color: #004488;
-      --primary-light: #0055AA;
-      --secondary-color: #0077BB;
-      --accent-color: #DDAA33;
-      --accent-hover: #BB8811;
-      --cor-buraco: #BB5566;
-      --cor-rampa: #0077BB;
-      --cor-piso: #009988;
-      --cor-semaforo: #EE7733;
-      --cor-obra: #DDAA33;
+    /* Protanopia (vermelho): poucas mudanças, ocorrências em azul, marrom, mostarda e cinza */
+    html.protanopia {
+      --accent-color: #F0B400;
+      --accent-hover: #D19C00;
+      --cor-buraco: #8F5A00;
+      --cor-rampa: #004C99;
+      --cor-piso: #2F6FC4;
+      --cor-semaforo: #806B00;
+      --cor-obra: #5A5A5A;
+    }
+
+    /* Deuteranopia (verde): parecida com a protanopia */
+    html.deuteranopia {
+      --accent-color: #E6A800;
+      --accent-hover: #C99300;
+      --cor-buraco: #A35F00;
+      --cor-rampa: #1A4D8F;
+      --cor-piso: #3670B8;
+      --cor-semaforo: #8A6E00;
+      --cor-obra: #616161;
+    }
+
+    /* Tritanopia (azul/amarelo): maior mudança, azul vira grafite + ciano e laranja vira coral */
+    html.tritanopia {
+      --primary-color: #1F2A30;
+      --primary-light: #34444D;
+      --secondary-color: #00737D;
+      --accent-color: #FF8A80;
+      --accent-hover: #F26B60;
+      --cor-buraco: #D32F2F;
+      --cor-rampa: #007A85;
+      --cor-piso: #5D4037;
+      --cor-semaforo: #880E4F;
+      --cor-obra: #616161;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -542,6 +566,7 @@
     }
 
     .mapa-controles select, .mapa-controles input {
+      max-width: 100%;
       padding: 10px 14px;
       border-radius: var(--r-sm);
       border: 1px solid var(--border-color);
@@ -613,6 +638,71 @@
       align-items: center;
       gap: 8px;
       font-weight: 600;
+    }
+
+    .sinalizadores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn-sinalizador {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+      border-radius: 999px;
+      padding: 6px 14px 6px 6px;
+      min-height: 44px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-sinalizador.ativo {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+
+    .marcar-linha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .marcar-linha input {
+      flex: 1 1 220px;
+      min-width: 0;
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border-color);
+      background: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 44px;
+    }
+
+    #mapa-leaflet.modo-marcar {
+      cursor: crosshair;
+      outline: 4px dashed var(--accent-color);
+      outline-offset: -4px;
+    }
+
+    .lista-chamados-regiao {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .lista-chamados-regiao li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--r-sm);
+      background: var(--bg-body);
     }
 
     .pino-badge {
@@ -1044,7 +1134,7 @@
         <button type="button" class="btn-acess" id="btn-fonte-mais" aria-label="Aumentar tamanho da fonte">A+</button>
         <button type="button" class="btn-acess" id="btn-contraste" aria-pressed="false">Alto Contraste</button>
         <button type="button" class="btn-acess" id="btn-escuro" aria-pressed="false">Modo Escuro</button>
-        <button type="button" class="btn-acess" id="btn-daltonismo" aria-pressed="false">Daltonismo (Okabe-Ito)</button>
+        <button type="button" class="btn-acess" id="btn-daltonismo" aria-pressed="false">Daltonismo: Desligado</button>
         <button type="button" class="btn-acess" id="btn-ouvir-pagina" aria-pressed="false">🔊 Ouvir Página</button>
       </div>
     </div>
@@ -1199,6 +1289,11 @@
                 <td>47411996</td>
                 <td>Layout Responsivo, CSS Grid/Flexbox, Mapa Satélite e Deploy</td>
               </tr>
+              <tr>
+                <td><strong>Nathan Caue Sanchez Martins</strong></td>
+                <td>47458984</td>
+                <td>Desenvolvedor Front-End &amp; Módulos JavaScript: Implementação de armazenamento no localStorage</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1239,6 +1334,25 @@
         <button type="button" class="btn-secondary" id="btn-voar-paulista">✈️ Voar para Av. Paulista</button>
       </div>
 
+      <div class="card" style="margin-bottom:16px;">
+        <h2 style="font-size:1.15rem; margin-bottom:6px;">📍 Marcar uma ocorrência no mapa</h2>
+        <p style="color:var(--text-secondary); margin-bottom:12px;">1. Escolha o sinalizador do defeito. 2. Toque em <strong>Marcar no mapa</strong>. 3. Toque no local exato do problema.</p>
+        <div class="sinalizadores" role="group" aria-label="Tipo de defeito">
+          <button type="button" class="btn-sinalizador ativo" data-tipo="buraco" aria-pressed="true"><span class="pino-badge" style="background:var(--cor-buraco);">B</span> Buraco / Desnível</button>
+          <button type="button" class="btn-sinalizador" data-tipo="rampa" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-rampa);">R</span> Falta de Rampa</button>
+          <button type="button" class="btn-sinalizador" data-tipo="piso" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-piso);">P</span> Piso Tátil</button>
+          <button type="button" class="btn-sinalizador" data-tipo="semaforo" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-semaforo);">S</span> Semáforo Sonoro</button>
+          <button type="button" class="btn-sinalizador" data-tipo="obra" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-obra);">O</span> Obra / Obstrução</button>
+        </div>
+        <div class="marcar-linha">
+          <input type="text" id="marcar-descricao" maxlength="120" placeholder="Descrição (opcional). Ex.: buraco em frente ao nº 300" aria-label="Descrição da ocorrência (opcional)">
+          <button type="button" class="btn-primary" id="btn-modo-marcar" aria-pressed="false">📍 Marcar no mapa</button>
+          <button type="button" class="btn-secondary" id="btn-marcar-centro">🎯 Marcar no centro do mapa</button>
+          <button type="button" class="btn-secondary" id="btn-limpar-marcacoes">🗑️ Limpar minhas marcações</button>
+        </div>
+        <p id="status-marcacao" role="status" aria-live="polite" style="margin-top:10px; font-weight:700;"></p>
+      </div>
+
       <div class="mapa-wrapper">
         <div class="mapa-camadas-barra">
           <span>🛰️ Modo de Visualização: <strong id="nome-camada-ativa">Satélite Híbrido (Estilo Google Earth)</strong></span>
@@ -1257,6 +1371,11 @@
         <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-piso);">P</span> Piso Tátil</span>
         <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-semaforo);">S</span> Semáforo Sonoro</span>
         <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-obra);">O</span> Obra / Obstrução</span>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h2 id="titulo-chamados-regiao" style="font-size:1.15rem; margin-bottom:10px;">📋 Chamados abertos — Todas as regiões</h2>
+        <ul class="lista-chamados-regiao" id="lista-chamados-regiao"></ul>
       </div>
     </section>
 
@@ -1561,16 +1680,23 @@
       </div>
 
       <div class="card">
-        <form id="form-contato" novalidate>
+        <form id="form-contato" action="https://formsubmit.co/686769testes1@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="HyperAcess — Novo feedback pelo Fale Conosco">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_autoresponse" value="Olá! Recebemos sua mensagem no HyperAcess. Nossa equipe vai responder por este e-mail em breve. Abaixo está uma cópia do que você enviou.">
+          <input type="hidden" name="_next" id="contato-next" value="">
+          <input type="hidden" name="_url" id="contato-url" value="">
+          <input type="hidden" name="Assunto" id="contato-assunto-texto" value="">
+          <input type="text" name="_honey" style="display:none;" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-grid">
             <div class="form-group">
               <label for="contato-nome">Nome Completo *</label>
-              <input type="text" id="contato-nome" required placeholder="Digite seu nome">
+              <input type="text" id="contato-nome" name="Nome" required placeholder="Digite seu nome">
               <span class="erro-campo" id="erro-contato-nome" aria-live="polite"></span>
             </div>
             <div class="form-group">
               <label for="contato-email">E-mail de Contato *</label>
-              <input type="email" id="contato-email" required placeholder="seuemail@exemplo.com">
+              <input type="email" id="contato-email" name="email" required placeholder="seuemail@exemplo.com">
               <span class="erro-campo" id="erro-contato-email" aria-live="polite"></span>
             </div>
           </div>
@@ -1587,11 +1713,11 @@
 
           <div class="form-group">
             <label for="contato-mensagem">Mensagem *</label>
-            <textarea id="contato-mensagem" rows="4" required placeholder="Escreva sua mensagem..."></textarea>
+            <textarea id="contato-mensagem" name="Mensagem" rows="4" required placeholder="Escreva sua mensagem..."></textarea>
             <span class="erro-campo" id="erro-contato-msg" aria-live="polite"></span>
           </div>
 
-          <button type="submit" class="btn-primary">✉️ Enviar Mensagem</button>
+          <button type="submit" class="btn-primary" id="btn-enviar-contato">✉️ Enviar Mensagem</button>
         </form>
         <p id="retorno-contato" role="status" aria-live="polite" style="margin-top:14px; font-weight:700;"></p>
       </div>
@@ -1608,14 +1734,14 @@
     <div class="chat-topo">
       <strong>🤖 Assistente IA</strong>
       <div class="chat-topo-acoes">
-        <button type="button" class="btn-chat-voz" id="btn-ia-voz-toggle" aria-pressed="false" title="Clique para ouvir ou parar a fala da IA">🗣️ Ouvir IA</button>
+        <button type="button" class="btn-chat-voz" id="btn-ia-voz-toggle" aria-pressed="false" title="Clique para ligar ou desligar a narração da IA">🔇 Narração IA: Desligada</button>
         <button type="button" id="btn-fechar-chat" aria-label="Fechar assistente" style="background:none; border:none; color:#FFF; font-size:1.1rem; cursor:pointer; font-weight:700; padding:4px 8px;">✕</button>
       </div>
     </div>
 
     <div class="chat-mensagens" id="chat-mensagens" role="log" aria-live="polite">
       <div class="msg-bot">
-        Olá! Sou a IA do <strong>HyperAcess</strong>. Respondo qualquer dúvida sobre o site e também leio em voz alta — clique em <strong>🗣️ Ouvir IA</strong> (ou clique de novo para pausar/parar a fala).
+        Olá! Sou a IA do <strong>HyperAcess</strong>. Respondo qualquer dúvida sobre o site e também leio em voz alta — clique em <strong>Narração IA</strong> para ligar (e de novo para desligar).
       </div>
     </div>
 
@@ -1779,7 +1905,25 @@
 
     configurarTemaToggle('btn-contraste', 'alto-contraste', 'ha_contraste');
     configurarTemaToggle('btn-escuro', 'modo-escuro', 'ha_escuro');
-    configurarTemaToggle('btn-daltonismo', 'daltonismo', 'ha_daltonismo');
+
+    // Daltonismo: cada clique troca o tipo (Desligado > Protanopia > Deuteranopia > Tritanopia)
+    const tiposDaltonismo = ['', 'protanopia', 'deuteranopia', 'tritanopia'];
+    const nomesDaltonismo = ['Desligado', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
+    const btnDaltonismo = document.getElementById('btn-daltonismo');
+    let idxDaltonismo = Math.max(0, tiposDaltonismo.indexOf(localStorage.getItem('ha_daltonismo') || ''));
+
+    function aplicarDaltonismo() {
+      tiposDaltonismo.forEach(t => { if (t) htmlEl.classList.toggle(t, t === tiposDaltonismo[idxDaltonismo]); });
+      btnDaltonismo.textContent = 'Daltonismo: ' + nomesDaltonismo[idxDaltonismo];
+      btnDaltonismo.setAttribute('aria-pressed', String(idxDaltonismo > 0));
+      localStorage.setItem('ha_daltonismo', tiposDaltonismo[idxDaltonismo]);
+      if (mapaInstancia) renderizarMarcadores();
+    }
+    aplicarDaltonismo();
+    btnDaltonismo.addEventListener('click', () => {
+      idxDaltonismo = (idxDaltonismo + 1) % tiposDaltonismo.length;
+      aplicarDaltonismo();
+    });
 
     // Leitura da página ativa via Web Speech API (funciona como start/stop ao clicar novamente)
     const btnOuvir = document.getElementById('btn-ouvir-pagina');
@@ -2027,12 +2171,119 @@
       obra: { letra: 'O', cor: '#E69F00' }
     };
 
+    // Marcações feitas pelo usuário (salvas no localStorage) e centro de cada região
+    let marcacoesUsuario = JSON.parse(localStorage.getItem('ha_marcacoes')) || [];
+    let tipoMarcacao = 'buraco';
+    let modoMarcar = false;
+    const nomesTipos = { buraco: 'Buraco / Desnível', rampa: 'Falta de Rampa', piso: 'Piso Tátil', semaforo: 'Semáforo Sonoro', obra: 'Obra / Obstrução' };
+    const centrosRegioes = {
+      'todas': { c: [-23.58, -46.60], z: 11 },
+      'Centro SP': { c: [-23.5530, -46.6420], z: 15 },
+      'Zona Leste': { c: [-23.5402, -46.5766], z: 15 },
+      'Zona Sul': { c: [-23.5895, -46.6347], z: 15 },
+      'Zona Oeste': { c: [-23.5672, -46.6845], z: 15 },
+      'Zona Norte': { c: [-23.5026, -46.6248], z: 15 },
+      'Santo André': { c: [-23.6639, -46.5383], z: 15 },
+      'São Bernardo': { c: [-23.6944, -46.5654], z: 15 },
+      'São Caetano': { c: [-23.6229, -46.5548], z: 15 }
+    };
+
+    function regiaoMaisProxima(lat, lng) {
+      let melhor = 'Centro SP', menor = Infinity;
+      Object.keys(centrosRegioes).forEach(r => {
+        if (r === 'todas') return;
+        const d = Math.pow(centrosRegioes[r].c[0] - lat, 2) + Math.pow(centrosRegioes[r].c[1] - lng, 2);
+        if (d < menor) { menor = d; melhor = r; }
+      });
+      return melhor;
+    }
+
+    function atualizarListaRegiao() {
+      const reg = document.getElementById('filtro-regiao').value;
+      const nomeRegiao = reg === 'todas' ? 'Todas as regiões' : reg;
+      document.getElementById('titulo-chamados-regiao').textContent = '📋 Chamados abertos — ' + nomeRegiao;
+      const doMapa = ocorrenciasIniciais.concat(marcacoesUsuario)
+        .filter(o => o.status !== 'Resolvido' && (reg === 'todas' || o.regiao === reg))
+        .map(o => ({ letra: configPinos[o.cat].letra, cat: o.cat, texto: o.titulo, info: o.regiao + ' · ' + o.status }));
+      const daCentral = chamadosSalvos
+        .filter(c => c.status !== 'Resolvido' && (reg === 'todas' || String(c.regiao).indexOf(reg) === 0))
+        .map(c => ({ letra: '#', cat: '', texto: c.protocolo + ' — ' + c.categoria, info: c.regiao + ' · ' + c.status }));
+      const itens = doMapa.concat(daCentral);
+      const lista = document.getElementById('lista-chamados-regiao');
+      lista.innerHTML = itens.length ? '' : '<li>Nenhum chamado aberto nesta região.</li>';
+      itens.forEach(i => {
+        const li = document.createElement('li');
+        const badge = document.createElement('span');
+        badge.className = 'pino-badge';
+        badge.style.background = i.cat ? 'var(--cor-' + i.cat + ')' : 'var(--text-secondary)';
+        badge.textContent = i.letra;
+        const txt = document.createElement('span');
+        txt.innerHTML = '<strong></strong><br><small></small>';
+        txt.querySelector('strong').textContent = i.texto;   // textContent: evita inserir HTML digitado
+        txt.querySelector('small').textContent = i.info;
+        li.appendChild(badge); li.appendChild(txt);
+        lista.appendChild(li);
+      });
+    }
+
+    function adicionarMarcacao(lat, lng) {
+      const desc = document.getElementById('marcar-descricao').value.trim();
+      const nova = {
+        id: Date.now(), cat: tipoMarcacao, regiao: regiaoMaisProxima(lat, lng),
+        titulo: nomesTipos[tipoMarcacao] + (desc ? ' — ' + desc : ' (marcado por você)'),
+        lat: lat, lng: lng, status: 'Aberto'
+      };
+      marcacoesUsuario.push(nova);
+      localStorage.setItem('ha_marcacoes', JSON.stringify(marcacoesUsuario));
+      document.getElementById('marcar-descricao').value = '';
+      ligarModoMarcar(false);
+      renderizarMarcadores();
+      document.getElementById('status-marcacao').textContent = `✅ ${nomesTipos[nova.cat]} marcado em ${nova.regiao} (${lat.toFixed(4)}, ${lng.toFixed(4)}).`;
+    }
+
+    function ligarModoMarcar(ligar) {
+      modoMarcar = ligar;
+      const btn = document.getElementById('btn-modo-marcar');
+      btn.setAttribute('aria-pressed', String(ligar));
+      btn.textContent = ligar ? '✖️ Cancelar marcação' : '📍 Marcar no mapa';
+      document.getElementById('mapa-leaflet').classList.toggle('modo-marcar', ligar);
+      document.getElementById('status-marcacao').textContent = ligar
+        ? `Toque no mapa onde está o problema (${nomesTipos[tipoMarcacao]}).`
+        : '';
+    }
+
+    document.querySelectorAll('.btn-sinalizador').forEach(btn => {
+      btn.addEventListener('click', () => {
+        tipoMarcacao = btn.getAttribute('data-tipo');
+        document.querySelectorAll('.btn-sinalizador').forEach(b => {
+          b.classList.toggle('ativo', b === btn);
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+        if (modoMarcar) ligarModoMarcar(true);
+      });
+    });
+    document.getElementById('btn-modo-marcar').addEventListener('click', () => ligarModoMarcar(!modoMarcar));
+    document.getElementById('btn-marcar-centro').addEventListener('click', () => {
+      if (!mapaInstancia) return;
+      const centro = mapaInstancia.getCenter();
+      adicionarMarcacao(centro.lat, centro.lng);
+    });
+    document.getElementById('btn-limpar-marcacoes').addEventListener('click', () => {
+      if (!marcacoesUsuario.length) { document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.'; return; }
+      if (!confirm('Apagar todas as ocorrências que você marcou?')) return;
+      marcacoesUsuario = [];
+      localStorage.removeItem('ha_marcacoes');
+      renderizarMarcadores();
+      document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
+    });
+
     let camadaMarcadores = null;
     let layerSatelite = null;
     let layerRotulos = null;
     let layerMapaRuas = null;
 
     function iniciarMapaLeaflet() {
+      atualizarListaRegiao();
       if (typeof L === 'undefined') return;
       if (!mapaInstancia) {
         mapaInstancia = L.map('mapa-leaflet', {
@@ -2072,6 +2323,11 @@
         layerRotulos.addTo(mapaInstancia);
 
         camadaMarcadores = L.layerGroup().addTo(mapaInstancia);
+
+        // Clique no mapa com o modo de marcação ligado cria a ocorrência naquele ponto
+        mapaInstancia.on('click', (e) => {
+          if (modoMarcar) adicionarMarcacao(e.latlng.lat, e.latlng.lng);
+        });
       }
       renderizarMarcadores();
     }
@@ -2104,28 +2360,38 @@
     });
 
     function renderizarMarcadores() {
+      atualizarListaRegiao();
       if (!camadaMarcadores) return;
       camadaMarcadores.clearLayers();
       const catFiltro = document.getElementById('filtro-categoria').value;
       const regFiltro = document.getElementById('filtro-regiao').value;
 
-      ocorrenciasIniciais
+      ocorrenciasIniciais.concat(marcacoesUsuario)
         .filter(item => (catFiltro === 'todos' || item.cat === catFiltro) && (regFiltro === 'todas' || item.regiao === regFiltro))
         .forEach(item => {
           const info = configPinos[item.cat] || configPinos.buraco;
           const icone = L.divIcon({
             className: 'custom-pin',
-            html: `<div style="background:${info.cor};color:#fff;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.65);">${info.letra}</div>`,
+            html: `<div style="background:${getComputedStyle(htmlEl).getPropertyValue('--cor-' + item.cat).trim() || info.cor};color:#fff;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.65);">${info.letra}</div>`,
             iconSize: [32, 32]
           });
           L.marker([item.lat, item.lng], { icon: icone })
             .bindPopup(`<strong>${item.titulo}</strong><br>Região: ${item.regiao}<br>Status: ${item.status}`)
+            .on('click', () => { if (iaVozAtiva) falarRespostaIA(`${item.titulo}. Região: ${item.regiao}. Status: ${item.status}.`); })
             .addTo(camadaMarcadores);
         });
     }
 
     document.getElementById('filtro-categoria').addEventListener('change', renderizarMarcadores);
-    document.getElementById('filtro-regiao').addEventListener('change', renderizarMarcadores);
+    document.getElementById('filtro-regiao').addEventListener('change', () => {
+      renderizarMarcadores();
+      // Leva a visão de satélite direto para a região escolhida
+      if (!mapaInstancia) return;
+      const btnHibrido = document.querySelector('.btn-camada[data-camada="hibrido"]');
+      if (mapaInstancia.hasLayer(layerMapaRuas) && btnHibrido) btnHibrido.click();
+      const alvo = centrosRegioes[document.getElementById('filtro-regiao').value] || centrosRegioes.todas;
+      mapaInstancia.flyTo(alvo.c, alvo.z, { duration: 1.4 });
+    });
     document.getElementById('btn-centralizar-sp').addEventListener('click', () => {
       if (mapaInstancia) mapaInstancia.flyTo([-23.58, -46.60], 11, { duration: 1.4 });
     });
@@ -2268,12 +2534,28 @@
       const msg = document.getElementById('contato-mensagem').value.trim();
 
       document.getElementById('erro-contato-nome').textContent = nome ? '' : 'Preencha seu nome.';
-      document.getElementById('erro-contato-email').textContent = email.includes('@') ? '' : 'Informe um e-mail válido.';
+      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+      document.getElementById('erro-contato-email').textContent = emailValido ? '' : 'Informe um e-mail válido (ex.: nome@gmail.com). A resposta será enviada para ele.';
       document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva uma mensagem.';
 
-      if (!nome || !email.includes('@') || !msg) return;
-      document.getElementById('retorno-contato').textContent = '✅ Mensagem enviada com sucesso! Nossa equipe responderá em breve.';
-      e.target.reset();
+      if (!nome || !emailValido || !msg) return;
+
+      // Envio real: o FormSubmit entrega a mensagem em 686769testes1@gmail.com
+      // e manda uma cópia de confirmação para o e-mail do usuário (_autoresponse)
+      if (location.protocol === 'file:') {
+        document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (GitHub Pages). Aberto direto do computador, o envio não funciona.';
+        return;
+      }
+      const enderecoPagina = location.href.split('#')[0].split('?')[0];
+      document.getElementById('contato-next').value = enderecoPagina + '?enviado=1';
+      document.getElementById('contato-url').value = enderecoPagina;
+      const assunto = document.getElementById('contato-assunto');
+      document.getElementById('contato-assunto-texto').value = assunto.options[assunto.selectedIndex].text;
+      const btnEnviar = document.getElementById('btn-enviar-contato');
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = '⏳ Enviando...';
+      document.getElementById('retorno-contato').textContent = 'Enviando sua mensagem...';
+      e.target.submit();
     });
 
     /* ==========================================================================
@@ -2294,8 +2576,11 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      btnIaVozToggle.setAttribute('aria-pressed', 'false');
-      btnIaVozToggle.textContent = '🗣️ Ouvir IA';
+    }
+
+    function atualizarBotaoVozIA() {
+      btnIaVozToggle.setAttribute('aria-pressed', String(iaVozAtiva));
+      btnIaVozToggle.textContent = iaVozAtiva ? '🔊 Narração IA: Ligada' : '🔇 Narração IA: Desligada';
     }
 
     function falarRespostaIA(textoLimpo) {
@@ -2304,29 +2589,17 @@
 
       const fala = new SpeechSynthesisUtterance(textoLimpo);
       fala.lang = 'pt-BR';
-      fala.onstart = () => {
-        btnIaVozToggle.setAttribute('aria-pressed', 'true');
-        btnIaVozToggle.textContent = '⏹️ Parar IA';
-      };
-      fala.onend = () => {
-        btnIaVozToggle.setAttribute('aria-pressed', 'false');
-        btnIaVozToggle.textContent = '🗣️ Ouvir IA';
-      };
-      fala.onerror = () => {
-        btnIaVozToggle.setAttribute('aria-pressed', 'false');
-        btnIaVozToggle.textContent = '🗣️ Ouvir IA';
-      };
       window.speechSynthesis.speak(fala);
     }
 
-    // Ao clicar pela 1ª vez: inicia a fala da IA. Ao clicar pela 2ª vez: para imediatamente!
+    // Um único botão: 1º clique liga a narração, 2º clique desliga (e para a fala na hora)
     btnIaVozToggle.addEventListener('click', () => {
-      if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
-        iaVozAtiva = false;
-        pararFalaIA();
-      } else {
-        iaVozAtiva = true;
+      iaVozAtiva = !iaVozAtiva;
+      atualizarBotaoVozIA();
+      if (iaVozAtiva) {
         falarRespostaIA(ultimaRespostaTextoLimpo);
+      } else {
+        pararFalaIA();
       }
     });
 
@@ -2392,8 +2665,8 @@
         resposta: 'Na <strong>Página 9 (Ajuda & Vídeo)</strong> você encontra o FAQ completo e o vídeo demonstrativo interativo com narração em áudio, legendas sincronizadas e botões de iniciar, pausar e reiniciar.'
       },
       {
-        chaves: ['equipe', 'autor', 'autores', 'criador', 'quem fez', 'unicid', 'lucas', 'pedro', 'marcos'],
-        resposta: 'O HyperAcess foi desenvolvido na <strong>UNICID (2026)</strong> pelos estudantes: <strong>Lucas de Moraes Covelo</strong> (Coordenação e Arquitetura), <strong>Pedro Henrique de Oliveira</strong> (Acessibilidade WCAG, JS e Assistente IA) e <strong>Marcos Vinicius Calixto Emerenciano</strong> (Layout, CSS e Mapa Satélite).'
+        chaves: ['equipe', 'autor', 'autores', 'criador', 'quem fez', 'unicid', 'lucas', 'pedro', 'marcos', 'nathan'],
+        resposta: 'O HyperAcess foi desenvolvido na <strong>UNICID (2026)</strong> pelos estudantes: <strong>Lucas de Moraes Covelo</strong> (Coordenação e Arquitetura), <strong>Pedro Henrique de Oliveira</strong> (Acessibilidade WCAG, JS e Assistente IA), <strong>Marcos Vinicius Calixto Emerenciano</strong> (Layout, CSS e Mapa Satélite) e <strong>Nathan Caue Sanchez Martins</strong> (Front-End e Módulos JavaScript: armazenamento no localStorage).'
       },
       {
         chaves: ['contato', 'email', 'falar', 'suporte', 'ong', 'voluntario', 'parceria'],
@@ -2461,6 +2734,12 @@
       inputChat.value = '';
       processarPerguntaChat(texto);
     });
+
+    if (new URLSearchParams(location.search).get('enviado') === '1') {
+      navegarPara('pag-10');
+      document.getElementById('retorno-contato').textContent = '✅ Mensagem enviada! A equipe recebeu seu feedback e uma cópia foi enviada para o seu e-mail.';
+      history.replaceState(null, '', location.pathname);
+    }
 
     document.querySelectorAll('.chip-sugestao').forEach(chip => {
       chip.addEventListener('click', () => {
