@@ -83,7 +83,7 @@
       --focus-outline: #38BDF8;
     }
 
-    /* Protanopia (vermelho) */
+    /* Protanopia (vermelho): poucas mudanças, ocorrências em azul, marrom, mostarda e cinza */
     html.protanopia {
       --accent-color: #F0B400;
       --accent-hover: #D19C00;
@@ -94,7 +94,7 @@
       --cor-obra: #5A5A5A;
     }
 
-    /* Deuteranopia (verde) */
+    /* Deuteranopia (verde): parecida com a protanopia */
     html.deuteranopia {
       --accent-color: #E6A800;
       --accent-hover: #C99300;
@@ -105,7 +105,7 @@
       --cor-obra: #616161;
     }
 
-    /* Tritanopia (azul/amarelo) */
+    /* Tritanopia (azul/amarelo): maior mudança, azul vira grafite + ciano e laranja vira coral */
     html.tritanopia {
       --primary-color: #1F2A30;
       --primary-light: #34444D;
@@ -550,7 +550,7 @@
     }
 
     /* ==========================================================================
-       6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + HÍBRIDO)
+       6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + 3D/HÍBRIDO)
        ========================================================================== */
     .mapa-controles {
       display: flex;
@@ -713,7 +713,6 @@
       font-size: 0.78rem;
       display: inline-grid;
       place-items: center;
-      flex-shrink: 0;
     }
 
     /* ==========================================================================
@@ -1109,42 +1108,7 @@
     }
 
     /* ==========================================================================
-       11. MODAL DE CONFIRMAÇÃO ACESSÍVEL (SUBSTITUI CONFIRM / ALERT NATIVO)
-       ========================================================================== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      z-index: 3000;
-      place-items: center;
-      padding: 16px;
-    }
-
-    .modal-overlay.aberto {
-      display: grid;
-    }
-
-    .modal-caixa {
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      border: 2px solid var(--border-color);
-      border-radius: var(--r-md);
-      max-width: 440px;
-      width: 100%;
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .modal-acoes {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    /* ==========================================================================
-       12. RODAPÉ
+       11. RODAPÉ
        ========================================================================== */
     footer.rodape {
       background: var(--primary-color);
@@ -1285,18 +1249,6 @@
     </ul>
   </aside>
 
-  <!-- MODAL DE CONFIRMAÇÃO ACESSÍVEL -->
-  <div class="modal-overlay" id="modal-confirmacao" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" aria-hidden="true">
-    <div class="modal-caixa">
-      <h2 id="modal-titulo" style="font-size:1.2rem;">Confirmar ação</h2>
-      <p id="modal-mensagem" style="margin-top:8px; color:var(--text-secondary);">Tem certeza?</p>
-      <div class="modal-acoes">
-        <button type="button" class="btn-secondary" id="modal-btn-cancelar" style="min-height:42px; padding:8px 16px;">Cancelar</button>
-        <button type="button" class="btn-primary" id="modal-btn-confirmar" style="min-height:42px; padding:8px 16px;">Confirmar</button>
-      </div>
-    </div>
-  </div>
-
   <!-- CONTEÚDO PRINCIPAL (10 PÁGINAS SPA) -->
   <main id="conteudo-principal" class="container" tabindex="-1">
 
@@ -1414,7 +1366,7 @@
 
       <div class="mapa-controles">
         <select id="filtro-categoria" aria-label="Filtrar ocorrências por tipo">
-          <option value="todos">Todas as categorias (pontos mapeados)</option>
+          <option value="todos">Todas as categorias (21 pontos)</option>
           <option value="buraco">Buraco / Calçada Danificada</option>
           <option value="rampa">Falta de Rampa / Guia Alta</option>
           <option value="piso">Piso Tátil Ausente ou Quebrado</option>
@@ -1747,7 +1699,7 @@
         <p>Assista ao vídeo demonstrativo animado com narração em áudio sincronizada e legendas em português.</p>
       </div>
 
-      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL -->
+      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL (RODA DIRETO NO NAVEGADOR SEM DEPENDER DE ARQUIVO EXTERNO) -->
       <div class="video-box">
         <h2>🎬 Vídeo Demonstrativo HyperAcess (Com Áudio e Legendas)</h2>
         <p style="margin-bottom:12px; color:var(--text-secondary);">Clique em <strong>Iniciar Vídeo</strong> para assistir à animação explicativa com narração em voz e legendas sincronizadas.</p>
@@ -1783,7 +1735,7 @@
       </details>
       <details class="faq-item">
         <summary>4. Como funciona o botão de voz da IA no Assistente Virtual?</summary>
-        <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>Narração IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
+        <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>🗣️ Ouvir / Pausar IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
       </details>
 
       <div class="card" id="area-ongs" style="margin-top:24px;">
@@ -1827,6 +1779,7 @@
           <input type="hidden" name="_next" id="contato-next" value="">
           <input type="hidden" name="_url" id="contato-url" value="">
           <input type="text" name="_honey" style="display:none;" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <!-- Estrutura do e-mail: Protocolo, Remetente, Tipo de mensagem, Nome e Mensagem -->
           <input type="hidden" name="Protocolo" id="contato-protocolo" value="">
           <input type="hidden" name="Remetente" id="contato-remetente-campo" value="Anônimo">
           <input type="hidden" name="email" id="contato-email-remetente" value="" disabled>
@@ -1936,7 +1889,7 @@
         </div>
       </div>
       <div class="rodape-copy">
-        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira, Marcos Vinicius Calixto Emerenciano e Nathan Caue Sanchez Martins.
+        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira e Marcos Vinicius Calixto Emerenciano.
       </div>
     </div>
   </footer>
@@ -1945,36 +1898,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    /* ==========================================================================
-       0. MODAL DE CONFIRMAÇÃO ACESSÍVEL (SUBSTITUI CONFIRM / ALERT)
-       ========================================================================== */
-    function pedirConfirmacao(mensagem, aoConfirmar) {
-      const overlay = document.getElementById('modal-confirmacao');
-      const msgEl = document.getElementById('modal-mensagem');
-      const btnConfirmar = document.getElementById('modal-btn-confirmar');
-      const btnCancelar = document.getElementById('modal-btn-cancelar');
-
-      msgEl.textContent = mensagem;
-      overlay.classList.add('aberto');
-      overlay.setAttribute('aria-hidden', 'false');
-      btnCancelar.focus();
-
-      function fechar() {
-        overlay.classList.remove('aberto');
-        overlay.setAttribute('aria-hidden', 'true');
-        btnConfirmar.removeEventListener('click', confirmar);
-        btnCancelar.removeEventListener('click', fechar);
-      }
-
-      function confirmar() {
-        fechar();
-        aoConfirmar();
-      }
-
-      btnConfirmar.addEventListener('click', confirmar);
-      btnCancelar.addEventListener('click', fechar);
-    }
-
     /* ==========================================================================
        1. NAVEGAÇÃO SPA (10 PÁGINAS) & GAVETA MOBILE
        ========================================================================== */
@@ -2085,6 +2008,7 @@
     configurarTemaToggle('btn-contraste', 'alto-contraste', 'ha_contraste');
     configurarTemaToggle('btn-escuro', 'modo-escuro', 'ha_escuro');
 
+    // Daltonismo: cada clique troca o tipo (Desligado > Protanopia > Deuteranopia > Tritanopia)
     const tiposDaltonismo = ['', 'protanopia', 'deuteranopia', 'tritanopia'];
     const nomesDaltonismo = ['Desligado', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
     const btnDaltonismo = document.getElementById('btn-daltonismo');
@@ -2103,10 +2027,11 @@
       aplicarDaltonismo();
     });
 
+    // Leitura da página ativa via Web Speech API (funciona como start/stop ao clicar novamente)
     const btnOuvir = document.getElementById('btn-ouvir-pagina');
     btnOuvir.addEventListener('click', () => {
       if (!('speechSynthesis' in window)) {
-        btnOuvir.textContent = '⚠️ Voz indisponível';
+        alert('Seu navegador não suporta síntese de voz.');
         return;
       }
       if (window.speechSynthesis.speaking) {
@@ -2129,7 +2054,7 @@
     });
 
     /* ==========================================================================
-       3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9)
+       3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9) - RODA 100% NO NAVEGADOR
        ========================================================================== */
     const canvasVideo = document.getElementById('canvas-video-demo');
     const ctxVideo = canvasVideo ? canvasVideo.getContext('2d') : null;
@@ -2145,7 +2070,7 @@
         inicio: 0,
         fim: 6,
         titulo: '1. Mapa Satélite Inclusivo (SP & ABC)',
-        subtitulo: 'Visualização aérea estilo Google Earth com ocorrências mapeadas',
+        subtitulo: 'Visualização aérea estilo Google Earth com 21 ocorrências mapeadas',
         corDestaque: '#0077B6',
         legenda: 'Bem-vindo ao HyperAcess! Veja as barreiras urbanas em tempo real no mapa de satélite.'
       },
@@ -2187,6 +2112,7 @@
       const w = canvasVideo.width;
       const h = canvasVideo.height;
 
+      // Fundo estilo globo/satélite
       const grad = ctxVideo.createLinearGradient(0, 0, w, h);
       grad.addColorStop(0, '#061426');
       grad.addColorStop(0.5, '#0A2540');
@@ -2194,6 +2120,7 @@
       ctxVideo.fillStyle = grad;
       ctxVideo.fillRect(0, 0, w, h);
 
+      // Grade geográfica decorativa
       ctxVideo.strokeStyle = 'rgba(56, 189, 248, 0.14)';
       ctxVideo.lineWidth = 1;
       for (let x = 0; x < w; x += 60) {
@@ -2212,6 +2139,7 @@
       const idxCena = Math.min(cenasVideo.length - 1, Math.floor(tempo / 6));
       const cena = cenasVideo[idxCena];
 
+      // Círculo radar animado
       const raio = 45 + ((tempo * 25) % 45);
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, raio, 0, Math.PI * 2);
@@ -2219,6 +2147,7 @@
       ctxVideo.lineWidth = 4;
       ctxVideo.stroke();
 
+      // Pino central
       ctxVideo.fillStyle = cena.corDestaque;
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, 22, 0, Math.PI * 2);
@@ -2229,6 +2158,7 @@
       ctxVideo.textAlign = 'center';
       ctxVideo.fillText('HA', w / 2, h / 2 - 14);
 
+      // Textos da cena
       ctxVideo.fillStyle = '#FFFFFF';
       ctxVideo.font = 'bold 28px Segoe UI, sans-serif';
       ctxVideo.fillText(cena.titulo, w / 2, 72);
@@ -2243,6 +2173,7 @@
       const segFormatado = String(Math.floor(tempo)).padStart(2, '0');
       statusVideoAudio.textContent = `${videoRodando ? '▶️ Reproduzindo' : '⏸️ Pausado'} (00:${segFormatado} / 00:24) · ${videoMudo ? 'Mudo' : 'Áudio Ativo'}`;
 
+      // Narração automática por cena quando áudio está ligado
       if (videoRodando && !videoMudo && idxCena !== ultimaCenaFalada && 'speechSynthesis' in window) {
         ultimaCenaFalada = idxCena;
         window.speechSynthesis.cancel();
@@ -2342,6 +2273,7 @@
       obra: { letra: 'O', cor: '#E69F00' }
     };
 
+    // Marcações feitas pelo usuário (salvas no localStorage) e centro de cada região
     let marcacoesUsuario = JSON.parse(localStorage.getItem('ha_marcacoes')) || [];
     let tipoMarcacao = 'buraco';
     let modoMarcar = false;
@@ -2389,7 +2321,7 @@
         badge.textContent = i.letra;
         const txt = document.createElement('span');
         txt.innerHTML = '<strong></strong><br><small></small>';
-        txt.querySelector('strong').textContent = i.texto;
+        txt.querySelector('strong').textContent = i.texto;   // textContent: evita inserir HTML digitado
         txt.querySelector('small').textContent = i.info;
         li.appendChild(badge); li.appendChild(txt);
         lista.appendChild(li);
@@ -2439,16 +2371,12 @@
       adicionarMarcacao(centro.lat, centro.lng);
     });
     document.getElementById('btn-limpar-marcacoes').addEventListener('click', () => {
-      if (!marcacoesUsuario.length) {
-        document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.';
-        return;
-      }
-      pedirConfirmacao('Deseja apagar todas as ocorrências que você marcou no mapa?', () => {
-        marcacoesUsuario = [];
-        localStorage.removeItem('ha_marcacoes');
-        renderizarMarcadores();
-        document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
-      });
+      if (!marcacoesUsuario.length) { document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.'; return; }
+      if (!confirm('Apagar todas as ocorrências que você marcou?')) return;
+      marcacoesUsuario = [];
+      localStorage.removeItem('ha_marcacoes');
+      renderizarMarcadores();
+      document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
     });
 
     let camadaMarcadores = null;
@@ -2466,6 +2394,7 @@
           maxZoom: 19
         });
 
+        // Camada Satélite de Alta Resolução (Estilo Google Earth)
         layerSatelite = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           {
@@ -2474,6 +2403,7 @@
           }
         );
 
+        // Camada de Rótulos de Ruas, Bairros e Referências sobre o Satélite (Modo Híbrido)
         layerRotulos = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
           {
@@ -2481,6 +2411,7 @@
           }
         );
 
+        // Camada Mapa Urbano Tradicional (Opcional)
         layerMapaRuas = L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           {
@@ -2489,11 +2420,13 @@
           }
         );
 
+        // Inicia no modo Satélite Híbrido (Google Earth)
         layerSatelite.addTo(mapaInstancia);
         layerRotulos.addTo(mapaInstancia);
 
         camadaMarcadores = L.layerGroup().addTo(mapaInstancia);
 
+        // Clique no mapa com o modo de marcação ligado cria a ocorrência naquele ponto
         mapaInstancia.on('click', (e) => {
           if (modoMarcar) adicionarMarcacao(e.latlng.lat, e.latlng.lng);
         });
@@ -2501,6 +2434,7 @@
       renderizarMarcadores();
     }
 
+    // Alternar entre Satélite + Ruas (Google Earth), Satélite Puro e Mapa Urbano
     document.querySelectorAll('.btn-camada').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!mapaInstancia) return;
@@ -2553,6 +2487,7 @@
     document.getElementById('filtro-categoria').addEventListener('change', renderizarMarcadores);
     document.getElementById('filtro-regiao').addEventListener('change', () => {
       renderizarMarcadores();
+      // Leva a visão de satélite direto para a região escolhida
       if (!mapaInstancia) return;
       const btnHibrido = document.querySelector('.btn-camada[data-camada="hibrido"]');
       if (mapaInstancia.hasLayer(layerMapaRuas) && btnHibrido) btnHibrido.click();
@@ -2633,41 +2568,6 @@
     });
 
     /* ==========================================================================
-       5.1 COMPARADOR DE ROTAS ACESSÍVEIS (PÁGINA 5)
-       ========================================================================== */
-    document.getElementById('btn-calcular-rotas').addEventListener('click', () => {
-      const origem = document.getElementById('rota-origem').value.trim() || 'Ponto de Partida';
-      const destino = document.getElementById('rota-destino').value.trim() || 'Destino';
-      const perfil = document.getElementById('rota-perfil');
-      const perfilTexto = perfil.options[perfil.selectedIndex].text;
-      const containerRotas = document.getElementById('resultado-rotas');
-
-      containerRotas.innerHTML = `
-        <article class="card" style="border:2px solid var(--cor-piso);">
-          <span class="badge-tag" style="background:var(--cor-piso); color:#FFF;">⭐ Rota Recomendada (98% Acessível)</span>
-          <h3>Trajeto A — Otimizado para ${perfilTexto}</h3>
-          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
-          <p><strong>Tempo estimado:</strong> 11 min (780 m)</p>
-          <p><strong>Infraestrutura:</strong> 100% com guias rebaixadas, piso tátil direcional contínuo e sem buracos reportados.</p>
-        </article>
-        <article class="card">
-          <span class="badge-tag">Rota Intermediária (76% Acessível)</span>
-          <h3>Trajeto B — Via Avenida Principal</h3>
-          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
-          <p><strong>Tempo estimado:</strong> 9 min (650 m)</p>
-          <p><strong>Atenção:</strong> 1 semáforo sem alerta sonoro e fluxo intenso de pedestres no horário de pico.</p>
-        </article>
-        <article class="card">
-          <span class="badge-tag" style="background:var(--cor-buraco); color:#FFF;">Não Recomendada (42% Acessível)</span>
-          <h3>Trajeto C — Caminho Mais Curto</h3>
-          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
-          <p><strong>Tempo estimado:</strong> 8 min (590 m)</p>
-          <p><strong>Alerta Crítico:</strong> 2 buracos na calçada e obra bloqueando a passagem.</p>
-        </article>
-      `;
-    });
-
-    /* ==========================================================================
        6. ALERTAS GPS & SIMULADOR (PÁGINA 6)
        ========================================================================== */
     function tocarBipeAlerta() {
@@ -2722,6 +2622,7 @@
     /* ==========================================================================
        7. PERFIL (PÁGINA 7) & CONTATO (PÁGINA 10)
        ========================================================================== */
+    // Telefone do estado de SP: DDD 11 a 19; celular com 9 dígitos começando em 9, fixo com 8 dígitos começando em 2 a 5
     function formatarTelefone(valor) {
       const d = valor.replace(/\D/g, '').slice(0, 11);
       if (d.length <= 2) return d.length ? '(' + d : '';
@@ -2734,11 +2635,12 @@
       const ddd = Number(d.slice(0, 2));
       if (ddd < 11 || ddd > 19) return false;
       const numero = d.slice(2);
-      if (/^(\d)\1+$/.test(numero)) return false;
-      if (d.length === 11) return numero[0] === '9';
-      if (d.length === 10) return /^[2-5]/.test(numero);
+      if (/^(\d)\1+$/.test(numero)) return false;                 // ex.: 99999-9999
+      if (d.length === 11) return numero[0] === '9';                // celular
+      if (d.length === 10) return /^[2-5]/.test(numero);            // fixo
       return false;
     }
+    // E-mail válido de provedores conhecidos (ou institucional .edu.br / .gov.br)
     const provedoresEmail = ['gmail.com', 'outlook.com', 'outlook.com.br', 'hotmail.com', 'hotmail.com.br', 'live.com', 'msn.com',
       'yahoo.com', 'yahoo.com.br', 'icloud.com', 'me.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com',
       'globomail.com', 'protonmail.com', 'proton.me', 'zoho.com', 'aol.com'];
@@ -2752,6 +2654,7 @@
     const campoTelefone = document.getElementById('perfil-telefone');
     campoTelefone.addEventListener('input', () => { campoTelefone.value = formatarTelefone(campoTelefone.value); });
 
+    // Carrega o perfil salvo nos campos
     const perfilSalvo = JSON.parse(localStorage.getItem('ha_perfil')) || {};
     if (perfilSalvo.nec) document.getElementById('perfil-necessidade').value = perfilSalvo.nec;
     if (perfilSalvo.bairro) document.getElementById('perfil-bairro').value = perfilSalvo.bairro;
@@ -2779,6 +2682,7 @@
       document.getElementById('status-perfil').textContent = '✅ Preferências de perfil salvas com sucesso!';
     });
 
+    // Remetente do Fale Conosco = e-mail do Perfil (ou "Anônimo")
     function emailDoPerfil() {
       const p = JSON.parse(localStorage.getItem('ha_perfil')) || {};
       return p.email && emailValidoProvedor(p.email) ? p.email : '';
@@ -2796,8 +2700,10 @@
       document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva (ou fale) uma mensagem.';
       if (!msg) { document.getElementById('contato-mensagem').focus(); return; }
 
+      // Envio real: o FormSubmit entrega a mensagem em suportehyperacess@gmail.com.
+      // Remetente = e-mail do Perfil; sem e-mail, vai como "Anônimo".
       if (location.protocol === 'file:') {
-        document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (HTTPS).';
+        document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (GitHub Pages). Aberto direto do computador, o envio não funciona.';
         return;
       }
       const enderecoPagina = location.href.split('#')[0].split('?')[0];
@@ -2809,7 +2715,7 @@
       const tipoTexto = assunto.options[assunto.selectedIndex].text;
       const campoEmail = document.getElementById('contato-email-remetente');
       campoEmail.value = emailRemetente;
-      campoEmail.disabled = !emailRemetente;
+      campoEmail.disabled = !emailRemetente;            // anônimo: o campo "email" não é enviado
       document.getElementById('contato-protocolo').value = protocolo;
       document.getElementById('contato-remetente-campo').value = emailRemetente || 'Anônimo';
       document.getElementById('contato-assunto-texto').value = tipoTexto;
@@ -2857,6 +2763,7 @@
       window.speechSynthesis.speak(fala);
     }
 
+    // Um único botão: 1º clique liga a narração, 2º clique desliga (e para a fala na hora)
     btnIaVozToggle.addEventListener('click', () => {
       iaVozAtiva = !iaVozAtiva;
       atualizarBotaoVozIA();
@@ -2881,6 +2788,7 @@
       pararFalaIA();
     }
 
+    // Clicar no botão do Assistente IA pela 1ª vez abre; clicar pela 2ª vez fecha e para a fala
     btnAbrirChat.addEventListener('click', () => {
       if (janelaChat.classList.contains('aberto')) {
         fecharChat();
@@ -2945,7 +2853,7 @@
       const limpa = pergunta
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+        .replace(/[̀-ͯ]/g, '');
 
       let melhor = null;
       let maxPontos = 0;
@@ -2998,7 +2906,7 @@
       processarPerguntaChat(texto);
     });
 
-    /* Ditado por voz na mensagem */
+    /* Ditado por voz na mensagem (microfone do computador ou do celular) */
     const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
     const btnDitado = document.getElementById('btn-ditado');
     const statusDitado = document.getElementById('status-ditado');
@@ -3020,11 +2928,11 @@
         statusDitado.textContent = 'Este navegador não faz ditado por voz. No celular, use o 🎤 do teclado; no computador, use Chrome ou Edge.';
         return;
       }
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();   // a narração não atrapalha o microfone
       reconhecedor = new Reconhecimento();
       reconhecedor.lang = 'pt-BR';
       reconhecedor.interimResults = true;
-      reconhecedor.continuous = false;
+      reconhecedor.continuous = false;            // reinicia sozinho: funciona melhor no celular
       reconhecedor.onresult = (ev) => {
         let final = '', parcial = '';
         for (let i = ev.resultIndex; i < ev.results.length; i++) {
@@ -3078,23 +2986,16 @@
       }
       setTimeout(() => campoMensagem.focus(), 400);
     });
-
     document.getElementById('btn-copiar-pix').addEventListener('click', () => {
       const chave = document.getElementById('chave-pix').textContent;
       const status = document.getElementById('status-pix');
-      const areaTemp = document.createElement('textarea');
-      areaTemp.value = chave;
-      areaTemp.style.position = 'fixed';
-      areaTemp.style.opacity = '0';
-      document.body.appendChild(areaTemp);
-      areaTemp.select();
-      try {
-        const copiado = document.execCommand('copy');
-        status.textContent = copiado ? '✅ Chave PIX copiada!' : 'Copie a chave: ' + chave;
-      } catch (err) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(chave)
+          .then(() => { status.textContent = '✅ Chave PIX copiada!'; })
+          .catch(() => { status.textContent = 'Copie a chave: ' + chave; });
+      } else {
         status.textContent = 'Copie a chave: ' + chave;
       }
-      document.body.removeChild(areaTemp);
     });
 
     if (new URLSearchParams(location.search).get('enviado') === '1') {
