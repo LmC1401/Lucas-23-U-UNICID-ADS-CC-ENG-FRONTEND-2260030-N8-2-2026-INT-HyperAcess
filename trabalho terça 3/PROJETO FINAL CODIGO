@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -84,7 +83,7 @@
       --focus-outline: #38BDF8;
     }
 
-    /* Protanopia (vermelho): poucas mudanças, ocorrências em azul, marrom, mostarda e cinza */
+    /* Protanopia (vermelho) */
     html.protanopia {
       --accent-color: #F0B400;
       --accent-hover: #D19C00;
@@ -95,7 +94,7 @@
       --cor-obra: #5A5A5A;
     }
 
-    /* Deuteranopia (verde): parecida com a protanopia */
+    /* Deuteranopia (verde) */
     html.deuteranopia {
       --accent-color: #E6A800;
       --accent-hover: #C99300;
@@ -106,7 +105,7 @@
       --cor-obra: #616161;
     }
 
-    /* Tritanopia (azul/amarelo): maior mudança, azul vira grafite + ciano e laranja vira coral */
+    /* Tritanopia (azul/amarelo) */
     html.tritanopia {
       --primary-color: #1F2A30;
       --primary-light: #34444D;
@@ -551,7 +550,7 @@
     }
 
     /* ==========================================================================
-       6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + 3D/HÍBRIDO)
+       6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + HÍBRIDO)
        ========================================================================== */
     .mapa-controles {
       display: flex;
@@ -714,6 +713,7 @@
       font-size: 0.78rem;
       display: inline-grid;
       place-items: center;
+      flex-shrink: 0;
     }
 
     /* ==========================================================================
@@ -749,6 +749,63 @@
       font-family: inherit;
       font-size: 1rem;
       min-height: 48px;
+    }
+
+    .dica-campo {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .remetente-box {
+      padding: 12px 14px;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--r-sm);
+      background: var(--bg-surface-alt);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .link-inline {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--secondary-color);
+      font: inherit;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .ditado-linha {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    #btn-ditado[aria-pressed="true"] {
+      background: #B91C1C;
+      border-color: #B91C1C;
+      color: #FFFFFF;
+    }
+
+    .ong-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .dados-pix {
+      display: grid;
+      gap: 4px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      border-radius: var(--r-sm);
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-color);
+      overflow-wrap: anywhere;
     }
 
     .erro-campo {
@@ -1052,7 +1109,42 @@
     }
 
     /* ==========================================================================
-       11. RODAPÉ
+       11. MODAL DE CONFIRMAÇÃO ACESSÍVEL (SUBSTITUI CONFIRM / ALERT NATIVO)
+       ========================================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 3000;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.aberto {
+      display: grid;
+    }
+
+    .modal-caixa {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--r-md);
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* ==========================================================================
+       12. RODAPÉ
        ========================================================================== */
     footer.rodape {
       background: var(--primary-color);
@@ -1193,6 +1285,18 @@
     </ul>
   </aside>
 
+  <!-- MODAL DE CONFIRMAÇÃO ACESSÍVEL -->
+  <div class="modal-overlay" id="modal-confirmacao" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" aria-hidden="true">
+    <div class="modal-caixa">
+      <h2 id="modal-titulo" style="font-size:1.2rem;">Confirmar ação</h2>
+      <p id="modal-mensagem" style="margin-top:8px; color:var(--text-secondary);">Tem certeza?</p>
+      <div class="modal-acoes">
+        <button type="button" class="btn-secondary" id="modal-btn-cancelar" style="min-height:42px; padding:8px 16px;">Cancelar</button>
+        <button type="button" class="btn-primary" id="modal-btn-confirmar" style="min-height:42px; padding:8px 16px;">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- CONTEÚDO PRINCIPAL (10 PÁGINAS SPA) -->
   <main id="conteudo-principal" class="container" tabindex="-1">
 
@@ -1310,7 +1414,7 @@
 
       <div class="mapa-controles">
         <select id="filtro-categoria" aria-label="Filtrar ocorrências por tipo">
-          <option value="todos">Todas as categorias (21 pontos)</option>
+          <option value="todos">Todas as categorias (pontos mapeados)</option>
           <option value="buraco">Buraco / Calçada Danificada</option>
           <option value="rampa">Falta de Rampa / Guia Alta</option>
           <option value="piso">Piso Tátil Ausente ou Quebrado</option>
@@ -1582,6 +1686,18 @@
             <label for="perfil-bairro">Bairro / Cidade Base</label>
             <input type="text" id="perfil-bairro" placeholder="Ex.: Penha / Vila Esperança - São Paulo">
           </div>
+          <div class="form-group">
+            <label for="perfil-telefone">Telefone (SP) — opcional</label>
+            <input type="tel" id="perfil-telefone" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(11) 91234-5678" aria-describedby="dica-perfil-telefone erro-perfil-telefone">
+            <span class="dica-campo" id="dica-perfil-telefone">Celular ou fixo do estado de São Paulo, com DDD de 11 a 19.</span>
+            <span class="erro-campo" id="erro-perfil-telefone" aria-live="polite"></span>
+          </div>
+          <div class="form-group">
+            <label for="perfil-email">E-mail — opcional</label>
+            <input type="email" id="perfil-email" autocomplete="email" placeholder="seuemail@gmail.com" aria-describedby="dica-perfil-email erro-perfil-email">
+            <span class="dica-campo" id="dica-perfil-email">Gmail, Outlook, Hotmail, Live, Yahoo, iCloud, UOL, BOL, Terra ou e-mail institucional (.edu.br / .gov.br). É o remetente das mensagens do Fale Conosco.</span>
+            <span class="erro-campo" id="erro-perfil-email" aria-live="polite"></span>
+          </div>
         </div>
         <button type="button" class="btn-primary" id="btn-salvar-perfil">💾 Salvar Preferências</button>
         <p id="status-perfil" role="status" aria-live="polite" style="margin-top:12px; font-weight:700;"></p>
@@ -1631,7 +1747,7 @@
         <p>Assista ao vídeo demonstrativo animado com narração em áudio sincronizada e legendas em português.</p>
       </div>
 
-      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL (RODA DIRETO NO NAVEGADOR SEM DEPENDER DE ARQUIVO EXTERNO) -->
+      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL -->
       <div class="video-box">
         <h2>🎬 Vídeo Demonstrativo HyperAcess (Com Áudio e Legendas)</h2>
         <p style="margin-bottom:12px; color:var(--text-secondary);">Clique em <strong>Iniciar Vídeo</strong> para assistir à animação explicativa com narração em voz e legendas sincronizadas.</p>
@@ -1667,8 +1783,32 @@
       </details>
       <details class="faq-item">
         <summary>4. Como funciona o botão de voz da IA no Assistente Virtual?</summary>
-        <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>🗣️ Ouvir / Pausar IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
+        <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>Narração IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
       </details>
+
+      <div class="card" id="area-ongs" style="margin-top:24px;">
+        <span class="badge-tag">Para ONGs e Instituições</span>
+        <h2 style="margin-top:8px;">🤝 Sua ONG pode caminhar com a gente</h2>
+        <p>Acessibilidade se constrói em rede. Convidamos ONGs, coletivos e associações que trabalham com pessoas com deficiência, idosos e mobilidade urbana a se unirem ao HyperAcess por uma causa melhor: cidades onde todos possam ir e vir com segurança e autonomia.</p>
+        <div class="ong-grid">
+          <article class="card">
+            <h3>📣 Parceria de divulgação</h3>
+            <p>Divulgue o HyperAcess para o público da sua ONG e ajude a mapear mais calçadas, rampas e pisos táteis. Em troca, sua instituição aparece como parceira e recebe os dados da sua região.</p>
+            <button type="button" class="btn-primary" id="btn-ong-parceria" style="margin-top:10px;">Quero ser parceira</button>
+          </article>
+          <article class="card">
+            <h3>💸 Apoio por transferência</h3>
+            <p>Doações ajudam a manter o site no ar e a levar o projeto a mais bairros.</p>
+            <div class="dados-pix">
+              <span><strong>Chave PIX (e-mail):</strong> <span id="chave-pix">suportehyperacess@gmail.com</span></span>
+              <span><strong>Favorecido:</strong> Projeto HyperAcess (UNICID)</span>
+              <span><strong>Banco, agência e conta:</strong> enviados pela equipe por e-mail, mediante pedido no Fale Conosco.</span>
+            </div>
+            <button type="button" class="btn-secondary" id="btn-copiar-pix">📋 Copiar chave PIX</button>
+            <p id="status-pix" role="status" aria-live="polite" style="margin-top:8px; font-weight:700;"></p>
+          </article>
+        </div>
+      </div>
     </section>
 
     <!-- ==================== PÁGINA 10: FALE CONOSCO ==================== -->
@@ -1680,40 +1820,49 @@
       </div>
 
       <div class="card">
-        <form id="form-contato" action="https://formsubmit.co/686769testes1@gmail.com" method="POST" novalidate>
-          <input type="hidden" name="_subject" value="HyperAcess — Novo feedback pelo Fale Conosco">
+        <form id="form-contato" action="https://formsubmit.co/suportehyperacess@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" id="contato-subject" value="HyperAcess — Nova mensagem pelo Fale Conosco">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_autoresponse" value="Olá! Recebemos sua mensagem no HyperAcess. Nossa equipe vai responder por este e-mail em breve. Abaixo está uma cópia do que você enviou.">
           <input type="hidden" name="_next" id="contato-next" value="">
           <input type="hidden" name="_url" id="contato-url" value="">
-          <input type="hidden" name="Assunto" id="contato-assunto-texto" value="">
           <input type="text" name="_honey" style="display:none;" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="Protocolo" id="contato-protocolo" value="">
+          <input type="hidden" name="Remetente" id="contato-remetente-campo" value="Anônimo">
+          <input type="hidden" name="email" id="contato-email-remetente" value="" disabled>
+          <input type="hidden" name="Tipo de mensagem" id="contato-assunto-texto" value="">
           <div class="form-grid">
             <div class="form-group">
-              <label for="contato-nome">Nome Completo *</label>
-              <input type="text" id="contato-nome" name="Nome" required placeholder="Digite seu nome">
-              <span class="erro-campo" id="erro-contato-nome" aria-live="polite"></span>
+              <span style="font-weight:700; font-size:0.95rem;">Remetente</span>
+              <p class="remetente-box" id="contato-remetente" aria-live="polite">Anônimo</p>
+              <span class="dica-campo">Usamos o e-mail cadastrado no seu Perfil. Sem e-mail cadastrado, a mensagem vai como "Anônimo". <button type="button" class="link-inline" data-nav="pag-7">Cadastrar e-mail no Perfil</button></span>
             </div>
             <div class="form-group">
-              <label for="contato-email">E-mail de Contato *</label>
-              <input type="email" id="contato-email" name="email" required placeholder="seuemail@exemplo.com">
-              <span class="erro-campo" id="erro-contato-email" aria-live="polite"></span>
+              <label for="contato-nome">Nome (opcional)</label>
+              <input type="text" id="contato-nome" name="Nome" placeholder="Digite seu nome">
+              <span class="erro-campo" id="erro-contato-nome" aria-live="polite"></span>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="contato-assunto">Assunto</label>
+            <label for="contato-assunto">Tipo de mensagem *</label>
             <select id="contato-assunto">
+              <option value="melhoria">Sugestão de Melhoria</option>
+              <option value="denuncia">Denúncia</option>
+              <option value="acessibilidade">Sugestão de Acessibilidade</option>
               <option value="duvida">Dúvida sobre a plataforma</option>
               <option value="prefeitura">Parceria com Prefeitura / Órgão Público</option>
-              <option value="ong">Voluntariado / ONG</option>
-              <option value="acessibilidade">Sugestão de Acessibilidade</option>
+              <option value="ong">Voluntariado / Parceria com ONG</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="contato-mensagem">Mensagem *</label>
-            <textarea id="contato-mensagem" name="Mensagem" rows="4" required placeholder="Escreva sua mensagem..."></textarea>
+            <textarea id="contato-mensagem" name="Mensagem" rows="4" required placeholder="Escreva sua mensagem ou toque em 🎤 Falar a mensagem..."></textarea>
+            <div class="ditado-linha">
+              <button type="button" class="btn-secondary" id="btn-ditado" aria-pressed="false" aria-controls="contato-mensagem">🎤 Falar a mensagem</button>
+              <span class="dica-campo" id="status-ditado" aria-live="polite">Use o microfone do computador ou do celular para ditar o texto.</span>
+            </div>
             <span class="erro-campo" id="erro-contato-msg" aria-live="polite"></span>
           </div>
 
@@ -1787,7 +1936,7 @@
         </div>
       </div>
       <div class="rodape-copy">
-        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira e Marcos Vinicius Calixto Emerenciano.
+        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira, Marcos Vinicius Calixto Emerenciano e Nathan Caue Sanchez Martins.
       </div>
     </div>
   </footer>
@@ -1796,6 +1945,36 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
+    /* ==========================================================================
+       0. MODAL DE CONFIRMAÇÃO ACESSÍVEL (SUBSTITUI CONFIRM / ALERT)
+       ========================================================================== */
+    function pedirConfirmacao(mensagem, aoConfirmar) {
+      const overlay = document.getElementById('modal-confirmacao');
+      const msgEl = document.getElementById('modal-mensagem');
+      const btnConfirmar = document.getElementById('modal-btn-confirmar');
+      const btnCancelar = document.getElementById('modal-btn-cancelar');
+
+      msgEl.textContent = mensagem;
+      overlay.classList.add('aberto');
+      overlay.setAttribute('aria-hidden', 'false');
+      btnCancelar.focus();
+
+      function fechar() {
+        overlay.classList.remove('aberto');
+        overlay.setAttribute('aria-hidden', 'true');
+        btnConfirmar.removeEventListener('click', confirmar);
+        btnCancelar.removeEventListener('click', fechar);
+      }
+
+      function confirmar() {
+        fechar();
+        aoConfirmar();
+      }
+
+      btnConfirmar.addEventListener('click', confirmar);
+      btnCancelar.addEventListener('click', fechar);
+    }
+
     /* ==========================================================================
        1. NAVEGAÇÃO SPA (10 PÁGINAS) & GAVETA MOBILE
        ========================================================================== */
@@ -1906,7 +2085,6 @@
     configurarTemaToggle('btn-contraste', 'alto-contraste', 'ha_contraste');
     configurarTemaToggle('btn-escuro', 'modo-escuro', 'ha_escuro');
 
-    // Daltonismo: cada clique troca o tipo (Desligado > Protanopia > Deuteranopia > Tritanopia)
     const tiposDaltonismo = ['', 'protanopia', 'deuteranopia', 'tritanopia'];
     const nomesDaltonismo = ['Desligado', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
     const btnDaltonismo = document.getElementById('btn-daltonismo');
@@ -1925,11 +2103,10 @@
       aplicarDaltonismo();
     });
 
-    // Leitura da página ativa via Web Speech API (funciona como start/stop ao clicar novamente)
     const btnOuvir = document.getElementById('btn-ouvir-pagina');
     btnOuvir.addEventListener('click', () => {
       if (!('speechSynthesis' in window)) {
-        alert('Seu navegador não suporta síntese de voz.');
+        btnOuvir.textContent = '⚠️ Voz indisponível';
         return;
       }
       if (window.speechSynthesis.speaking) {
@@ -1952,7 +2129,7 @@
     });
 
     /* ==========================================================================
-       3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9) - RODA 100% NO NAVEGADOR
+       3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9)
        ========================================================================== */
     const canvasVideo = document.getElementById('canvas-video-demo');
     const ctxVideo = canvasVideo ? canvasVideo.getContext('2d') : null;
@@ -1968,7 +2145,7 @@
         inicio: 0,
         fim: 6,
         titulo: '1. Mapa Satélite Inclusivo (SP & ABC)',
-        subtitulo: 'Visualização aérea estilo Google Earth com 21 ocorrências mapeadas',
+        subtitulo: 'Visualização aérea estilo Google Earth com ocorrências mapeadas',
         corDestaque: '#0077B6',
         legenda: 'Bem-vindo ao HyperAcess! Veja as barreiras urbanas em tempo real no mapa de satélite.'
       },
@@ -2010,7 +2187,6 @@
       const w = canvasVideo.width;
       const h = canvasVideo.height;
 
-      // Fundo estilo globo/satélite
       const grad = ctxVideo.createLinearGradient(0, 0, w, h);
       grad.addColorStop(0, '#061426');
       grad.addColorStop(0.5, '#0A2540');
@@ -2018,7 +2194,6 @@
       ctxVideo.fillStyle = grad;
       ctxVideo.fillRect(0, 0, w, h);
 
-      // Grade geográfica decorativa
       ctxVideo.strokeStyle = 'rgba(56, 189, 248, 0.14)';
       ctxVideo.lineWidth = 1;
       for (let x = 0; x < w; x += 60) {
@@ -2037,7 +2212,6 @@
       const idxCena = Math.min(cenasVideo.length - 1, Math.floor(tempo / 6));
       const cena = cenasVideo[idxCena];
 
-      // Círculo radar animado
       const raio = 45 + ((tempo * 25) % 45);
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, raio, 0, Math.PI * 2);
@@ -2045,7 +2219,6 @@
       ctxVideo.lineWidth = 4;
       ctxVideo.stroke();
 
-      // Pino central
       ctxVideo.fillStyle = cena.corDestaque;
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, 22, 0, Math.PI * 2);
@@ -2056,7 +2229,6 @@
       ctxVideo.textAlign = 'center';
       ctxVideo.fillText('HA', w / 2, h / 2 - 14);
 
-      // Textos da cena
       ctxVideo.fillStyle = '#FFFFFF';
       ctxVideo.font = 'bold 28px Segoe UI, sans-serif';
       ctxVideo.fillText(cena.titulo, w / 2, 72);
@@ -2071,7 +2243,6 @@
       const segFormatado = String(Math.floor(tempo)).padStart(2, '0');
       statusVideoAudio.textContent = `${videoRodando ? '▶️ Reproduzindo' : '⏸️ Pausado'} (00:${segFormatado} / 00:24) · ${videoMudo ? 'Mudo' : 'Áudio Ativo'}`;
 
-      // Narração automática por cena quando áudio está ligado
       if (videoRodando && !videoMudo && idxCena !== ultimaCenaFalada && 'speechSynthesis' in window) {
         ultimaCenaFalada = idxCena;
         window.speechSynthesis.cancel();
@@ -2171,7 +2342,6 @@
       obra: { letra: 'O', cor: '#E69F00' }
     };
 
-    // Marcações feitas pelo usuário (salvas no localStorage) e centro de cada região
     let marcacoesUsuario = JSON.parse(localStorage.getItem('ha_marcacoes')) || [];
     let tipoMarcacao = 'buraco';
     let modoMarcar = false;
@@ -2219,7 +2389,7 @@
         badge.textContent = i.letra;
         const txt = document.createElement('span');
         txt.innerHTML = '<strong></strong><br><small></small>';
-        txt.querySelector('strong').textContent = i.texto;   // textContent: evita inserir HTML digitado
+        txt.querySelector('strong').textContent = i.texto;
         txt.querySelector('small').textContent = i.info;
         li.appendChild(badge); li.appendChild(txt);
         lista.appendChild(li);
@@ -2269,12 +2439,16 @@
       adicionarMarcacao(centro.lat, centro.lng);
     });
     document.getElementById('btn-limpar-marcacoes').addEventListener('click', () => {
-      if (!marcacoesUsuario.length) { document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.'; return; }
-      if (!confirm('Apagar todas as ocorrências que você marcou?')) return;
-      marcacoesUsuario = [];
-      localStorage.removeItem('ha_marcacoes');
-      renderizarMarcadores();
-      document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
+      if (!marcacoesUsuario.length) {
+        document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.';
+        return;
+      }
+      pedirConfirmacao('Deseja apagar todas as ocorrências que você marcou no mapa?', () => {
+        marcacoesUsuario = [];
+        localStorage.removeItem('ha_marcacoes');
+        renderizarMarcadores();
+        document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
+      });
     });
 
     let camadaMarcadores = null;
@@ -2292,7 +2466,6 @@
           maxZoom: 19
         });
 
-        // Camada Satélite de Alta Resolução (Estilo Google Earth)
         layerSatelite = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           {
@@ -2301,7 +2474,6 @@
           }
         );
 
-        // Camada de Rótulos de Ruas, Bairros e Referências sobre o Satélite (Modo Híbrido)
         layerRotulos = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
           {
@@ -2309,7 +2481,6 @@
           }
         );
 
-        // Camada Mapa Urbano Tradicional (Opcional)
         layerMapaRuas = L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           {
@@ -2318,13 +2489,11 @@
           }
         );
 
-        // Inicia no modo Satélite Híbrido (Google Earth)
         layerSatelite.addTo(mapaInstancia);
         layerRotulos.addTo(mapaInstancia);
 
         camadaMarcadores = L.layerGroup().addTo(mapaInstancia);
 
-        // Clique no mapa com o modo de marcação ligado cria a ocorrência naquele ponto
         mapaInstancia.on('click', (e) => {
           if (modoMarcar) adicionarMarcacao(e.latlng.lat, e.latlng.lng);
         });
@@ -2332,7 +2501,6 @@
       renderizarMarcadores();
     }
 
-    // Alternar entre Satélite + Ruas (Google Earth), Satélite Puro e Mapa Urbano
     document.querySelectorAll('.btn-camada').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!mapaInstancia) return;
@@ -2385,7 +2553,6 @@
     document.getElementById('filtro-categoria').addEventListener('change', renderizarMarcadores);
     document.getElementById('filtro-regiao').addEventListener('change', () => {
       renderizarMarcadores();
-      // Leva a visão de satélite direto para a região escolhida
       if (!mapaInstancia) return;
       const btnHibrido = document.querySelector('.btn-camada[data-camada="hibrido"]');
       if (mapaInstancia.hasLayer(layerMapaRuas) && btnHibrido) btnHibrido.click();
@@ -2466,6 +2633,41 @@
     });
 
     /* ==========================================================================
+       5.1 COMPARADOR DE ROTAS ACESSÍVEIS (PÁGINA 5)
+       ========================================================================== */
+    document.getElementById('btn-calcular-rotas').addEventListener('click', () => {
+      const origem = document.getElementById('rota-origem').value.trim() || 'Ponto de Partida';
+      const destino = document.getElementById('rota-destino').value.trim() || 'Destino';
+      const perfil = document.getElementById('rota-perfil');
+      const perfilTexto = perfil.options[perfil.selectedIndex].text;
+      const containerRotas = document.getElementById('resultado-rotas');
+
+      containerRotas.innerHTML = `
+        <article class="card" style="border:2px solid var(--cor-piso);">
+          <span class="badge-tag" style="background:var(--cor-piso); color:#FFF;">⭐ Rota Recomendada (98% Acessível)</span>
+          <h3>Trajeto A — Otimizado para ${perfilTexto}</h3>
+          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
+          <p><strong>Tempo estimado:</strong> 11 min (780 m)</p>
+          <p><strong>Infraestrutura:</strong> 100% com guias rebaixadas, piso tátil direcional contínuo e sem buracos reportados.</p>
+        </article>
+        <article class="card">
+          <span class="badge-tag">Rota Intermediária (76% Acessível)</span>
+          <h3>Trajeto B — Via Avenida Principal</h3>
+          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
+          <p><strong>Tempo estimado:</strong> 9 min (650 m)</p>
+          <p><strong>Atenção:</strong> 1 semáforo sem alerta sonoro e fluxo intenso de pedestres no horário de pico.</p>
+        </article>
+        <article class="card">
+          <span class="badge-tag" style="background:var(--cor-buraco); color:#FFF;">Não Recomendada (42% Acessível)</span>
+          <h3>Trajeto C — Caminho Mais Curto</h3>
+          <p><strong>De:</strong> ${origem} → <strong>Para:</strong> ${destino}</p>
+          <p><strong>Tempo estimado:</strong> 8 min (590 m)</p>
+          <p><strong>Alerta Crítico:</strong> 2 buracos na calçada e obra bloqueando a passagem.</p>
+        </article>
+      `;
+    });
+
+    /* ==========================================================================
        6. ALERTAS GPS & SIMULADOR (PÁGINA 6)
        ========================================================================== */
     function tocarBipeAlerta() {
@@ -2520,37 +2722,100 @@
     /* ==========================================================================
        7. PERFIL (PÁGINA 7) & CONTATO (PÁGINA 10)
        ========================================================================== */
+    function formatarTelefone(valor) {
+      const d = valor.replace(/\D/g, '').slice(0, 11);
+      if (d.length <= 2) return d.length ? '(' + d : '';
+      if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+      if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+      return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+    }
+    function telefoneSPValido(valor) {
+      const d = valor.replace(/\D/g, '');
+      const ddd = Number(d.slice(0, 2));
+      if (ddd < 11 || ddd > 19) return false;
+      const numero = d.slice(2);
+      if (/^(\d)\1+$/.test(numero)) return false;
+      if (d.length === 11) return numero[0] === '9';
+      if (d.length === 10) return /^[2-5]/.test(numero);
+      return false;
+    }
+    const provedoresEmail = ['gmail.com', 'outlook.com', 'outlook.com.br', 'hotmail.com', 'hotmail.com.br', 'live.com', 'msn.com',
+      'yahoo.com', 'yahoo.com.br', 'icloud.com', 'me.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com',
+      'globomail.com', 'protonmail.com', 'proton.me', 'zoho.com', 'aol.com'];
+    function emailValidoProvedor(valor) {
+      const email = valor.trim().toLowerCase();
+      if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email) || email.includes('..')) return false;
+      const dominio = email.split('@')[1];
+      return provedoresEmail.includes(dominio) || /\.(edu|gov)\.br$/.test(dominio);
+    }
+
+    const campoTelefone = document.getElementById('perfil-telefone');
+    campoTelefone.addEventListener('input', () => { campoTelefone.value = formatarTelefone(campoTelefone.value); });
+
+    const perfilSalvo = JSON.parse(localStorage.getItem('ha_perfil')) || {};
+    if (perfilSalvo.nec) document.getElementById('perfil-necessidade').value = perfilSalvo.nec;
+    if (perfilSalvo.bairro) document.getElementById('perfil-bairro').value = perfilSalvo.bairro;
+    if (perfilSalvo.telefone) campoTelefone.value = perfilSalvo.telefone;
+    if (perfilSalvo.email) document.getElementById('perfil-email').value = perfilSalvo.email;
+
     document.getElementById('btn-salvar-perfil').addEventListener('click', () => {
       const nec = document.getElementById('perfil-necessidade').value;
       const bairro = document.getElementById('perfil-bairro').value;
-      localStorage.setItem('ha_perfil', JSON.stringify({ nec, bairro }));
+      const telefone = campoTelefone.value.trim();
+      const email = document.getElementById('perfil-email').value.trim().toLowerCase();
+      const telOk = !telefone || telefoneSPValido(telefone);
+      const emailOk = !email || emailValidoProvedor(email);
+      document.getElementById('erro-perfil-telefone').textContent = telOk ? '' : 'Informe um telefone válido de SP: (11) 91234-5678 para celular ou (11) 3456-7890 para fixo.';
+      document.getElementById('erro-perfil-email').textContent = emailOk ? '' : 'Informe um e-mail válido (ex.: nome@gmail.com, nome@outlook.com, nome@hotmail.com).';
+      campoTelefone.setAttribute('aria-invalid', String(!telOk));
+      document.getElementById('perfil-email').setAttribute('aria-invalid', String(!emailOk));
+      if (!telOk || !emailOk) {
+        document.getElementById('status-perfil').textContent = '';
+        (telOk ? document.getElementById('perfil-email') : campoTelefone).focus();
+        return;
+      }
+      localStorage.setItem('ha_perfil', JSON.stringify({ nec, bairro, telefone, email }));
+      atualizarRemetenteContato();
       document.getElementById('status-perfil').textContent = '✅ Preferências de perfil salvas com sucesso!';
     });
 
+    function emailDoPerfil() {
+      const p = JSON.parse(localStorage.getItem('ha_perfil')) || {};
+      return p.email && emailValidoProvedor(p.email) ? p.email : '';
+    }
+    function atualizarRemetenteContato() {
+      const email = emailDoPerfil();
+      document.getElementById('contato-remetente').textContent = email || 'Anônimo';
+    }
+    atualizarRemetenteContato();
+
     document.getElementById('form-contato').addEventListener('submit', (e) => {
       e.preventDefault();
-      const nome = document.getElementById('contato-nome').value.trim();
-      const email = document.getElementById('contato-email').value.trim();
+      pararDitado();
       const msg = document.getElementById('contato-mensagem').value.trim();
+      document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva (ou fale) uma mensagem.';
+      if (!msg) { document.getElementById('contato-mensagem').focus(); return; }
 
-      document.getElementById('erro-contato-nome').textContent = nome ? '' : 'Preencha seu nome.';
-      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-      document.getElementById('erro-contato-email').textContent = emailValido ? '' : 'Informe um e-mail válido (ex.: nome@gmail.com). A resposta será enviada para ele.';
-      document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva uma mensagem.';
-
-      if (!nome || !emailValido || !msg) return;
-
-      // Envio real: o FormSubmit entrega a mensagem em 686769testes1@gmail.com
-      // e manda uma cópia de confirmação para o e-mail do usuário (_autoresponse)
       if (location.protocol === 'file:') {
-        document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (GitHub Pages). Aberto direto do computador, o envio não funciona.';
+        document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (HTTPS).';
         return;
       }
       const enderecoPagina = location.href.split('#')[0].split('?')[0];
-      document.getElementById('contato-next').value = enderecoPagina + '?enviado=1';
-      document.getElementById('contato-url').value = enderecoPagina;
+      const agora = new Date();
+      const protocolo = 'HA-SUP-' + agora.getFullYear() + String(agora.getMonth() + 1).padStart(2, '0') +
+        String(agora.getDate()).padStart(2, '0') + '-' + Math.floor(1000 + Math.random() * 9000);
+      const emailRemetente = emailDoPerfil();
       const assunto = document.getElementById('contato-assunto');
-      document.getElementById('contato-assunto-texto').value = assunto.options[assunto.selectedIndex].text;
+      const tipoTexto = assunto.options[assunto.selectedIndex].text;
+      const campoEmail = document.getElementById('contato-email-remetente');
+      campoEmail.value = emailRemetente;
+      campoEmail.disabled = !emailRemetente;
+      document.getElementById('contato-protocolo').value = protocolo;
+      document.getElementById('contato-remetente-campo').value = emailRemetente || 'Anônimo';
+      document.getElementById('contato-assunto-texto').value = tipoTexto;
+      document.getElementById('contato-subject').value = `HyperAcess — ${tipoTexto} — Protocolo ${protocolo}`;
+      document.getElementById('contato-next').value = enderecoPagina + '?enviado=1&protocolo=' + encodeURIComponent(protocolo) + (emailRemetente ? '&copia=1' : '');
+      document.getElementById('contato-url').value = enderecoPagina;
       const btnEnviar = document.getElementById('btn-enviar-contato');
       btnEnviar.disabled = true;
       btnEnviar.textContent = '⏳ Enviando...';
@@ -2592,7 +2857,6 @@
       window.speechSynthesis.speak(fala);
     }
 
-    // Um único botão: 1º clique liga a narração, 2º clique desliga (e para a fala na hora)
     btnIaVozToggle.addEventListener('click', () => {
       iaVozAtiva = !iaVozAtiva;
       atualizarBotaoVozIA();
@@ -2617,7 +2881,6 @@
       pararFalaIA();
     }
 
-    // Clicar no botão do Assistente IA pela 1ª vez abre; clicar pela 2ª vez fecha e para a fala
     btnAbrirChat.addEventListener('click', () => {
       if (janelaChat.classList.contains('aberto')) {
         fecharChat();
@@ -2682,7 +2945,7 @@
       const limpa = pergunta
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '');
+        .replace(/[\u0300-\u036f]/g, '');
 
       let melhor = null;
       let maxPontos = 0;
@@ -2735,9 +2998,110 @@
       processarPerguntaChat(texto);
     });
 
+    /* Ditado por voz na mensagem */
+    const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btnDitado = document.getElementById('btn-ditado');
+    const statusDitado = document.getElementById('status-ditado');
+    const campoMensagem = document.getElementById('contato-mensagem');
+    let reconhecedor = null;
+    let ditadoAtivo = false;
+
+    function pararDitado() {
+      if (!ditadoAtivo) return;
+      ditadoAtivo = false;
+      if (reconhecedor) { try { reconhecedor.stop(); } catch (err) {} }
+      btnDitado.setAttribute('aria-pressed', 'false');
+      btnDitado.textContent = '🎤 Falar a mensagem';
+      statusDitado.textContent = 'Ditado encerrado. Revise o texto antes de enviar.';
+    }
+
+    function iniciarDitado() {
+      if (!Reconhecimento) {
+        statusDitado.textContent = 'Este navegador não faz ditado por voz. No celular, use o 🎤 do teclado; no computador, use Chrome ou Edge.';
+        return;
+      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      reconhecedor = new Reconhecimento();
+      reconhecedor.lang = 'pt-BR';
+      reconhecedor.interimResults = true;
+      reconhecedor.continuous = false;
+      reconhecedor.onresult = (ev) => {
+        let final = '', parcial = '';
+        for (let i = ev.resultIndex; i < ev.results.length; i++) {
+          if (ev.results[i].isFinal) final += ev.results[i][0].transcript;
+          else parcial += ev.results[i][0].transcript;
+        }
+        if (final.trim()) {
+          const atual = campoMensagem.value.trim();
+          campoMensagem.value = (atual ? atual + ' ' : '') + final.trim();
+          document.getElementById('erro-contato-msg').textContent = '';
+        }
+        statusDitado.textContent = parcial ? '🎙️ Ouvindo: ' + parcial : '🎙️ Ouvindo... fale sua mensagem. Toque de novo para parar.';
+      };
+      reconhecedor.onerror = (ev) => {
+        if (ev.error === 'no-speech') return;
+        const msgs = {
+          'not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+          'service-not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+          'audio-capture': 'Nenhum microfone encontrado neste aparelho.',
+          'network': 'O ditado precisa de internet. Verifique a conexão.'
+        };
+        ditadoAtivo = true; pararDitado();
+        statusDitado.textContent = msgs[ev.error] || 'Não foi possível usar o microfone agora. Tente novamente.';
+      };
+      reconhecedor.onend = () => {
+        if (ditadoAtivo) { try { reconhecedor.start(); } catch (err) {} }
+      };
+      try {
+        reconhecedor.start();
+        ditadoAtivo = true;
+        btnDitado.setAttribute('aria-pressed', 'true');
+        btnDitado.textContent = '⏹️ Parar de falar';
+        statusDitado.textContent = '🎙️ Ouvindo... fale sua mensagem. Toque de novo para parar.';
+      } catch (err) {
+        statusDitado.textContent = 'Não foi possível iniciar o microfone. Tente novamente.';
+      }
+    }
+
+    btnDitado.addEventListener('click', () => (ditadoAtivo ? pararDitado() : iniciarDitado()));
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
+      pararDitado();
+      atualizarRemetenteContato();
+    }));
+
+    /* Área de ONGs (página 9) */
+    document.getElementById('btn-ong-parceria').addEventListener('click', () => {
+      navegarPara('pag-10');
+      document.getElementById('contato-assunto').value = 'ong';
+      if (!campoMensagem.value.trim()) {
+        campoMensagem.value = 'Olá! Represento a ONG ______ e temos interesse em uma parceria para divulgar o HyperAcess.';
+      }
+      setTimeout(() => campoMensagem.focus(), 400);
+    });
+
+    document.getElementById('btn-copiar-pix').addEventListener('click', () => {
+      const chave = document.getElementById('chave-pix').textContent;
+      const status = document.getElementById('status-pix');
+      const areaTemp = document.createElement('textarea');
+      areaTemp.value = chave;
+      areaTemp.style.position = 'fixed';
+      areaTemp.style.opacity = '0';
+      document.body.appendChild(areaTemp);
+      areaTemp.select();
+      try {
+        const copiado = document.execCommand('copy');
+        status.textContent = copiado ? '✅ Chave PIX copiada!' : 'Copie a chave: ' + chave;
+      } catch (err) {
+        status.textContent = 'Copie a chave: ' + chave;
+      }
+      document.body.removeChild(areaTemp);
+    });
+
     if (new URLSearchParams(location.search).get('enviado') === '1') {
       navegarPara('pag-10');
-      document.getElementById('retorno-contato').textContent = '✅ Mensagem enviada! A equipe recebeu seu feedback e uma cópia foi enviada para o seu e-mail.';
+      const params = new URLSearchParams(location.search);
+      document.getElementById('retorno-contato').textContent = '✅ Mensagem enviada ao suporte! Protocolo ' + (params.get('protocolo') || '') + '. ' +
+        (params.get('copia') === '1' ? 'Uma cópia foi enviada para o seu e-mail.' : 'Enviada como Anônimo.');
       history.replaceState(null, '', location.pathname);
     }
 
