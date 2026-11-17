@@ -1,0 +1,10 @@
+﻿Projeto: HyperAcess - Mapeamento Urbano Inclusivo de São Paulo e ABC
+Disciplina: Desenvolvimento Front-End - UNICID - 2º semestre de 2026
+Entrega: AV A1 - 2ª entrega (projeto final)
+
+
+Integrantes (nome completo e RGM):
+Nathan Cauê Sanchez Martins, 47458984
+Marcos Vinicius Calixto Emerenciano, 47411996
+Lucas de Moraes Covelo, 47563923 
+Pedro Henrique de Oliveira, 47487909 
