@@ -12,8 +12,8 @@
 
   <style>
     /* ==========================================================================
-        1. DESIGN SYSTEM & VARIÁVEIS CSS (WCAG AA/AAA + OKABE-ITO)
-        ========================================================================== */
+       1. DESIGN SYSTEM & VARIÁVEIS CSS (WCAG AA/AAA + OKABE-ITO)
+       ========================================================================== */
     :root {
       --primary-color: #0A2540;
       --primary-light: #163E66;
@@ -49,8 +49,8 @@
     }
 
     /* ==========================================================================
-        2. TEMAS DE ACESSIBILIDADE (ALTO CONTRASTE, ESCURO & DALTONISMO OKABE-ITO)
-        ========================================================================== */
+       2. TEMAS DE ACESSIBILIDADE (ALTO CONTRASTE, ESCURO & DALTONISMO OKABE-ITO)
+       ========================================================================== */
     html.alto-contraste {
       --primary-color: #000000;
       --primary-light: #111111;
@@ -83,6 +83,7 @@
       --focus-outline: #38BDF8;
     }
 
+    /* Protanopia (vermelho): poucas mudanças, ocorrências em azul, marrom, mostarda e cinza */
     html.protanopia {
       --accent-color: #F0B400;
       --accent-hover: #D19C00;
@@ -93,6 +94,7 @@
       --cor-obra: #5A5A5A;
     }
 
+    /* Deuteranopia (verde): parecida com a protanopia */
     html.deuteranopia {
       --accent-color: #E6A800;
       --accent-hover: #C99300;
@@ -103,6 +105,7 @@
       --cor-obra: #616161;
     }
 
+    /* Tritanopia (azul/amarelo): maior mudança, azul vira grafite + ciano e laranja vira coral */
     html.tritanopia {
       --primary-color: #1F2A30;
       --primary-light: #34444D;
@@ -126,8 +129,8 @@
     }
 
     /* ==========================================================================
-        3. RESET & BASE GLOBAL
-        ========================================================================== */
+       3. RESET & BASE GLOBAL
+       ========================================================================== */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -179,8 +182,8 @@
     }
 
     /* ==========================================================================
-        4. BARRA DE ACESSIBILIDADE & CABEÇALHO
-        ========================================================================== */
+       4. BARRA DE ACESSIBILIDADE & CABEÇALHO
+       ========================================================================== */
     .barra-acessibilidade {
       background-color: var(--primary-color);
       color: #FFFFFF;
@@ -391,8 +394,8 @@
     }
 
     /* ==========================================================================
-        5. SEÇÕES SPA (10 PÁGINAS) & COMPONENTES DE UI
-        ========================================================================== */
+       5. SEÇÕES SPA (10 PÁGINAS) & COMPONENTES DE UI
+       ========================================================================== */
     main {
       flex: 1;
       padding: 28px 0 60px;
@@ -547,8 +550,8 @@
     }
 
     /* ==========================================================================
-        6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + 3D/HÍBRIDO)
-        ========================================================================== */
+       6. MAPA INTERATIVO TIPO GOOGLE EARTH (SATÉLITE + RUAS + 3D/HÍBRIDO)
+       ========================================================================== */
     .mapa-controles {
       display: flex;
       flex-wrap: wrap;
@@ -713,8 +716,8 @@
     }
 
     /* ==========================================================================
-        7. FORMULÁRIOS ACESSÍVEIS & TABELAS RESPONSIVAS
-        ========================================================================== */
+       7. FORMULÁRIOS ACESSÍVEIS & TABELAS RESPONSIVAS
+       ========================================================================== */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -842,8 +845,8 @@
     }
 
     /* ==========================================================================
-        8. GRÁFICOS CSS & BARRAS DE PROGRESSO (PREFEITURAS / HOME)
-        ========================================================================== */
+       8. GRÁFICOS CSS & BARRAS DE PROGRESSO (PREFEITURAS / HOME)
+       ========================================================================== */
     .barra-grafico-wrap {
       margin-bottom: 14px;
     }
@@ -873,8 +876,8 @@
     }
 
     /* ==========================================================================
-        9. FAQ (DETAILS/SUMMARY) & VÍDEO DEMONSTRATIVO INTERATIVO (PAG 9)
-        ========================================================================== */
+       9. FAQ (DETAILS/SUMMARY) & VÍDEO DEMONSTRATIVO INTERATIVO (PAG 9)
+       ========================================================================== */
     details.faq-item {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
@@ -904,6 +907,18 @@
       border-radius: var(--r-lg);
       padding: 20px;
       margin-bottom: 24px;
+    }
+
+    .iframe-video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+    }
+
+    .fonte-link {
+      margin-top: 12px;
+      text-decoration: none;
     }
 
     .player-wrapper {
@@ -961,8 +976,8 @@
     }
 
     /* ==========================================================================
-        10. WIDGET ASSISTENTE VIRTUAL (CHATBOT IA SEM DEPENDÊNCIA EXTERNA)
-        ========================================================================== */
+       10. WIDGET ASSISTENTE VIRTUAL (CHATBOT IA SEM DEPENDÊNCIA EXTERNA)
+       ========================================================================== */
     .chat-launcher {
       position: fixed;
       bottom: 22px;
@@ -1105,8 +1120,8 @@
     }
 
     /* ==========================================================================
-        11. RODAPÉ
-        ========================================================================== */
+       11. RODAPÉ
+       ========================================================================== */
     footer.rodape {
       background: var(--primary-color);
       color: #FFFFFF;
@@ -1548,6 +1563,7 @@
           </div>
         </div>
         <button type="button" class="btn-primary" id="btn-calcular-rotas">🧭 Comparar 3 Trajetos</button>
+        <p id="status-rotas" role="status" aria-live="polite" style="margin-top:12px; font-weight:700;"></p>
       </div>
 
       <div class="grid-cards" id="resultado-rotas">
@@ -1688,15 +1704,15 @@
       </div>
     </section>
 
-    <!-- ==================== PÁGINA 9: AJUDA (FAQ) & VÍDEO DEMONSTRATIVO FUNCIONAL (COM ONG, NOTÍCIAS, DOAÇÕES E IFRAME) ==================== -->
+    <!-- ==================== PÁGINA 9: AJUDA (FAQ) & VÍDEO DEMONSTRATIVO FUNCIONAL ==================== -->
     <section id="pag-9" class="spa-page" aria-labelledby="titulo-pag-9">
       <div class="page-header">
         <span class="badge-tag">Central de Ajuda &amp; Demonstração</span>
-        <h1 id="titulo-pag-9">Perguntas Frequentes (FAQ), Vídeo Guia e Rede de ONGs</h1>
-        <p>Assista ao vídeo demonstrativo animado, consulte as notícias dos coletivos e conheça nossa rede de apoio.</p>
+        <h1 id="titulo-pag-9">Perguntas Frequentes (FAQ) e Vídeo Guia Interativo</h1>
+        <p>Assista ao vídeo demonstrativo animado com narração em áudio sincronizada e legendas em português.</p>
       </div>
 
-      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL -->
+      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL (RODA DIRETO NO NAVEGADOR SEM DEPENDER DE ARQUIVO EXTERNO) -->
       <div class="video-box">
         <h2>🎬 Vídeo Demonstrativo HyperAcess (Com Áudio e Legendas)</h2>
         <p style="margin-bottom:12px; color:var(--text-secondary);">Clique em <strong>Iniciar Vídeo</strong> para assistir à animação explicativa com narração em voz e legendas sincronizadas.</p>
@@ -1714,6 +1730,40 @@
           <button type="button" class="btn-secondary" id="btn-video-reiniciar">🔄 Reiniciar</button>
           <button type="button" class="btn-secondary" id="btn-video-mudo" aria-pressed="false">🔊 Áudio: Ligado</button>
           <span id="status-video-audio" aria-live="polite" style="font-weight:700; font-size:0.9rem;">Pronto para reproduzir (00:00 / 00:24)</span>
+        </div>
+      </div>
+
+      <!-- IFRAME: VÍDEO OFICIAL DO IBGE SOBRE A POPULAÇÃO IDOSA -->
+      <div class="video-box" id="video-ibge">
+        <h2>📊 IBGE Explica: o envelhecimento da população brasileira</h2>
+        <p style="margin-bottom:12px; color:var(--text-secondary);">Vídeo oficial do IBGE sobre o que o Censo 2022 revela a respeito da população idosa, um dos públicos que o HyperAcess ajuda a se deslocar com mais segurança.</p>
+        <div class="player-wrapper" style="max-width:760px; margin:0 auto;">
+          <iframe class="iframe-video" src="https://www.youtube-nocookie.com/embed/msJa5llwsT4" title="Vídeo do IBGE: O que os dados do Censo revelam sobre o envelhecimento da população? (IBGE Explica Censo 2022 #03)" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p style="margin-top:10px;"><a href="https://youtu.be/msJa5llwsT4?si=1ZbN_0JzAGl782CY" target="_blank" rel="noopener">Assistir direto no YouTube</a> (canal oficial do IBGE)</p>
+      </div>
+
+      <!-- PESQUISA E NOTÍCIAS DE FONTES OFICIAIS -->
+      <div class="card" id="pesquisas-noticias" style="margin-bottom:24px;">
+        <span class="badge-tag">Fontes Oficiais</span>
+        <h2 style="margin-top:8px;">🔎 Pesquisas e notícias sobre pessoas com deficiência</h2>
+        <p>Dados de órgãos públicos sobre quem o HyperAcess pode ajudar: pessoas com deficiência física, visual, auditiva ou intelectual, pessoas com autismo e idosos.</p>
+        <div class="ong-grid">
+          <article class="card">
+            <h3>📘 Pesquisa · IBGE</h3>
+            <p><strong>Censo Demográfico 2022: Pessoas com deficiência e pessoas diagnosticadas com transtorno do espectro autista</strong>, resultados preliminares da amostra (IBGE, 2025).</p>
+            <a class="btn-secondary fonte-link" href="https://biblioteca.ibge.gov.br/visualizacao/livros/liv102178.pdf" target="_blank" rel="noopener">Abrir a pesquisa (PDF)</a>
+          </article>
+          <article class="card">
+            <h3>📰 Notícia · Agência Brasil</h3>
+            <p><strong>Brasil tem 14,4 milhões de pessoas com deficiência</strong> (23/05/2025). São 7,3% da população com 2 anos ou mais; as maiores dificuldades são enxergar (7,9 milhões) e andar ou subir degraus (5,2 milhões).</p>
+            <a class="btn-secondary fonte-link" href="https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2025-05/brasil-tem-144-milhoes-de-pessoas-com-deficiencia" target="_blank" rel="noopener">Ler a notícia</a>
+          </article>
+          <article class="card">
+            <h3>📰 Notícia · Agência IBGE</h3>
+            <p><strong>Pessoas com deficiência têm menor acesso à educação, ao trabalho e à renda</strong> (PNAD Contínua 2022): 18,6 milhões de pessoas com deficiência, 8,9% da população com 2 anos ou mais.</p>
+            <a class="btn-secondary fonte-link" href="https://agenciadenoticias.ibge.gov.br/pt/agencia-noticias/37317-pessoas-com-deficiencia-tem-menor-acesso-a-educacao-ao-trabalho-e-a-renda.html" target="_blank" rel="noopener">Ler a notícia</a>
+          </article>
         </div>
       </div>
 
@@ -1735,47 +1785,26 @@
         <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>🗣️ Ouvir / Pausar IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
       </details>
 
-      <!-- ÁREA DE ONGs, NOTÍCIAS, DOAÇÕES E IFRAME (EXIGÊNCIA DA RUBRICA DA UNICID) -->
       <div class="card" id="area-ongs" style="margin-top:24px;">
         <span class="badge-tag">Para ONGs e Instituições</span>
         <h2 style="margin-top:8px;">🤝 Sua ONG pode caminhar com a gente</h2>
         <p>Acessibilidade se constrói em rede. Convidamos ONGs, coletivos e associações que trabalham com pessoas com deficiência, idosos e mobilidade urbana a se unirem ao HyperAcess por uma causa melhor: cidades onde todos possam ir e vir com segurança e autonomia.</p>
-        
         <div class="ong-grid">
           <article class="card">
-            <h3>📣 Parceria e Voluntariado</h3>
-            <p>Divulgue o HyperAcess para o público da sua ONG e ajude a mapear calçadas, rampas e pisos táteis. Cadastre sua instituição para receber relatórios regionais.</p>
+            <h3>📣 Parceria de divulgação</h3>
+            <p>Divulgue o HyperAcess para o público da sua ONG e ajude a mapear mais calçadas, rampas e pisos táteis. Em troca, sua instituição aparece como parceira e recebe os dados da sua região.</p>
             <button type="button" class="btn-primary" id="btn-ong-parceria" style="margin-top:10px;">Quero ser parceira</button>
           </article>
-
           <article class="card">
-            <h3>💸 Doações e Apoio</h3>
-            <p>Doações auxiliam na manutenção da infraestrutura de servidores e expansão do projeto para novos bairros e municípios.</p>
+            <h3>💸 Apoio por transferência</h3>
+            <p>Doações ajudam a manter o site no ar e a levar o projeto a mais bairros.</p>
             <div class="dados-pix">
               <span><strong>Chave PIX (e-mail):</strong> <span id="chave-pix">suportehyperacess@gmail.com</span></span>
               <span><strong>Favorecido:</strong> Projeto HyperAcess (UNICID)</span>
-              <span><strong>Banco, agência e conta:</strong> enviados pela equipe mediante pedido no Fale Conosco.</span>
+              <span><strong>Banco, agência e conta:</strong> enviados pela equipe por e-mail, mediante pedido no Fale Conosco.</span>
             </div>
             <button type="button" class="btn-secondary" id="btn-copiar-pix">📋 Copiar chave PIX</button>
             <p id="status-pix" role="status" aria-live="polite" style="margin-top:8px; font-weight:700;"></p>
-          </article>
-
-          <article class="card">
-            <h3>📰 Notícias da Rede de ONGs</h3>
-            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:10px;">Últimas atualizações dos coletivos parceiros em São Paulo e ABC:</p>
-            <ul style="list-style:disc; padding-left:18px; font-size:0.9rem; display:flex; flex-direction:column; gap:6px;">
-              <li><strong>Outubro/2026:</strong> Mutirão de mapeamento de pisos táteis na Zona Leste e Tatuapé.</li>
-              <li><strong>Novembro/2026:</strong> Campanha conjunta por semáforos sonoros na Av. Paulista.</li>
-              <li><strong>Dezembro/2026:</strong> Lançamento do selo de acessibilidade urbana para comércios locais.</li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <h3>🌐 Painel de Referência (Iframe)</h3>
-            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:10px;">Integração institucional via iframe com dados abertos de mobilidade urbana:</p>
-            <div style="width:100%; height:180px; border-radius:var(--r-sm); overflow:hidden; border:1px solid var(--border-color);">
-              <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-46.68%2C-23.59%2C-46.61%2C-23.53&amp;layer=mapnik" style="width:100%; height:100%; border:0;" title="Mapa de referência institucional via iframe" loading="lazy"></iframe>
-            </div>
           </article>
         </div>
       </div>
@@ -1845,7 +1874,7 @@
 
   </main>
 
-  <!-- WIDGET ASSISTENTE VIRTUAL IA -->
+  <!-- WIDGET ASSISTENTE VIRTUAL IA (COM CONTROLE PLAY/PAUSE DA FALA AO CLICAR NOVAMENTE) -->
   <button type="button" class="chat-launcher" id="btn-abrir-chat" aria-expanded="false" aria-controls="janela-chat">
     💬 Assistente IA HyperAcess
   </button>
@@ -1907,7 +1936,7 @@
         </div>
       </div>
       <div class="rodape-copy">
-        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira, Marcos Vinicius Calixto Emerenciano e Nathan Caue Sanchez Martins.
+        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira e Marcos Vinicius Calixto Emerenciano.
       </div>
     </div>
   </footer>
@@ -1917,8 +1946,8 @@
 
   <script>
     /* ==========================================================================
-        1. NAVEGAÇÃO SPA (10 PÁGINAS) & GAVETA MOBILE
-        ========================================================================== */
+       1. NAVEGAÇÃO SPA (10 PÁGINAS) & GAVETA MOBILE
+       ========================================================================== */
     const paginas = document.querySelectorAll('.spa-page');
     const botoesNav = document.querySelectorAll('[data-nav]');
     const drawer = document.getElementById('drawer-mobile');
@@ -1989,8 +2018,8 @@
     });
 
     /* ==========================================================================
-        2. BARRA DE ACESSIBILIDADE WCAG (FONTE, CONTRASTE, ESCURO, DALTONISMO, VOZ)
-        ========================================================================== */
+       2. BARRA DE ACESSIBILIDADE WCAG (FONTE, CONTRASTE, ESCURO, DALTONISMO, VOZ)
+       ========================================================================== */
     const htmlEl = document.documentElement;
     let tamanhoFonte = Number(localStorage.getItem('ha_fonte')) || 100;
 
@@ -2026,6 +2055,7 @@
     configurarTemaToggle('btn-contraste', 'alto-contraste', 'ha_contraste');
     configurarTemaToggle('btn-escuro', 'modo-escuro', 'ha_escuro');
 
+    // Daltonismo: cada clique troca o tipo (Desligado > Protanopia > Deuteranopia > Tritanopia)
     const tiposDaltonismo = ['', 'protanopia', 'deuteranopia', 'tritanopia'];
     const nomesDaltonismo = ['Desligado', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
     const btnDaltonismo = document.getElementById('btn-daltonismo');
@@ -2044,6 +2074,7 @@
       aplicarDaltonismo();
     });
 
+    // Leitura da página ativa via Web Speech API (funciona como start/stop ao clicar novamente)
     const btnOuvir = document.getElementById('btn-ouvir-pagina');
     btnOuvir.addEventListener('click', () => {
       if (!('speechSynthesis' in window)) {
@@ -2070,8 +2101,8 @@
     });
 
     /* ==========================================================================
-        3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9)
-        ========================================================================== */
+       3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9) - RODA 100% NO NAVEGADOR
+       ========================================================================== */
     const canvasVideo = document.getElementById('canvas-video-demo');
     const ctxVideo = canvasVideo ? canvasVideo.getContext('2d') : null;
     const legendaVideoEl = document.getElementById('legenda-video-texto');
@@ -2128,6 +2159,7 @@
       const w = canvasVideo.width;
       const h = canvasVideo.height;
 
+      // Fundo estilo globo/satélite
       const grad = ctxVideo.createLinearGradient(0, 0, w, h);
       grad.addColorStop(0, '#061426');
       grad.addColorStop(0.5, '#0A2540');
@@ -2135,6 +2167,7 @@
       ctxVideo.fillStyle = grad;
       ctxVideo.fillRect(0, 0, w, h);
 
+      // Grade geográfica decorativa
       ctxVideo.strokeStyle = 'rgba(56, 189, 248, 0.14)';
       ctxVideo.lineWidth = 1;
       for (let x = 0; x < w; x += 60) {
@@ -2153,6 +2186,7 @@
       const idxCena = Math.min(cenasVideo.length - 1, Math.floor(tempo / 6));
       const cena = cenasVideo[idxCena];
 
+      // Círculo radar animado
       const raio = 45 + ((tempo * 25) % 45);
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, raio, 0, Math.PI * 2);
@@ -2160,6 +2194,7 @@
       ctxVideo.lineWidth = 4;
       ctxVideo.stroke();
 
+      // Pino central
       ctxVideo.fillStyle = cena.corDestaque;
       ctxVideo.beginPath();
       ctxVideo.arc(w / 2, h / 2 - 20, 22, 0, Math.PI * 2);
@@ -2170,6 +2205,7 @@
       ctxVideo.textAlign = 'center';
       ctxVideo.fillText('HA', w / 2, h / 2 - 14);
 
+      // Textos da cena
       ctxVideo.fillStyle = '#FFFFFF';
       ctxVideo.font = 'bold 28px Segoe UI, sans-serif';
       ctxVideo.fillText(cena.titulo, w / 2, 72);
@@ -2184,6 +2220,7 @@
       const segFormatado = String(Math.floor(tempo)).padStart(2, '0');
       statusVideoAudio.textContent = `${videoRodando ? '▶️ Reproduzindo' : '⏸️ Pausado'} (00:${segFormatado} / 00:24) · ${videoMudo ? 'Mudo' : 'Áudio Ativo'}`;
 
+      // Narração automática por cena quando áudio está ligado
       if (videoRodando && !videoMudo && idxCena !== ultimaCenaFalada && 'speechSynthesis' in window) {
         ultimaCenaFalada = idxCena;
         window.speechSynthesis.cancel();
@@ -2261,8 +2298,8 @@
     desenharFrameVideo(0);
 
     /* ==========================================================================
-        4. MAPA SATÉLITE TIPO GOOGLE EARTH
-        ========================================================================== */
+       4. MAPA SATÉLITE TIPO GOOGLE EARTH (ESRI WORLD IMAGERY + RÓTULOS DE RUAS)
+       ========================================================================== */
     const ocorrenciasIniciais = [
       { id: 1, cat: 'buraco', regiao: 'Centro SP', titulo: 'Calçada afundada na Praça da Sé', lat: -23.5505, lng: -46.6333, status: 'Em análise' },
       { id: 2, cat: 'rampa', regiao: 'Centro SP', titulo: 'Esquina sem guia rebaixada — Av. Paulista, 1578', lat: -23.5614, lng: -46.6559, status: 'Aberto' },
@@ -2283,6 +2320,7 @@
       obra: { letra: 'O', cor: '#E69F00' }
     };
 
+    // Marcações feitas pelo usuário (salvas no localStorage) e centro de cada região
     let marcacoesUsuario = JSON.parse(localStorage.getItem('ha_marcacoes')) || [];
     let tipoMarcacao = 'buraco';
     let modoMarcar = false;
@@ -2330,7 +2368,7 @@
         badge.textContent = i.letra;
         const txt = document.createElement('span');
         txt.innerHTML = '<strong></strong><br><small></small>';
-        txt.querySelector('strong').textContent = i.texto;
+        txt.querySelector('strong').textContent = i.texto;   // textContent: evita inserir HTML digitado
         txt.querySelector('small').textContent = i.info;
         li.appendChild(badge); li.appendChild(txt);
         lista.appendChild(li);
@@ -2403,25 +2441,39 @@
           maxZoom: 19
         });
 
+        // Camada Satélite de Alta Resolução (Estilo Google Earth)
         layerSatelite = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          { attribution: 'Imagens de Satélite &copy; Esri, Maxar, Earthstar Geographics', maxZoom: 19 }
+          {
+            attribution: 'Imagens de Satélite &copy; Esri, Maxar, Earthstar Geographics',
+            maxZoom: 19
+          }
         );
 
+        // Camada de Rótulos de Ruas, Bairros e Referências sobre o Satélite (Modo Híbrido)
         layerRotulos = L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-          { maxZoom: 19 }
+          {
+            maxZoom: 19
+          }
         );
 
+        // Camada Mapa Urbano Tradicional (Opcional)
         layerMapaRuas = L.tileLayer(
           'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }
+          {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+          }
         );
 
+        // Inicia no modo Satélite Híbrido (Google Earth)
         layerSatelite.addTo(mapaInstancia);
         layerRotulos.addTo(mapaInstancia);
+
         camadaMarcadores = L.layerGroup().addTo(mapaInstancia);
 
+        // Clique no mapa com o modo de marcação ligado cria a ocorrência naquele ponto
         mapaInstancia.on('click', (e) => {
           if (modoMarcar) adicionarMarcacao(e.latlng.lat, e.latlng.lng);
         });
@@ -2429,6 +2481,7 @@
       renderizarMarcadores();
     }
 
+    // Alternar entre Satélite + Ruas (Google Earth), Satélite Puro e Mapa Urbano
     document.querySelectorAll('.btn-camada').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!mapaInstancia) return;
@@ -2481,6 +2534,7 @@
     document.getElementById('filtro-categoria').addEventListener('change', renderizarMarcadores);
     document.getElementById('filtro-regiao').addEventListener('change', () => {
       renderizarMarcadores();
+      // Leva a visão de satélite direto para a região escolhida
       if (!mapaInstancia) return;
       const btnHibrido = document.querySelector('.btn-camada[data-camada="hibrido"]');
       if (mapaInstancia.hasLayer(layerMapaRuas) && btnHibrido) btnHibrido.click();
@@ -2495,8 +2549,8 @@
     });
 
     /* ==========================================================================
-        5. CHAMADOS & LOCALSTORAGE
-        ========================================================================== */
+       5. CHAMADOS & LOCALSTORAGE (PÁGINA 4)
+       ========================================================================== */
     const formChamado = document.getElementById('form-chamado');
     const tbodyChamados = document.getElementById('lista-chamados-tbody');
     let chamadosSalvos = JSON.parse(localStorage.getItem('ha_chamados')) || [
@@ -2561,8 +2615,8 @@
     });
 
     /* ==========================================================================
-        6. ALERTAS GPS & SIMULADOR
-        ========================================================================== */
+       6. ALERTAS GPS & SIMULADOR (PÁGINA 6)
+       ========================================================================== */
     function tocarBipeAlerta() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2613,8 +2667,101 @@
     });
 
     /* ==========================================================================
-        7. PERFIL & CONTATO
-        ========================================================================== */
+       5B. COMPARADOR DE ROTAS (PÁGINA 5) — 3 trajetos com danos fictícios
+       ========================================================================== */
+    // Mesmo trajeto e perfil geram sempre o mesmo resultado; trocar a partida,
+    // o destino ou o perfil gera um novo comparativo. Os danos são fictícios (demonstração).
+    function sementeTexto(texto) {
+      let h = 2166136261;
+      for (let i = 0; i < texto.length; i++) { h ^= texto.charCodeAt(i); h = Math.imul(h, 16777619); }
+      return h >>> 0;
+    }
+    function geradorAleatorio(semente) {          // números "aleatórios" repetíveis
+      let a = semente || 1;
+      return () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    }
+    function escaparHTML(t) {
+      return String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // Tipos de dano e quanto cada um pesa para cada perfil
+    const danosRota = [
+      { id: 'buraco', nome: ['buraco na calçada', 'buracos na calçada'], peso: { cadeirante: 14, visual: 10, idoso: 13 } },
+      { id: 'rampa', nome: ['esquina sem rampa', 'esquinas sem rampa'], peso: { cadeirante: 18, visual: 5, idoso: 10 } },
+      { id: 'piso', nome: ['trecho de piso tátil interrompido', 'trechos de piso tátil interrompidos'], peso: { cadeirante: 3, visual: 18, idoso: 4 } },
+      { id: 'semaforo', nome: ['semáforo sem alerta sonoro', 'semáforos sem alerta sonoro'], peso: { cadeirante: 4, visual: 16, idoso: 8 } },
+      { id: 'obra', nome: ['obra bloqueando a passagem', 'obras bloqueando a passagem'], peso: { cadeirante: 16, visual: 12, idoso: 12 } },
+      { id: 'estreita', nome: ['calçada estreita com postes', 'calçadas estreitas com postes'], peso: { cadeirante: 12, visual: 8, idoso: 7 } },
+      { id: 'desnivel', nome: ['degrau ou desnível', 'degraus ou desníveis'], peso: { cadeirante: 15, visual: 9, idoso: 14 } }
+    ];
+    const nomesPerfilRota = { cadeirante: 'cadeirante / mobilidade reduzida', visual: 'pessoa com deficiência visual', idoso: 'idoso / carrinho de bebê' };
+    const velocidadePerfil = { cadeirante: 60, visual: 55, idoso: 50 };   // metros por minuto
+
+    function calcularRotas() {
+      const origem = document.getElementById('rota-origem').value.trim();
+      const destino = document.getElementById('rota-destino').value.trim();
+      const perfil = document.getElementById('rota-perfil').value;
+      const status = document.getElementById('status-rotas');
+      if (!origem || !destino) { status.textContent = 'Informe o ponto de partida e o destino.'; return; }
+      if (origem.toLowerCase() === destino.toLowerCase()) { status.textContent = 'O ponto de partida e o destino precisam ser diferentes.'; return; }
+
+      const sorte = geradorAleatorio(sementeTexto(origem.toLowerCase() + '|' + destino.toLowerCase() + '|' + perfil));
+      const distanciaBase = Math.round((400 + sorte() * 2000) / 10) * 10;   // de 400 m a 2,4 km
+      const modelos = [
+        { nome: 'Trajeto A — Via Corredor Tátil', fator: 1.18 + sorte() * 0.12, maxDanos: 2 },
+        { nome: 'Trajeto B — Via Avenida Principal', fator: 1.06 + sorte() * 0.08, maxDanos: 3 },
+        { nome: 'Trajeto C — Caminho Mais Curto', fator: 1.0, maxDanos: 4 }
+      ];
+
+      const rotas = modelos.map(m => {
+        const distancia = Math.round(distanciaBase * m.fator / 10) * 10;
+        const qtdTipos = Math.floor(sorte() * (m.maxDanos + 1));      // 0 até maxDanos tipos de dano
+        const tipos = danosRota.slice().sort(() => sorte() - 0.5).slice(0, qtdTipos);
+        let penalidade = 0, atraso = 0;
+        const danos = tipos.map(t => {
+          const qtd = 1 + Math.floor(sorte() * 2);
+          penalidade += t.peso[perfil] * qtd;
+          atraso += qtd;
+          return qtd + ' ' + (qtd > 1 ? t.nome[1] : t.nome[0]);
+        });
+        const acessivel = Math.max(15, Math.min(99, Math.round(99 - penalidade - distancia / 400)));
+        const minutos = Math.round(distancia / velocidadePerfil[perfil] + atraso);
+        return { nome: m.nome, distancia, minutos, danos, acessivel };
+      });
+
+      // Comparativo: maior acessibilidade primeiro; empate = menor tempo
+      rotas.sort((a, b) => b.acessivel - a.acessivel || a.minutos - b.minutos);
+      const rotulos = [
+        { texto: '⭐ Rota Recomendada', estilo: 'background:var(--cor-piso); color:#FFF;', borda: 'border:2px solid var(--cor-piso);', item: 'Infraestrutura' },
+        { texto: 'Rota Moderada', estilo: '', borda: '', item: 'Atenção' },
+        { texto: '⚠ Pior Rota', estilo: 'background:var(--cor-buraco); color:#FFF;', borda: '', item: 'Alerta Crítico' }
+      ];
+      const km = m => m >= 1000 ? (m / 1000).toFixed(2).replace('.', ',') + ' km' : m + ' m';
+
+      document.getElementById('resultado-rotas').innerHTML = rotas.map((r, i) => `
+        <article class="card"${rotulos[i].borda ? ` style="${rotulos[i].borda}"` : ''}>
+          <span class="badge-tag"${rotulos[i].estilo ? ` style="${rotulos[i].estilo}"` : ''}>${rotulos[i].texto} (${r.acessivel}% Acessível)</span>
+          <h3>${r.nome}</h3>
+          <p><strong>Tempo estimado:</strong> ${r.minutos} min (${km(r.distancia)})</p>
+          <p><strong>${r.danos.length ? rotulos[i].item : 'Infraestrutura'}:</strong> ${r.danos.length ? r.danos.join(', ') + ' (danos fictícios).' : 'sem barreiras reportadas neste trajeto.'}</p>
+        </article>`).join('');
+
+      const resumo = `Comparativo de ${origem} até ${destino} para ${nomesPerfilRota[perfil]}: ` +
+        `recomendada ${rotas[0].nome.split(' — ')[0]} (${rotas[0].acessivel}%), moderada ${rotas[1].nome.split(' — ')[0]} (${rotas[1].acessivel}%) ` +
+        `e pior ${rotas[2].nome.split(' — ')[0]} (${rotas[2].acessivel}%).`;
+      status.textContent = '✅ ' + resumo + ' Dados fictícios para demonstração.';
+      if (typeof iaVozAtiva !== 'undefined' && iaVozAtiva) falarRespostaIA(resumo);   // só fala com a narração ligada
+    }
+
+    document.getElementById('btn-calcular-rotas').addEventListener('click', calcularRotas);
+    ['rota-origem', 'rota-destino'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') calcularRotas(); });
+    });
+
+    /* ==========================================================================
+       7. PERFIL (PÁGINA 7) & CONTATO (PÁGINA 10)
+       ========================================================================== */
+    // Telefone do estado de SP: DDD 11 a 19; celular com 9 dígitos começando em 9, fixo com 8 dígitos começando em 2 a 5
     function formatarTelefone(valor) {
       const d = valor.replace(/\D/g, '').slice(0, 11);
       if (d.length <= 2) return d.length ? '(' + d : '';
@@ -2627,11 +2774,12 @@
       const ddd = Number(d.slice(0, 2));
       if (ddd < 11 || ddd > 19) return false;
       const numero = d.slice(2);
-      if (/^(\d)\1+$/.test(numero)) return false;
-      if (d.length === 11) return numero[0] === '9';
-      if (d.length === 10) return /^[2-5]/.test(numero);
+      if (/^(\d)\1+$/.test(numero)) return false;                 // ex.: 99999-9999
+      if (d.length === 11) return numero[0] === '9';                // celular
+      if (d.length === 10) return /^[2-5]/.test(numero);            // fixo
       return false;
     }
+    // E-mail válido de provedores conhecidos (ou institucional .edu.br / .gov.br)
     const provedoresEmail = ['gmail.com', 'outlook.com', 'outlook.com.br', 'hotmail.com', 'hotmail.com.br', 'live.com', 'msn.com',
       'yahoo.com', 'yahoo.com.br', 'icloud.com', 'me.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com',
       'globomail.com', 'protonmail.com', 'proton.me', 'zoho.com', 'aol.com'];
@@ -2645,6 +2793,7 @@
     const campoTelefone = document.getElementById('perfil-telefone');
     campoTelefone.addEventListener('input', () => { campoTelefone.value = formatarTelefone(campoTelefone.value); });
 
+    // Carrega o perfil salvo nos campos
     const perfilSalvo = JSON.parse(localStorage.getItem('ha_perfil')) || {};
     if (perfilSalvo.nec) document.getElementById('perfil-necessidade').value = perfilSalvo.nec;
     if (perfilSalvo.bairro) document.getElementById('perfil-bairro').value = perfilSalvo.bairro;
@@ -2672,6 +2821,7 @@
       document.getElementById('status-perfil').textContent = '✅ Preferências de perfil salvas com sucesso!';
     });
 
+    // Remetente do Fale Conosco = e-mail do Perfil (ou "Anônimo")
     function emailDoPerfil() {
       const p = JSON.parse(localStorage.getItem('ha_perfil')) || {};
       return p.email && emailValidoProvedor(p.email) ? p.email : '';
@@ -2689,6 +2839,8 @@
       document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva (ou fale) uma mensagem.';
       if (!msg) { document.getElementById('contato-mensagem').focus(); return; }
 
+      // Envio real: o FormSubmit entrega a mensagem em suportehyperacess@gmail.com.
+      // Remetente = e-mail do Perfil; sem e-mail, vai como "Anônimo".
       if (location.protocol === 'file:') {
         document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (GitHub Pages). Aberto direto do computador, o envio não funciona.';
         return;
@@ -2702,7 +2854,7 @@
       const tipoTexto = assunto.options[assunto.selectedIndex].text;
       const campoEmail = document.getElementById('contato-email-remetente');
       campoEmail.value = emailRemetente;
-      campoEmail.disabled = !emailRemetente;
+      campoEmail.disabled = !emailRemetente;            // anônimo: o campo "email" não é enviado
       document.getElementById('contato-protocolo').value = protocolo;
       document.getElementById('contato-remetente-campo').value = emailRemetente || 'Anônimo';
       document.getElementById('contato-assunto-texto').value = tipoTexto;
@@ -2717,8 +2869,8 @@
     });
 
     /* ==========================================================================
-        8. ASSISTENTE VIRTUAL IA
-        ========================================================================== */
+       8. ASSISTENTE VIRTUAL IA — TOGGLE START/STOP DA FALA AO CLICAR NOVAMENTE
+       ========================================================================== */
     const btnAbrirChat = document.getElementById('btn-abrir-chat');
     const btnFecharChat = document.getElementById('btn-fechar-chat');
     const janelaChat = document.getElementById('janela-chat');
@@ -2744,11 +2896,13 @@
     function falarRespostaIA(textoLimpo) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
+
       const fala = new SpeechSynthesisUtterance(textoLimpo);
       fala.lang = 'pt-BR';
       window.speechSynthesis.speak(fala);
     }
 
+    // Um único botão: 1º clique liga a narração, 2º clique desliga (e para a fala na hora)
     btnIaVozToggle.addEventListener('click', () => {
       iaVozAtiva = !iaVozAtiva;
       atualizarBotaoVozIA();
@@ -2773,6 +2927,7 @@
       pararFalaIA();
     }
 
+    // Clicar no botão do Assistente IA pela 1ª vez abre; clicar pela 2ª vez fecha e para a fala
     btnAbrirChat.addEventListener('click', () => {
       if (janelaChat.classList.contains('aberto')) {
         fecharChat();
@@ -2816,12 +2971,12 @@
         resposta: 'Na <strong>Página 8 (Prefeituras)</strong> há gráficos com o percentual de ocorrências por infraestrutura (buracos 38%, rampas 26%, piso tátil 19%, semáforos 11% e obras 6%) para apoiar políticas públicas.'
       },
       {
-        chaves: ['video', 'audio', 'mudo', 'legenda', 'audiodescricao', 'faq', 'ajuda', 'ong', 'doacao', 'noticia'],
-        resposta: 'Na <strong>Página 9 (Ajuda & Vídeo)</strong> você encontra o FAQ completo, o vídeo demonstrativo com áudio, além da área institucional de ONGs com notícias e painel em iframe.'
+        chaves: ['video', 'audio', 'mudo', 'legenda', 'audiodescricao', 'faq', 'ajuda'],
+        resposta: 'Na <strong>Página 9 (Ajuda & Vídeo)</strong> você encontra o FAQ completo e o vídeo demonstrativo interativo com narração em áudio, legendas sincronizadas e botões de iniciar, pausar e reiniciar.'
       },
       {
         chaves: ['equipe', 'autor', 'autores', 'criador', 'quem fez', 'unicid', 'lucas', 'pedro', 'marcos', 'nathan'],
-        resposta: 'O HyperAcess foi desenvolvido na <strong>UNICID (2026)</strong> pelos estudantes: <strong>Lucas de Moraes Covelo</strong>, <strong>Pedro Henrique de Oliveira</strong>, <strong>Marcos Vinicius Calixto Emerenciano</strong> e <strong>Nathan Caue Sanchez Martins</strong>.'
+        resposta: 'O HyperAcess foi desenvolvido na <strong>UNICID (2026)</strong> pelos estudantes: <strong>Lucas de Moraes Covelo</strong> (Coordenação e Arquitetura), <strong>Pedro Henrique de Oliveira</strong> (Acessibilidade WCAG, JS e Assistente IA), <strong>Marcos Vinicius Calixto Emerenciano</strong> (Layout, CSS e Mapa Satélite) e <strong>Nathan Caue Sanchez Martins</strong> (Front-End e Módulos JavaScript: armazenamento no localStorage).'
       },
       {
         chaves: ['contato', 'email', 'falar', 'suporte', 'ong', 'voluntario', 'parceria'],
@@ -2834,7 +2989,11 @@
     ];
 
     function gerarRespostaIA(pergunta) {
-      const limpa = pergunta.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      const limpa = pergunta
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+
       let melhor = null;
       let maxPontos = 0;
 
@@ -2851,7 +3010,7 @@
 
       if (melhor) return melhor;
 
-      return 'Entendi sua pergunta! No <strong>HyperAcess</strong> você pode explorar o <strong>Mapa Satélite (Pág. 3)</strong>, <strong>Abrir Chamados (Pág. 4)</strong>, <strong>Comparar Rotas (Pág. 5)</strong>, testar <strong>Alertas GPS (Pág. 6)</strong> ou consultar a <strong>Rede de ONGs e Vídeos (Pág. 9)</strong>. Sobre qual dessas funções você quer saber mais detalhes?';
+      return 'Entendi sua pergunta! No <strong>HyperAcess</strong> você pode explorar o <strong>Mapa Satélite (Pág. 3)</strong>, <strong>Abrir Chamados (Pág. 4)</strong>, <strong>Comparar Rotas Acessíveis (Pág. 5)</strong>, testar <strong>Alertas GPS (Pág. 6)</strong>, ajustar a <strong>Acessibilidade WCAG</strong> no topo ou assistir ao <strong>Vídeo Demonstrativo (Pág. 9)</strong>. Sobre qual dessas funções você quer saber mais detalhes?';
     }
 
     function adicionarMensagemChat(texto, tipo) {
@@ -2886,6 +3045,7 @@
       processarPerguntaChat(texto);
     });
 
+    /* Ditado por voz na mensagem (microfone do computador ou do celular) */
     const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
     const btnDitado = document.getElementById('btn-ditado');
     const statusDitado = document.getElementById('status-ditado');
@@ -2907,11 +3067,11 @@
         statusDitado.textContent = 'Este navegador não faz ditado por voz. No celular, use o 🎤 do teclado; no computador, use Chrome ou Edge.';
         return;
       }
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();   // a narração não atrapalha o microfone
       reconhecedor = new Reconhecimento();
       reconhecedor.lang = 'pt-BR';
       reconhecedor.interimResults = true;
-      reconhecedor.continuous = false;
+      reconhecedor.continuous = false;            // reinicia sozinho: funciona melhor no celular
       reconhecedor.onresult = (ev) => {
         let final = '', parcial = '';
         for (let i = ev.resultIndex; i < ev.results.length; i++) {
@@ -2927,8 +3087,14 @@
       };
       reconhecedor.onerror = (ev) => {
         if (ev.error === 'no-speech') return;
+        const msgs = {
+          'not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+          'service-not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+          'audio-capture': 'Nenhum microfone encontrado neste aparelho.',
+          'network': 'O ditado precisa de internet. Verifique a conexão.'
+        };
         ditadoAtivo = true; pararDitado();
-        statusDitado.textContent = 'Não foi possível usar o microfone agora. Tente novamente.';
+        statusDitado.textContent = msgs[ev.error] || 'Não foi possível usar o microfone agora. Tente novamente.';
       };
       reconhecedor.onend = () => {
         if (ditadoAtivo) { try { reconhecedor.start(); } catch (err) {} }
@@ -2950,15 +3116,15 @@
       atualizarRemetenteContato();
     }));
 
+    /* Área de ONGs (página 9) */
     document.getElementById('btn-ong-parceria').addEventListener('click', () => {
       navegarPara('pag-10');
       document.getElementById('contato-assunto').value = 'ong';
       if (!campoMensagem.value.trim()) {
-        campoMensagem.value = 'Olá! Represento a ONG ______ e temos interesse em uma parceria institucional e de voluntariado com o HyperAcess.';
+        campoMensagem.value = 'Olá! Represento a ONG ______ e temos interesse em uma parceria para divulgar o HyperAcess.';
       }
       setTimeout(() => campoMensagem.focus(), 400);
     });
-
     document.getElementById('btn-copiar-pix').addEventListener('click', () => {
       const chave = document.getElementById('chave-pix').textContent;
       const status = document.getElementById('status-pix');
