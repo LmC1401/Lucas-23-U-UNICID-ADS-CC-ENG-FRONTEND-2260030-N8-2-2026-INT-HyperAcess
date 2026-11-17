@@ -4,6 +4,10 @@
 
 **Curso:** Análise e Desenvolvimento de Sistemas / Ciência da Computação / Engenharia — UNICID (2026)
 
+Validação: Lucas de Moraes Covelo
+Data: 15/11/2026
+Assinatura: LmC1401
+
 O HyperAcess é uma solução digital concebida para o mapeamento colaborativo de calçadas, sinalizações e barreiras urbanas voltada para pessoas com limitações visuais, auditivas, de mobilidade e idosos. O sistema visa garantir maior autonomia, segurança e agilidade no trânsito de pedestres, permitindo que a própria comunidade reporte obstáculos e que a plataforma calcule rotas acessíveis e emita alertas sonoros/visuais por GPS em tempo real.
 
 ## Integrantes do Grupo e Funções
