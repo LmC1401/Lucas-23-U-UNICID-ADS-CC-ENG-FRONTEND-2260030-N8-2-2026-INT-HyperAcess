@@ -1,0 +1,1206 @@
+/* HyperAcess — comportamento (JavaScript) */
+/* ==========================================================================
+   1. NAVEGAÇÃO SPA (10 PÁGINAS) & GAVETA MOBILE
+   ========================================================================== */
+const paginas = document.querySelectorAll('.spa-page');
+const botoesNav = document.querySelectorAll('[data-nav]');
+const drawer = document.getElementById('drawer-mobile');
+const backdrop = document.getElementById('drawer-backdrop');
+const btnAbrirDrawer = document.getElementById('btn-abrir-drawer');
+const btnFecharDrawer = document.getElementById('btn-fechar-drawer');
+let mapaInstancia = null;
+
+function navegarPara(idPagina) {
+  paginas.forEach(sec => sec.classList.remove('ativa'));
+  const alvo = document.getElementById(idPagina);
+  if (alvo) alvo.classList.add('ativa');
+
+  botoesNav.forEach(btn => {
+    const ativo = btn.getAttribute('data-nav') === idPagina;
+    btn.classList.toggle('ativo', ativo);
+    if (ativo) {
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.removeAttribute('aria-current');
+    }
+  });
+
+  fecharDrawer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (idPagina === 'pag-3') {
+    setTimeout(() => {
+      iniciarMapaLeaflet();
+      if (mapaInstancia) mapaInstancia.invalidateSize();
+    }, 120);
+  }
+
+  if (idPagina === 'pag-9') {
+    desenharFrameVideo(0);
+  }
+}
+
+botoesNav.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    navegarPara(btn.getAttribute('data-nav'));
+  });
+});
+
+function abrirDrawer() {
+  drawer.classList.add('aberto');
+  backdrop.classList.add('aberto');
+  drawer.setAttribute('aria-hidden', 'false');
+  btnAbrirDrawer.setAttribute('aria-expanded', 'true');
+}
+
+function fecharDrawer() {
+  drawer.classList.remove('aberto');
+  backdrop.classList.remove('aberto');
+  drawer.setAttribute('aria-hidden', 'true');
+  btnAbrirDrawer.setAttribute('aria-expanded', 'false');
+}
+
+btnAbrirDrawer.addEventListener('click', abrirDrawer);
+btnFecharDrawer.addEventListener('click', fecharDrawer);
+backdrop.addEventListener('click', fecharDrawer);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    fecharDrawer();
+    fecharChat();
+  }
+});
+
+/* ==========================================================================
+   2. BARRA DE ACESSIBILIDADE WCAG (FONTE, CONTRASTE, ESCURO, DALTONISMO, VOZ)
+   ========================================================================== */
+const htmlEl = document.documentElement;
+let tamanhoFonte = Number(localStorage.getItem('ha_fonte')) || 100;
+
+function aplicarFonte() {
+  htmlEl.style.setProperty('--font-size-base', tamanhoFonte + '%');
+  localStorage.setItem('ha_fonte', tamanhoFonte);
+}
+aplicarFonte();
+
+document.getElementById('btn-fonte-mais').addEventListener('click', () => {
+  if (tamanhoFonte < 135) { tamanhoFonte += 10; aplicarFonte(); }
+});
+document.getElementById('btn-fonte-menos').addEventListener('click', () => {
+  if (tamanhoFonte > 80) { tamanhoFonte -= 10; aplicarFonte(); }
+});
+document.getElementById('btn-fonte-reset').addEventListener('click', () => {
+  tamanhoFonte = 100; aplicarFonte();
+});
+
+function configurarTemaToggle(btnId, classeCss, storageKey) {
+  const btn = document.getElementById(btnId);
+  if (localStorage.getItem(storageKey) === 'true') {
+    htmlEl.classList.add(classeCss);
+    btn.setAttribute('aria-pressed', 'true');
+  }
+  btn.addEventListener('click', () => {
+    const ativo = htmlEl.classList.toggle(classeCss);
+    btn.setAttribute('aria-pressed', String(ativo));
+    localStorage.setItem(storageKey, String(ativo));
+  });
+}
+
+configurarTemaToggle('btn-contraste', 'alto-contraste', 'ha_contraste');
+configurarTemaToggle('btn-escuro', 'modo-escuro', 'ha_escuro');
+
+// Daltonismo: cada clique troca o tipo (Desligado > Protanopia > Deuteranopia > Tritanopia)
+const tiposDaltonismo = ['', 'protanopia', 'deuteranopia', 'tritanopia'];
+const nomesDaltonismo = ['Desligado', 'Protanopia', 'Deuteranopia', 'Tritanopia'];
+const btnDaltonismo = document.getElementById('btn-daltonismo');
+let idxDaltonismo = Math.max(0, tiposDaltonismo.indexOf(localStorage.getItem('ha_daltonismo') || ''));
+
+function aplicarDaltonismo() {
+  tiposDaltonismo.forEach(t => { if (t) htmlEl.classList.toggle(t, t === tiposDaltonismo[idxDaltonismo]); });
+  btnDaltonismo.textContent = 'Daltonismo: ' + nomesDaltonismo[idxDaltonismo];
+  btnDaltonismo.setAttribute('aria-pressed', String(idxDaltonismo > 0));
+  localStorage.setItem('ha_daltonismo', tiposDaltonismo[idxDaltonismo]);
+  if (mapaInstancia) renderizarMarcadores();
+}
+aplicarDaltonismo();
+btnDaltonismo.addEventListener('click', () => {
+  idxDaltonismo = (idxDaltonismo + 1) % tiposDaltonismo.length;
+  aplicarDaltonismo();
+});
+
+// Leitura da página ativa via Web Speech API (funciona como start/stop ao clicar novamente)
+const btnOuvir = document.getElementById('btn-ouvir-pagina');
+btnOuvir.addEventListener('click', () => {
+  if (!('speechSynthesis' in window)) {
+    alert('Seu navegador não suporta síntese de voz.');
+    return;
+  }
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    btnOuvir.setAttribute('aria-pressed', 'false');
+    btnOuvir.textContent = '🔊 Ouvir Página';
+    return;
+  }
+  const secaoAtiva = document.querySelector('.spa-page.ativa');
+  const texto = secaoAtiva ? secaoAtiva.innerText : document.body.innerText;
+  const fala = new SpeechSynthesisUtterance(texto);
+  fala.lang = 'pt-BR';
+  fala.onend = () => {
+    btnOuvir.setAttribute('aria-pressed', 'false');
+    btnOuvir.textContent = '🔊 Ouvir Página';
+  };
+  btnOuvir.setAttribute('aria-pressed', 'true');
+  btnOuvir.textContent = '⏹️ Parar Leitura';
+  window.speechSynthesis.speak(fala);
+});
+
+/* ==========================================================================
+   3. VÍDEO DEMONSTRATIVO INTERATIVO COM ÁUDIO (PÁGINA 9) - RODA 100% NO NAVEGADOR
+   ========================================================================== */
+const canvasVideo = document.getElementById('canvas-video-demo');
+const ctxVideo = canvasVideo ? canvasVideo.getContext('2d') : null;
+const legendaVideoEl = document.getElementById('legenda-video-texto');
+const barraVideoFill = document.getElementById('barra-video-fill');
+const btnVideoPlayPause = document.getElementById('btn-video-play-pause');
+const btnVideoReiniciar = document.getElementById('btn-video-reiniciar');
+const btnVideoMudo = document.getElementById('btn-video-mudo');
+const statusVideoAudio = document.getElementById('status-video-audio');
+
+const cenasVideo = [
+  {
+    inicio: 0,
+    fim: 6,
+    titulo: '1. Mapa Satélite Inclusivo (SP & ABC)',
+    subtitulo: 'Visualização aérea estilo Google Earth com 21 ocorrências mapeadas',
+    corDestaque: '#0077B6',
+    legenda: 'Bem-vindo ao HyperAcess! Veja as barreiras urbanas em tempo real no mapa de satélite.'
+  },
+  {
+    inicio: 6,
+    fim: 12,
+    titulo: '2. Registro Rápido de Chamados (< 1 min)',
+    subtitulo: 'Buracos, falta de rampas e pisos táteis salvos com protocolo',
+    corDestaque: '#D55E00',
+    legenda: 'Qualquer cidadão pode reportar buracos ou falta de rampas e gerar um protocolo na hora.'
+  },
+  {
+    inicio: 12,
+    fim: 18,
+    titulo: '3. Comparador de Rotas Acessíveis',
+    subtitulo: 'Cálculo inteligente priorizando guias rebaixadas e piso tátil',
+    corDestaque: '#009E73',
+    legenda: 'O sistema compara três trajetos e indica a rota mais segura para cadeirantes e idosos.'
+  },
+  {
+    inicio: 18,
+    fim: 24,
+    titulo: '4. Alertas Antecipados por GPS, Voz e Vibração',
+    subtitulo: 'Aviso sonoro 30 metros antes do obstáculo na calçada',
+    corDestaque: '#E69F00',
+    legenda: 'Antes de chegar ao obstáculo, você recebe alerta por voz, bipe sonoro e vibração!'
+  }
+];
+
+let videoRodando = false;
+let videoMudo = false;
+let tempoVideoAtual = 0;
+const duracaoTotalVideo = 24;
+let intervaloVideo = null;
+let ultimaCenaFalada = -1;
+
+function desenharFrameVideo(tempo) {
+  if (!ctxVideo) return;
+  const w = canvasVideo.width;
+  const h = canvasVideo.height;
+
+  // Fundo estilo globo/satélite
+  const grad = ctxVideo.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0, '#061426');
+  grad.addColorStop(0.5, '#0A2540');
+  grad.addColorStop(1, '#0E3B66');
+  ctxVideo.fillStyle = grad;
+  ctxVideo.fillRect(0, 0, w, h);
+
+  // Grade geográfica decorativa
+  ctxVideo.strokeStyle = 'rgba(56, 189, 248, 0.14)';
+  ctxVideo.lineWidth = 1;
+  for (let x = 0; x < w; x += 60) {
+    ctxVideo.beginPath();
+    ctxVideo.moveTo(x, 0);
+    ctxVideo.lineTo(x, h);
+    ctxVideo.stroke();
+  }
+  for (let y = 0; y < h; y += 60) {
+    ctxVideo.beginPath();
+    ctxVideo.moveTo(0, y);
+    ctxVideo.lineTo(w, y);
+    ctxVideo.stroke();
+  }
+
+  const idxCena = Math.min(cenasVideo.length - 1, Math.floor(tempo / 6));
+  const cena = cenasVideo[idxCena];
+
+  // Círculo radar animado
+  const raio = 45 + ((tempo * 25) % 45);
+  ctxVideo.beginPath();
+  ctxVideo.arc(w / 2, h / 2 - 20, raio, 0, Math.PI * 2);
+  ctxVideo.strokeStyle = cena.corDestaque;
+  ctxVideo.lineWidth = 4;
+  ctxVideo.stroke();
+
+  // Pino central
+  ctxVideo.fillStyle = cena.corDestaque;
+  ctxVideo.beginPath();
+  ctxVideo.arc(w / 2, h / 2 - 20, 22, 0, Math.PI * 2);
+  ctxVideo.fill();
+
+  ctxVideo.fillStyle = '#FFFFFF';
+  ctxVideo.font = 'bold 18px Segoe UI, sans-serif';
+  ctxVideo.textAlign = 'center';
+  ctxVideo.fillText('HA', w / 2, h / 2 - 14);
+
+  // Textos da cena
+  ctxVideo.fillStyle = '#FFFFFF';
+  ctxVideo.font = 'bold 28px Segoe UI, sans-serif';
+  ctxVideo.fillText(cena.titulo, w / 2, 72);
+
+  ctxVideo.fillStyle = '#CBD5E1';
+  ctxVideo.font = '18px Segoe UI, sans-serif';
+  ctxVideo.fillText(cena.subtitulo, w / 2, 106);
+
+  if (legendaVideoEl) legendaVideoEl.textContent = cena.legenda;
+  if (barraVideoFill) barraVideoFill.style.width = ((tempo / duracaoTotalVideo) * 100) + '%';
+
+  const segFormatado = String(Math.floor(tempo)).padStart(2, '0');
+  statusVideoAudio.textContent = `${videoRodando ? '▶️ Reproduzindo' : '⏸️ Pausado'} (00:${segFormatado} / 00:24) · ${videoMudo ? 'Mudo' : 'Áudio Ativo'}`;
+
+  // Narração automática por cena quando áudio está ligado
+  if (videoRodando && !videoMudo && idxCena !== ultimaCenaFalada && 'speechSynthesis' in window) {
+    ultimaCenaFalada = idxCena;
+    window.speechSynthesis.cancel();
+    const falaCena = new SpeechSynthesisUtterance(cena.legenda);
+    falaCena.lang = 'pt-BR';
+    falaCena.rate = 1.05;
+    window.speechSynthesis.speak(falaCena);
+  }
+}
+
+function alternarPlayPauseVideo() {
+  if (videoRodando) {
+    videoRodando = false;
+    clearInterval(intervaloVideo);
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    btnVideoPlayPause.textContent = '▶️ Continuar Vídeo';
+    btnVideoPlayPause.setAttribute('aria-pressed', 'false');
+    desenharFrameVideo(tempoVideoAtual);
+  } else {
+    if (tempoVideoAtual >= duracaoTotalVideo) {
+      tempoVideoAtual = 0;
+      ultimaCenaFalada = -1;
+    }
+    videoRodando = true;
+    btnVideoPlayPause.textContent = '⏸️ Pausar Vídeo';
+    btnVideoPlayPause.setAttribute('aria-pressed', 'true');
+    desenharFrameVideo(tempoVideoAtual);
+
+    intervaloVideo = setInterval(() => {
+      tempoVideoAtual += 0.25;
+      if (tempoVideoAtual >= duracaoTotalVideo) {
+        tempoVideoAtual = duracaoTotalVideo;
+        videoRodando = false;
+        clearInterval(intervaloVideo);
+        btnVideoPlayPause.textContent = '▶️ Assistir Novamente';
+        btnVideoPlayPause.setAttribute('aria-pressed', 'false');
+      }
+      desenharFrameVideo(tempoVideoAtual);
+    }, 250);
+  }
+}
+
+if (btnVideoPlayPause) {
+  btnVideoPlayPause.addEventListener('click', alternarPlayPauseVideo);
+  canvasVideo.addEventListener('click', alternarPlayPauseVideo);
+}
+
+if (btnVideoReiniciar) {
+  btnVideoReiniciar.addEventListener('click', () => {
+    tempoVideoAtual = 0;
+    ultimaCenaFalada = -1;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (!videoRodando) {
+      alternarPlayPauseVideo();
+    } else {
+      desenharFrameVideo(0);
+    }
+  });
+}
+
+if (btnVideoMudo) {
+  btnVideoMudo.addEventListener('click', () => {
+    videoMudo = !videoMudo;
+    btnVideoMudo.setAttribute('aria-pressed', String(videoMudo));
+    btnVideoMudo.textContent = videoMudo ? '🔇 Áudio: Mudo' : '🔊 Áudio: Ligado';
+    if (videoMudo && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    } else if (!videoMudo && videoRodando) {
+      ultimaCenaFalada = -1;
+    }
+    desenharFrameVideo(tempoVideoAtual);
+  });
+}
+
+desenharFrameVideo(0);
+
+/* ==========================================================================
+   4. MAPA SATÉLITE TIPO GOOGLE EARTH (ESRI WORLD IMAGERY + RÓTULOS DE RUAS)
+   ========================================================================== */
+const ocorrenciasIniciais = [
+  { id: 1, cat: 'buraco', regiao: 'Centro SP', titulo: 'Calçada afundada na Praça da Sé', lat: -23.5505, lng: -46.6333, status: 'Em análise' },
+  { id: 2, cat: 'rampa', regiao: 'Centro SP', titulo: 'Esquina sem guia rebaixada — Av. Paulista, 1578', lat: -23.5614, lng: -46.6559, status: 'Aberto' },
+  { id: 3, cat: 'piso', regiao: 'Zona Leste', titulo: 'Piso tátil interrompido — Metrô Tatuapé', lat: -23.5402, lng: -46.5766, status: 'Aberto' },
+  { id: 4, cat: 'semaforo', regiao: 'Zona Sul', titulo: 'Semáforo sem alerta sonoro — Vila Mariana', lat: -23.5895, lng: -46.6347, status: 'Em manutenção' },
+  { id: 5, cat: 'obra', regiao: 'Zona Oeste', titulo: 'Obra bloqueando passagem — Rua Teodoro Sampaio', lat: -23.5672, lng: -46.6845, status: 'Aberto' },
+  { id: 6, cat: 'rampa', regiao: 'Santo André', titulo: 'Rampa íngreme fora da NBR 9050 — Centro Santo André', lat: -23.6639, lng: -46.5383, status: 'Aberto' },
+  { id: 7, cat: 'buraco', regiao: 'São Bernardo', titulo: 'Buraco próximo ao Terminal Ferrazópolis', lat: -23.6944, lng: -46.5654, status: 'Em análise' },
+  { id: 8, cat: 'piso', regiao: 'São Caetano', titulo: 'Piso tátil desgastado — Av. Goiás', lat: -23.6229, lng: -46.5548, status: 'Resolvido' },
+  { id: 9, cat: 'semaforo', regiao: 'Zona Norte', titulo: 'Travessia sem sinal sonoro — Santana', lat: -23.5026, lng: -46.6248, status: 'Aberto' }
+];
+
+const configPinos = {
+  buraco: { letra: 'B', cor: '#D55E00' },
+  rampa: { letra: 'R', cor: '#0072B2' },
+  piso: { letra: 'P', cor: '#009E73' },
+  semaforo: { letra: 'S', cor: '#CC79A7' },
+  obra: { letra: 'O', cor: '#E69F00' }
+};
+
+// Marcações feitas pelo usuário (salvas no localStorage) e centro de cada região
+let marcacoesUsuario = JSON.parse(localStorage.getItem('ha_marcacoes')) || [];
+let tipoMarcacao = 'buraco';
+let modoMarcar = false;
+const nomesTipos = { buraco: 'Buraco / Desnível', rampa: 'Falta de Rampa', piso: 'Piso Tátil', semaforo: 'Semáforo Sonoro', obra: 'Obra / Obstrução' };
+const centrosRegioes = {
+  'todas': { c: [-23.58, -46.60], z: 11 },
+  'Centro SP': { c: [-23.5530, -46.6420], z: 15 },
+  'Zona Leste': { c: [-23.5402, -46.5766], z: 15 },
+  'Zona Sul': { c: [-23.5895, -46.6347], z: 15 },
+  'Zona Oeste': { c: [-23.5672, -46.6845], z: 15 },
+  'Zona Norte': { c: [-23.5026, -46.6248], z: 15 },
+  'Santo André': { c: [-23.6639, -46.5383], z: 15 },
+  'São Bernardo': { c: [-23.6944, -46.5654], z: 15 },
+  'São Caetano': { c: [-23.6229, -46.5548], z: 15 }
+};
+
+function regiaoMaisProxima(lat, lng) {
+  let melhor = 'Centro SP', menor = Infinity;
+  Object.keys(centrosRegioes).forEach(r => {
+    if (r === 'todas') return;
+    const d = Math.pow(centrosRegioes[r].c[0] - lat, 2) + Math.pow(centrosRegioes[r].c[1] - lng, 2);
+    if (d < menor) { menor = d; melhor = r; }
+  });
+  return melhor;
+}
+
+function atualizarListaRegiao() {
+  const reg = document.getElementById('filtro-regiao').value;
+  const nomeRegiao = reg === 'todas' ? 'Todas as regiões' : reg;
+  document.getElementById('titulo-chamados-regiao').textContent = '📋 Chamados abertos — ' + nomeRegiao;
+  const doMapa = ocorrenciasIniciais.concat(marcacoesUsuario)
+    .filter(o => o.status !== 'Resolvido' && (reg === 'todas' || o.regiao === reg))
+    .map(o => ({ letra: configPinos[o.cat].letra, cat: o.cat, texto: o.titulo, info: o.regiao + ' · ' + o.status }));
+  const daCentral = chamadosSalvos
+    .filter(c => c.status !== 'Resolvido' && (reg === 'todas' || String(c.regiao).indexOf(reg) === 0))
+    .map(c => ({ letra: '#', cat: '', texto: c.protocolo + ' — ' + c.categoria, info: c.regiao + ' · ' + c.status }));
+  const itens = doMapa.concat(daCentral);
+  const lista = document.getElementById('lista-chamados-regiao');
+  lista.innerHTML = itens.length ? '' : '<li>Nenhum chamado aberto nesta região.</li>';
+  itens.forEach(i => {
+    const li = document.createElement('li');
+    const badge = document.createElement('span');
+    badge.className = 'pino-badge';
+    badge.style.background = i.cat ? 'var(--cor-' + i.cat + ')' : 'var(--text-secondary)';
+    badge.textContent = i.letra;
+    const txt = document.createElement('span');
+    txt.innerHTML = '<strong></strong><br><small></small>';
+    txt.querySelector('strong').textContent = i.texto;   // textContent: evita inserir HTML digitado
+    txt.querySelector('small').textContent = i.info;
+    li.appendChild(badge); li.appendChild(txt);
+    lista.appendChild(li);
+  });
+}
+
+function adicionarMarcacao(lat, lng) {
+  const desc = document.getElementById('marcar-descricao').value.trim();
+  const nova = {
+    id: Date.now(), cat: tipoMarcacao, regiao: regiaoMaisProxima(lat, lng),
+    titulo: nomesTipos[tipoMarcacao] + (desc ? ' — ' + desc : ' (marcado por você)'),
+    lat: lat, lng: lng, status: 'Aberto'
+  };
+  marcacoesUsuario.push(nova);
+  localStorage.setItem('ha_marcacoes', JSON.stringify(marcacoesUsuario));
+  document.getElementById('marcar-descricao').value = '';
+  ligarModoMarcar(false);
+  renderizarMarcadores();
+  document.getElementById('status-marcacao').textContent = `✅ ${nomesTipos[nova.cat]} marcado em ${nova.regiao} (${lat.toFixed(4)}, ${lng.toFixed(4)}).`;
+}
+
+function ligarModoMarcar(ligar) {
+  modoMarcar = ligar;
+  const btn = document.getElementById('btn-modo-marcar');
+  btn.setAttribute('aria-pressed', String(ligar));
+  btn.textContent = ligar ? '✖️ Cancelar marcação' : '📍 Marcar no mapa';
+  document.getElementById('mapa-leaflet').classList.toggle('modo-marcar', ligar);
+  document.getElementById('status-marcacao').textContent = ligar
+    ? `Toque no mapa onde está o problema (${nomesTipos[tipoMarcacao]}).`
+    : '';
+}
+
+document.querySelectorAll('.btn-sinalizador').forEach(btn => {
+  btn.addEventListener('click', () => {
+    tipoMarcacao = btn.getAttribute('data-tipo');
+    document.querySelectorAll('.btn-sinalizador').forEach(b => {
+      b.classList.toggle('ativo', b === btn);
+      b.setAttribute('aria-pressed', String(b === btn));
+    });
+    if (modoMarcar) ligarModoMarcar(true);
+  });
+});
+document.getElementById('btn-modo-marcar').addEventListener('click', () => ligarModoMarcar(!modoMarcar));
+document.getElementById('btn-marcar-centro').addEventListener('click', () => {
+  if (!mapaInstancia) return;
+  const centro = mapaInstancia.getCenter();
+  adicionarMarcacao(centro.lat, centro.lng);
+});
+document.getElementById('btn-limpar-marcacoes').addEventListener('click', () => {
+  if (!marcacoesUsuario.length) { document.getElementById('status-marcacao').textContent = 'Você ainda não marcou nenhuma ocorrência.'; return; }
+  if (!confirm('Apagar todas as ocorrências que você marcou?')) return;
+  marcacoesUsuario = [];
+  localStorage.removeItem('ha_marcacoes');
+  renderizarMarcadores();
+  document.getElementById('status-marcacao').textContent = '🗑️ Suas marcações foram apagadas.';
+});
+
+let camadaMarcadores = null;
+let layerSatelite = null;
+let layerRotulos = null;
+let layerMapaRuas = null;
+
+function iniciarMapaLeaflet() {
+  atualizarListaRegiao();
+  if (typeof L === 'undefined') return;
+  if (!mapaInstancia) {
+    mapaInstancia = L.map('mapa-leaflet', {
+      center: [-23.5614, -46.6559],
+      zoom: 15,
+      maxZoom: 19
+    });
+
+    // Camada Satélite de Alta Resolução (Estilo Google Earth)
+    layerSatelite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: 'Imagens de Satélite &copy; Esri, Maxar, Earthstar Geographics',
+        maxZoom: 19
+      }
+    );
+
+    // Camada de Rótulos de Ruas, Bairros e Referências sobre o Satélite (Modo Híbrido)
+    layerRotulos = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 19
+      }
+    );
+
+    // Camada Mapa Urbano Tradicional (Opcional)
+    layerMapaRuas = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+      }
+    );
+
+    // Inicia no modo Satélite Híbrido (Google Earth)
+    layerSatelite.addTo(mapaInstancia);
+    layerRotulos.addTo(mapaInstancia);
+
+    camadaMarcadores = L.layerGroup().addTo(mapaInstancia);
+
+    // Clique no mapa com o modo de marcação ligado cria a ocorrência naquele ponto
+    mapaInstancia.on('click', (e) => {
+      if (modoMarcar) adicionarMarcacao(e.latlng.lat, e.latlng.lng);
+    });
+  }
+  renderizarMarcadores();
+}
+
+// Alternar entre Satélite + Ruas (Google Earth), Satélite Puro e Mapa Urbano
+document.querySelectorAll('.btn-camada').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!mapaInstancia) return;
+    document.querySelectorAll('.btn-camada').forEach(b => b.classList.remove('ativa'));
+    btn.classList.add('ativa');
+
+    const modo = btn.getAttribute('data-camada');
+    mapaInstancia.removeLayer(layerSatelite);
+    mapaInstancia.removeLayer(layerRotulos);
+    mapaInstancia.removeLayer(layerMapaRuas);
+
+    const labelAtiva = document.getElementById('nome-camada-ativa');
+    if (modo === 'hibrido') {
+      layerSatelite.addTo(mapaInstancia);
+      layerRotulos.addTo(mapaInstancia);
+      labelAtiva.textContent = 'Satélite Híbrido (Estilo Google Earth)';
+    } else if (modo === 'satelite') {
+      layerSatelite.addTo(mapaInstancia);
+      labelAtiva.textContent = 'Satélite Puro (Visão Aérea)';
+    } else {
+      layerMapaRuas.addTo(mapaInstancia);
+      labelAtiva.textContent = 'Mapa Urbano (Ruas)';
+    }
+  });
+});
+
+function renderizarMarcadores() {
+  atualizarListaRegiao();
+  if (!camadaMarcadores) return;
+  camadaMarcadores.clearLayers();
+  const catFiltro = document.getElementById('filtro-categoria').value;
+  const regFiltro = document.getElementById('filtro-regiao').value;
+
+  ocorrenciasIniciais.concat(marcacoesUsuario)
+    .filter(item => (catFiltro === 'todos' || item.cat === catFiltro) && (regFiltro === 'todas' || item.regiao === regFiltro))
+    .forEach(item => {
+      const info = configPinos[item.cat] || configPinos.buraco;
+      const icone = L.divIcon({
+        className: 'custom-pin',
+        html: `<div style="background:${getComputedStyle(htmlEl).getPropertyValue('--cor-' + item.cat).trim() || info.cor};color:#fff;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.65);">${info.letra}</div>`,
+        iconSize: [32, 32]
+      });
+      L.marker([item.lat, item.lng], { icon: icone })
+        .bindPopup(`<strong>${item.titulo}</strong><br>Região: ${item.regiao}<br>Status: ${item.status}`)
+        .on('click', () => { if (iaVozAtiva) falarRespostaIA(`${item.titulo}. Região: ${item.regiao}. Status: ${item.status}.`); })
+        .addTo(camadaMarcadores);
+    });
+}
+
+document.getElementById('filtro-categoria').addEventListener('change', renderizarMarcadores);
+document.getElementById('filtro-regiao').addEventListener('change', () => {
+  renderizarMarcadores();
+  // Leva a visão de satélite direto para a região escolhida
+  if (!mapaInstancia) return;
+  const btnHibrido = document.querySelector('.btn-camada[data-camada="hibrido"]');
+  if (mapaInstancia.hasLayer(layerMapaRuas) && btnHibrido) btnHibrido.click();
+  const alvo = centrosRegioes[document.getElementById('filtro-regiao').value] || centrosRegioes.todas;
+  mapaInstancia.flyTo(alvo.c, alvo.z, { duration: 1.4 });
+});
+document.getElementById('btn-centralizar-sp').addEventListener('click', () => {
+  if (mapaInstancia) mapaInstancia.flyTo([-23.58, -46.60], 11, { duration: 1.4 });
+});
+document.getElementById('btn-voar-paulista').addEventListener('click', () => {
+  if (mapaInstancia) mapaInstancia.flyTo([-23.5614, -46.6559], 17, { duration: 1.5 });
+});
+
+/* ==========================================================================
+   5. CHAMADOS & LOCALSTORAGE (PÁGINA 4)
+   ========================================================================== */
+const formChamado = document.getElementById('form-chamado');
+const tbodyChamados = document.getElementById('lista-chamados-tbody');
+let chamadosSalvos = JSON.parse(localStorage.getItem('ha_chamados')) || [
+  { protocolo: 'HA-2026-019', categoria: 'Falta de Rampa', regiao: 'Centro SP — Av. Paulista', status: 'Aberto' },
+  { protocolo: 'HA-2026-020', categoria: 'Buraco na Calçada', regiao: 'Zona Leste — Tatuapé', status: 'Em análise' },
+  { protocolo: 'HA-2026-021', categoria: 'Piso Tátil', regiao: 'Santo André — Centro', status: 'Aberto' }
+];
+
+function atualizarTabelaChamados() {
+  tbodyChamados.innerHTML = chamadosSalvos.map(c => `
+    <tr>
+      <td><strong>${c.protocolo}</strong></td>
+      <td>${c.categoria}</td>
+      <td>${c.regiao}</td>
+      <td>${c.status}</td>
+    </tr>
+  `).join('');
+  document.getElementById('contador-ocorrencias').textContent = 18 + chamadosSalvos.length;
+}
+atualizarTabelaChamados();
+
+['chamado-nome', 'chamado-endereco', 'chamado-descricao'].forEach(id => {
+  const el = document.getElementById(id);
+  const salvo = localStorage.getItem('rascunho_' + id);
+  if (salvo) el.value = salvo;
+  el.addEventListener('input', () => localStorage.setItem('rascunho_' + id, el.value));
+});
+
+document.getElementById('btn-limpar-rascunho').addEventListener('click', () => {
+  formChamado.reset();
+  ['chamado-nome', 'chamado-endereco', 'chamado-descricao'].forEach(id => localStorage.removeItem('rascunho_' + id));
+});
+
+formChamado.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('chamado-nome').value.trim();
+  const cat = document.getElementById('chamado-categoria').value;
+  const reg = document.getElementById('chamado-regiao').value;
+  const end = document.getElementById('chamado-endereco').value.trim();
+  const desc = document.getElementById('chamado-descricao').value.trim();
+
+  document.getElementById('erro-nome').textContent = nome ? '' : 'Informe seu nome.';
+  document.getElementById('erro-categoria').textContent = cat ? '' : 'Selecione o tipo de barreira.';
+  document.getElementById('erro-regiao').textContent = reg ? '' : 'Selecione a região.';
+  document.getElementById('erro-endereco').textContent = end ? '' : 'Informe o endereço ou referência.';
+  document.getElementById('erro-descricao').textContent = desc ? '' : 'Descreva o problema.';
+
+  if (!nome || !cat || !reg || !end || !desc) return;
+
+  const protocolo = 'HA-2026-' + Math.floor(100 + Math.random() * 900);
+  chamadosSalvos.unshift({
+    protocolo,
+    categoria: cat.toUpperCase(),
+    regiao: `${reg} — ${end}`,
+    status: 'Registrado'
+  });
+  localStorage.setItem('ha_chamados', JSON.stringify(chamadosSalvos));
+  atualizarTabelaChamados();
+  formChamado.reset();
+  ['chamado-nome', 'chamado-endereco', 'chamado-descricao'].forEach(id => localStorage.removeItem('rascunho_' + id));
+  document.getElementById('retorno-chamado').textContent = `✅ Chamado registrado com sucesso! Protocolo: ${protocolo}`;
+});
+
+/* ==========================================================================
+   6. ALERTAS GPS & SIMULADOR (PÁGINA 6)
+   ========================================================================== */
+function tocarBipeAlerta() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  } catch (err) {}
+}
+
+document.getElementById('btn-simular-alerta').addEventListener('click', () => {
+  const dist = document.getElementById('distancia-alerta').value;
+  const msg = `⚠️ ALERTA HYPERACESS (${dist}m): Calçada danificada e ausência de rampa à frente! Desvie à direita pelo piso tátil.`;
+  document.getElementById('painel-alerta-visual').textContent = msg;
+
+  if (document.getElementById('chk-bipe').checked) tocarBipeAlerta();
+  if (document.getElementById('chk-vibrar').checked && 'vibrate' in navigator) {
+    navigator.vibrate([250, 100, 250]);
+  }
+  if (document.getElementById('chk-voz').checked && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(msg);
+    u.lang = 'pt-BR';
+    window.speechSynthesis.speak(u);
+  }
+});
+
+document.getElementById('btn-usar-gps').addEventListener('click', () => {
+  const painel = document.getElementById('painel-alerta-visual');
+  if (!('geolocation' in navigator)) {
+    painel.textContent = 'Geolocalização não suportada neste navegador.';
+    return;
+  }
+  painel.textContent = '📡 Obtendo coordenadas GPS em tempo real...';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      painel.textContent = `✅ GPS Ativo! Latitude: ${pos.coords.latitude.toFixed(4)}, Longitude: ${pos.coords.longitude.toFixed(4)}. Monitorando barreiras próximas.`;
+    },
+    () => {
+      painel.textContent = '⚠️ Permissão de GPS negada ou indisponível. Use o botão "Simular Percurso e Alerta" para testar.';
+    }
+  );
+});
+
+/* ==========================================================================
+   5B. COMPARADOR DE ROTAS (PÁGINA 5) — 3 trajetos com danos fictícios
+   ========================================================================== */
+// Mesmo trajeto e perfil geram sempre o mesmo resultado; trocar a partida,
+// o destino ou o perfil gera um novo comparativo. Os danos são fictícios (demonstração).
+function sementeTexto(texto) {
+  let h = 2166136261;
+  for (let i = 0; i < texto.length; i++) { h ^= texto.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function geradorAleatorio(semente) {          // números "aleatórios" repetíveis
+  let a = semente || 1;
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function escaparHTML(t) {
+  return String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Tipos de dano e quanto cada um pesa para cada perfil
+const danosRota = [
+  { id: 'buraco', nome: ['buraco na calçada', 'buracos na calçada'], peso: { cadeirante: 14, visual: 10, idoso: 13 } },
+  { id: 'rampa', nome: ['esquina sem rampa', 'esquinas sem rampa'], peso: { cadeirante: 18, visual: 5, idoso: 10 } },
+  { id: 'piso', nome: ['trecho de piso tátil interrompido', 'trechos de piso tátil interrompidos'], peso: { cadeirante: 3, visual: 18, idoso: 4 } },
+  { id: 'semaforo', nome: ['semáforo sem alerta sonoro', 'semáforos sem alerta sonoro'], peso: { cadeirante: 4, visual: 16, idoso: 8 } },
+  { id: 'obra', nome: ['obra bloqueando a passagem', 'obras bloqueando a passagem'], peso: { cadeirante: 16, visual: 12, idoso: 12 } },
+  { id: 'estreita', nome: ['calçada estreita com postes', 'calçadas estreitas com postes'], peso: { cadeirante: 12, visual: 8, idoso: 7 } },
+  { id: 'desnivel', nome: ['degrau ou desnível', 'degraus ou desníveis'], peso: { cadeirante: 15, visual: 9, idoso: 14 } }
+];
+const nomesPerfilRota = { cadeirante: 'cadeirante / mobilidade reduzida', visual: 'pessoa com deficiência visual', idoso: 'idoso / carrinho de bebê' };
+const velocidadePerfil = { cadeirante: 60, visual: 55, idoso: 50 };   // metros por minuto
+
+function calcularRotas() {
+  const origem = document.getElementById('rota-origem').value.trim();
+  const destino = document.getElementById('rota-destino').value.trim();
+  const perfil = document.getElementById('rota-perfil').value;
+  const status = document.getElementById('status-rotas');
+  if (!origem || !destino) { status.textContent = 'Informe o ponto de partida e o destino.'; return; }
+  if (origem.toLowerCase() === destino.toLowerCase()) { status.textContent = 'O ponto de partida e o destino precisam ser diferentes.'; return; }
+
+  const sorte = geradorAleatorio(sementeTexto(origem.toLowerCase() + '|' + destino.toLowerCase() + '|' + perfil));
+  const distanciaBase = Math.round((400 + sorte() * 2000) / 10) * 10;   // de 400 m a 2,4 km
+  const modelos = [
+    { nome: 'Trajeto A — Via Corredor Tátil', fator: 1.18 + sorte() * 0.12, maxDanos: 2 },
+    { nome: 'Trajeto B — Via Avenida Principal', fator: 1.06 + sorte() * 0.08, maxDanos: 3 },
+    { nome: 'Trajeto C — Caminho Mais Curto', fator: 1.0, maxDanos: 4 }
+  ];
+
+  const rotas = modelos.map(m => {
+    const distancia = Math.round(distanciaBase * m.fator / 10) * 10;
+    const qtdTipos = Math.floor(sorte() * (m.maxDanos + 1));      // 0 até maxDanos tipos de dano
+    const tipos = danosRota.slice().sort(() => sorte() - 0.5).slice(0, qtdTipos);
+    let penalidade = 0, atraso = 0;
+    const danos = tipos.map(t => {
+      const qtd = 1 + Math.floor(sorte() * 2);
+      penalidade += t.peso[perfil] * qtd;
+      atraso += qtd;
+      return qtd + ' ' + (qtd > 1 ? t.nome[1] : t.nome[0]);
+    });
+    const acessivel = Math.max(15, Math.min(99, Math.round(99 - penalidade - distancia / 400)));
+    const minutos = Math.round(distancia / velocidadePerfil[perfil] + atraso);
+    return { nome: m.nome, distancia, minutos, danos, acessivel };
+  });
+
+  // Comparativo: maior acessibilidade primeiro; empate = menor tempo
+  rotas.sort((a, b) => b.acessivel - a.acessivel || a.minutos - b.minutos);
+  const rotulos = [
+    { texto: '⭐ Rota Recomendada', estilo: 'background:var(--cor-piso); color:#FFF;', borda: 'border:2px solid var(--cor-piso);', item: 'Infraestrutura' },
+    { texto: 'Rota Moderada', estilo: '', borda: '', item: 'Atenção' },
+    { texto: '⚠ Pior Rota', estilo: 'background:var(--cor-buraco); color:#FFF;', borda: '', item: 'Alerta Crítico' }
+  ];
+  const km = m => m >= 1000 ? (m / 1000).toFixed(2).replace('.', ',') + ' km' : m + ' m';
+
+  document.getElementById('resultado-rotas').innerHTML = rotas.map((r, i) => `
+    <article class="card"${rotulos[i].borda ? ` style="${rotulos[i].borda}"` : ''}>
+      <span class="badge-tag"${rotulos[i].estilo ? ` style="${rotulos[i].estilo}"` : ''}>${rotulos[i].texto} (${r.acessivel}% Acessível)</span>
+      <h3>${r.nome}</h3>
+      <p><strong>Tempo estimado:</strong> ${r.minutos} min (${km(r.distancia)})</p>
+      <p><strong>${r.danos.length ? rotulos[i].item : 'Infraestrutura'}:</strong> ${r.danos.length ? r.danos.join(', ') + ' (danos fictícios).' : 'sem barreiras reportadas neste trajeto.'}</p>
+    </article>`).join('');
+
+  const resumo = `Comparativo de ${origem} até ${destino} para ${nomesPerfilRota[perfil]}: ` +
+    `recomendada ${rotas[0].nome.split(' — ')[0]} (${rotas[0].acessivel}%), moderada ${rotas[1].nome.split(' — ')[0]} (${rotas[1].acessivel}%) ` +
+    `e pior ${rotas[2].nome.split(' — ')[0]} (${rotas[2].acessivel}%).`;
+  status.textContent = '✅ ' + resumo + ' Dados fictícios para demonstração.';
+  if (typeof iaVozAtiva !== 'undefined' && iaVozAtiva) falarRespostaIA(resumo);   // só fala com a narração ligada
+}
+
+document.getElementById('btn-calcular-rotas').addEventListener('click', calcularRotas);
+['rota-origem', 'rota-destino'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') calcularRotas(); });
+});
+
+/* ==========================================================================
+   7. PERFIL (PÁGINA 7) & CONTATO (PÁGINA 10)
+   ========================================================================== */
+// Telefone do estado de SP: DDD 11 a 19; celular com 9 dígitos começando em 9, fixo com 8 dígitos começando em 2 a 5
+function formatarTelefone(valor) {
+  const d = valor.replace(/\D/g, '').slice(0, 11);
+  if (d.length <= 2) return d.length ? '(' + d : '';
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+function telefoneSPValido(valor) {
+  const d = valor.replace(/\D/g, '');
+  const ddd = Number(d.slice(0, 2));
+  if (ddd < 11 || ddd > 19) return false;
+  const numero = d.slice(2);
+  if (/^(\d)\1+$/.test(numero)) return false;                 // ex.: 99999-9999
+  if (d.length === 11) return numero[0] === '9';                // celular
+  if (d.length === 10) return /^[2-5]/.test(numero);            // fixo
+  return false;
+}
+// E-mail válido de provedores conhecidos (ou institucional .edu.br / .gov.br)
+const provedoresEmail = ['gmail.com', 'outlook.com', 'outlook.com.br', 'hotmail.com', 'hotmail.com.br', 'live.com', 'msn.com',
+  'yahoo.com', 'yahoo.com.br', 'icloud.com', 'me.com', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com',
+  'globomail.com', 'protonmail.com', 'proton.me', 'zoho.com', 'aol.com'];
+function emailValidoProvedor(valor) {
+  const email = valor.trim().toLowerCase();
+  if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email) || email.includes('..')) return false;
+  const dominio = email.split('@')[1];
+  return provedoresEmail.includes(dominio) || /\.(edu|gov)\.br$/.test(dominio);
+}
+
+const campoTelefone = document.getElementById('perfil-telefone');
+campoTelefone.addEventListener('input', () => { campoTelefone.value = formatarTelefone(campoTelefone.value); });
+
+// Carrega o perfil salvo nos campos
+const perfilSalvo = JSON.parse(localStorage.getItem('ha_perfil')) || {};
+if (perfilSalvo.nec) document.getElementById('perfil-necessidade').value = perfilSalvo.nec;
+if (perfilSalvo.bairro) document.getElementById('perfil-bairro').value = perfilSalvo.bairro;
+if (perfilSalvo.telefone) campoTelefone.value = perfilSalvo.telefone;
+if (perfilSalvo.email) document.getElementById('perfil-email').value = perfilSalvo.email;
+
+document.getElementById('btn-salvar-perfil').addEventListener('click', () => {
+  const nec = document.getElementById('perfil-necessidade').value;
+  const bairro = document.getElementById('perfil-bairro').value;
+  const telefone = campoTelefone.value.trim();
+  const email = document.getElementById('perfil-email').value.trim().toLowerCase();
+  const telOk = !telefone || telefoneSPValido(telefone);
+  const emailOk = !email || emailValidoProvedor(email);
+  document.getElementById('erro-perfil-telefone').textContent = telOk ? '' : 'Informe um telefone válido de SP: (11) 91234-5678 para celular ou (11) 3456-7890 para fixo.';
+  document.getElementById('erro-perfil-email').textContent = emailOk ? '' : 'Informe um e-mail válido (ex.: nome@gmail.com, nome@outlook.com, nome@hotmail.com).';
+  campoTelefone.setAttribute('aria-invalid', String(!telOk));
+  document.getElementById('perfil-email').setAttribute('aria-invalid', String(!emailOk));
+  if (!telOk || !emailOk) {
+    document.getElementById('status-perfil').textContent = '';
+    (telOk ? document.getElementById('perfil-email') : campoTelefone).focus();
+    return;
+  }
+  localStorage.setItem('ha_perfil', JSON.stringify({ nec, bairro, telefone, email }));
+  atualizarRemetenteContato();
+  document.getElementById('status-perfil').textContent = '✅ Preferências de perfil salvas com sucesso!';
+});
+
+// Remetente do Fale Conosco = e-mail do Perfil (ou "Anônimo")
+function emailDoPerfil() {
+  const p = JSON.parse(localStorage.getItem('ha_perfil')) || {};
+  return p.email && emailValidoProvedor(p.email) ? p.email : '';
+}
+function atualizarRemetenteContato() {
+  const email = emailDoPerfil();
+  document.getElementById('contato-remetente').textContent = email || 'Anônimo';
+}
+atualizarRemetenteContato();
+
+document.getElementById('form-contato').addEventListener('submit', (e) => {
+  e.preventDefault();
+  pararDitado();
+  const msg = document.getElementById('contato-mensagem').value.trim();
+  document.getElementById('erro-contato-msg').textContent = msg ? '' : 'Escreva (ou fale) uma mensagem.';
+  if (!msg) { document.getElementById('contato-mensagem').focus(); return; }
+
+  // Envio real: o FormSubmit entrega a mensagem em suportehyperacess@gmail.com.
+  // Remetente = e-mail do Perfil; sem e-mail, vai como "Anônimo".
+  if (location.protocol === 'file:') {
+    document.getElementById('retorno-contato').textContent = '⚠️ Para enviar o e-mail, abra o site pelo link publicado (GitHub Pages). Aberto direto do computador, o envio não funciona.';
+    return;
+  }
+  const enderecoPagina = location.href.split('#')[0].split('?')[0];
+  const agora = new Date();
+  const protocolo = 'HA-SUP-' + agora.getFullYear() + String(agora.getMonth() + 1).padStart(2, '0') +
+    String(agora.getDate()).padStart(2, '0') + '-' + Math.floor(1000 + Math.random() * 9000);
+  const emailRemetente = emailDoPerfil();
+  const assunto = document.getElementById('contato-assunto');
+  const tipoTexto = assunto.options[assunto.selectedIndex].text;
+  const campoEmail = document.getElementById('contato-email-remetente');
+  campoEmail.value = emailRemetente;
+  campoEmail.disabled = !emailRemetente;            // anônimo: o campo "email" não é enviado
+  document.getElementById('contato-protocolo').value = protocolo;
+  document.getElementById('contato-remetente-campo').value = emailRemetente || 'Anônimo';
+  document.getElementById('contato-assunto-texto').value = tipoTexto;
+  document.getElementById('contato-subject').value = `HyperAcess — ${tipoTexto} — Protocolo ${protocolo}`;
+  document.getElementById('contato-next').value = enderecoPagina + '?enviado=1&protocolo=' + encodeURIComponent(protocolo) + (emailRemetente ? '&copia=1' : '');
+  document.getElementById('contato-url').value = enderecoPagina;
+  const btnEnviar = document.getElementById('btn-enviar-contato');
+  btnEnviar.disabled = true;
+  btnEnviar.textContent = '⏳ Enviando...';
+  document.getElementById('retorno-contato').textContent = 'Enviando sua mensagem...';
+  e.target.submit();
+});
+
+/* ==========================================================================
+   8. ASSISTENTE VIRTUAL IA — TOGGLE START/STOP DA FALA AO CLICAR NOVAMENTE
+   ========================================================================== */
+const btnAbrirChat = document.getElementById('btn-abrir-chat');
+const btnFecharChat = document.getElementById('btn-fechar-chat');
+const janelaChat = document.getElementById('janela-chat');
+const formChat = document.getElementById('form-chat');
+const inputChat = document.getElementById('input-chat');
+const chatMensagens = document.getElementById('chat-mensagens');
+const btnIaVozToggle = document.getElementById('btn-ia-voz-toggle');
+
+let iaVozAtiva = false;
+let ultimaRespostaTextoLimpo = 'Olá! Sou a IA do HyperAcess. Respondo qualquer dúvida sobre o site.';
+
+function pararFalaIA() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function atualizarBotaoVozIA() {
+  btnIaVozToggle.setAttribute('aria-pressed', String(iaVozAtiva));
+  btnIaVozToggle.textContent = iaVozAtiva ? '🔊 Narração IA: Ligada' : '🔇 Narração IA: Desligada';
+}
+
+function falarRespostaIA(textoLimpo) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  const fala = new SpeechSynthesisUtterance(textoLimpo);
+  fala.lang = 'pt-BR';
+  window.speechSynthesis.speak(fala);
+}
+
+// Um único botão: 1º clique liga a narração, 2º clique desliga (e para a fala na hora)
+btnIaVozToggle.addEventListener('click', () => {
+  iaVozAtiva = !iaVozAtiva;
+  atualizarBotaoVozIA();
+  if (iaVozAtiva) {
+    falarRespostaIA(ultimaRespostaTextoLimpo);
+  } else {
+    pararFalaIA();
+  }
+});
+
+function abrirChat() {
+  janelaChat.classList.add('aberto');
+  janelaChat.setAttribute('aria-hidden', 'false');
+  btnAbrirChat.setAttribute('aria-expanded', 'true');
+  inputChat.focus();
+}
+
+function fecharChat() {
+  janelaChat.classList.remove('aberto');
+  janelaChat.setAttribute('aria-hidden', 'true');
+  btnAbrirChat.setAttribute('aria-expanded', 'false');
+  pararFalaIA();
+}
+
+// Clicar no botão do Assistente IA pela 1ª vez abre; clicar pela 2ª vez fecha e para a fala
+btnAbrirChat.addEventListener('click', () => {
+  if (janelaChat.classList.contains('aberto')) {
+    fecharChat();
+  } else {
+    abrirChat();
+  }
+});
+btnFecharChat.addEventListener('click', fecharChat);
+
+const conhecimentoSite = [
+  {
+    chaves: ['o que e', 'sobre', 'hyperacess', 'site', 'projeto', 'funciona', 'objetivo', 'serve'],
+    resposta: 'O <strong>HyperAcess</strong> é uma plataforma web colaborativa de mapeamento urbano inclusivo para São Paulo e Grande ABC. Ele ajuda pessoas com deficiência visual, auditiva, motora e idosos a encontrar rotas acessíveis, visualizar barreiras no mapa satélite e receber alertas por voz, som e vibração.'
+  },
+  {
+    chaves: ['pagina', 'paginas', 'menu', 'secao', 'secoes', 'navegar', 'estrutura'],
+    resposta: 'O site possui 10 páginas integradas: <strong>1. Início</strong>, <strong>2. Quem Somos</strong>, <strong>3. Mapa Satélite</strong>, <strong>4. Chamados</strong>, <strong>5. Rotas Acessíveis</strong>, <strong>6. Alertas GPS</strong>, <strong>7. Perfil</strong>, <strong>8. Painel Prefeituras</strong>, <strong>9. Ajuda & Vídeo</strong> e <strong>10. Fale Conosco</strong>.'
+  },
+  {
+    chaves: ['acessibilidade', 'fonte', 'letra', 'contraste', 'daltonismo', 'escuro', 'voz', 'wcag', 'leitor'],
+    resposta: 'Na barra superior do site você pode aumentar ou diminuir a fonte (A+ e A-), ativar o <strong>Alto Contraste</strong>, ligar o <strong>Modo Escuro</strong>, usar a paleta para <strong>Daltonismo (Okabe-Ito)</strong> e clicar em <strong>Ouvir Página</strong>.'
+  },
+  {
+    chaves: ['mapa', 'satelite', 'google earth', 'earth', 'risco', 'riscos', 'marcador', 'pino', 'filtro', 'regiao', 'sao paulo', 'abc'],
+    resposta: 'Na <strong>Página 3 (Mapa Satélite)</strong> você tem visualização aérea estilo Google Earth com satélite híbrido, satélite puro e mapa urbano, mostrando marcadores por cor e letra: <strong>B</strong> (Buraco), <strong>R</strong> (Falta de Rampa), <strong>P</strong> (Piso Tátil), <strong>S</strong> (Semáforo Sonoro) e <strong>O</strong> (Obra).'
+  },
+  {
+    chaves: ['chamado', 'chamados', 'relatar', 'denuncia', 'reportar', 'protocolo', 'rascunho', 'buraco', 'rampa'],
+    resposta: 'Na <strong>Página 4 (Chamados)</strong> você registra obstáculos em menos de 1 minuto. O formulário salva rascunhos automaticamente no <code>localStorage</code> e gera um número de protocolo imediato.'
+  },
+  {
+    chaves: ['rota', 'rotas', 'caminho', 'trajeto', 'cadeirante', 'comparar'],
+    resposta: 'Na <strong>Página 5 (Rotas)</strong> o sistema compara 3 opções de trajeto conforme seu perfil (cadeirante, deficiência visual ou idoso), priorizando calçadas com rampas e piso tátil.'
+  },
+  {
+    chaves: ['alerta', 'alertas', 'gps', 'vibracao', 'bipe', 'som', 'simular', 'distancia'],
+    resposta: 'Na <strong>Página 6 (Alertas GPS)</strong> você escolhe a distância de aviso (15m, 30m ou 50m) e ativa alertas em 4 canais simultâneos: bipe sonoro, narração por voz, vibração no celular e alerta visual.'
+  },
+  {
+    chaves: ['prefeitura', 'prefeituras', 'grafico', 'dados', 'estatistica', 'gestao'],
+    resposta: 'Na <strong>Página 8 (Prefeituras)</strong> há gráficos com o percentual de ocorrências por infraestrutura (buracos 38%, rampas 26%, piso tátil 19%, semáforos 11% e obras 6%) para apoiar políticas públicas.'
+  },
+  {
+    chaves: ['video', 'audio', 'mudo', 'legenda', 'audiodescricao', 'faq', 'ajuda'],
+    resposta: 'Na <strong>Página 9 (Ajuda & Vídeo)</strong> você encontra o FAQ completo e o vídeo demonstrativo interativo com narração em áudio, legendas sincronizadas e botões de iniciar, pausar e reiniciar.'
+  },
+  {
+    chaves: ['equipe', 'autor', 'autores', 'criador', 'quem fez', 'unicid', 'lucas', 'pedro', 'marcos', 'nathan'],
+    resposta: 'O HyperAcess foi desenvolvido na <strong>UNICID (2026)</strong> pelos estudantes: <strong>Lucas de Moraes Covelo</strong> (Coordenação e Arquitetura), <strong>Pedro Henrique de Oliveira</strong> (Acessibilidade WCAG, JS e Assistente IA), <strong>Marcos Vinicius Calixto Emerenciano</strong> (Layout, CSS e Mapa Satélite) e <strong>Nathan Caue Sanchez Martins</strong> (Front-End e Módulos JavaScript: armazenamento no localStorage).'
+  },
+  {
+    chaves: ['contato', 'email', 'falar', 'suporte', 'ong', 'voluntario', 'parceria'],
+    resposta: 'Para enviar dúvidas, sugestões ou propor parcerias com ONGs e prefeituras, acesse a <strong>Página 10 (Fale Conosco)</strong> pelo menu principal ou rodapé.'
+  },
+  {
+    chaves: ['gratis', 'gratuito', 'preco', 'custo', 'pagar', 'offline', 'internet'],
+    resposta: 'O HyperAcess é <strong>100% gratuito</strong> para todos os cidadãos e armazena preferências e rascunhos localmente no navegador.'
+  }
+];
+
+function gerarRespostaIA(pergunta) {
+  const limpa = pergunta
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+
+  let melhor = null;
+  let maxPontos = 0;
+
+  for (const item of conhecimentoSite) {
+    let pts = 0;
+    for (const chave of item.chaves) {
+      if (limpa.includes(chave)) pts++;
+    }
+    if (pts > maxPontos) {
+      maxPontos = pts;
+      melhor = item.resposta;
+    }
+  }
+
+  if (melhor) return melhor;
+
+  return 'Entendi sua pergunta! No <strong>HyperAcess</strong> você pode explorar o <strong>Mapa Satélite (Pág. 3)</strong>, <strong>Abrir Chamados (Pág. 4)</strong>, <strong>Comparar Rotas Acessíveis (Pág. 5)</strong>, testar <strong>Alertas GPS (Pág. 6)</strong>, ajustar a <strong>Acessibilidade WCAG</strong> no topo ou assistir ao <strong>Vídeo Demonstrativo (Pág. 9)</strong>. Sobre qual dessas funções você quer saber mais detalhes?';
+}
+
+function adicionarMensagemChat(texto, tipo) {
+  const div = document.createElement('div');
+  div.className = tipo === 'user' ? 'msg-user' : 'msg-bot';
+  if (tipo === 'user') {
+    div.textContent = texto;
+  } else {
+    div.innerHTML = texto;
+    ultimaRespostaTextoLimpo = div.textContent;
+    if (iaVozAtiva) {
+      falarRespostaIA(ultimaRespostaTextoLimpo);
+    }
+  }
+  chatMensagens.appendChild(div);
+  chatMensagens.scrollTop = chatMensagens.scrollHeight;
+}
+
+function processarPerguntaChat(texto) {
+  if (!texto.trim()) return;
+  adicionarMensagemChat(texto, 'user');
+  setTimeout(() => {
+    const resposta = gerarRespostaIA(texto);
+    adicionarMensagemChat(resposta, 'bot');
+  }, 220);
+}
+
+formChat.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const texto = inputChat.value;
+  inputChat.value = '';
+  processarPerguntaChat(texto);
+});
+
+/* Ditado por voz na mensagem (microfone do computador ou do celular) */
+const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
+const btnDitado = document.getElementById('btn-ditado');
+const statusDitado = document.getElementById('status-ditado');
+const campoMensagem = document.getElementById('contato-mensagem');
+let reconhecedor = null;
+let ditadoAtivo = false;
+
+function pararDitado() {
+  if (!ditadoAtivo) return;
+  ditadoAtivo = false;
+  if (reconhecedor) { try { reconhecedor.stop(); } catch (err) {} }
+  btnDitado.setAttribute('aria-pressed', 'false');
+  btnDitado.textContent = '🎤 Falar a mensagem';
+  statusDitado.textContent = 'Ditado encerrado. Revise o texto antes de enviar.';
+}
+
+function iniciarDitado() {
+  if (!Reconhecimento) {
+    statusDitado.textContent = 'Este navegador não faz ditado por voz. No celular, use o 🎤 do teclado; no computador, use Chrome ou Edge.';
+    return;
+  }
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();   // a narração não atrapalha o microfone
+  reconhecedor = new Reconhecimento();
+  reconhecedor.lang = 'pt-BR';
+  reconhecedor.interimResults = true;
+  reconhecedor.continuous = false;            // reinicia sozinho: funciona melhor no celular
+  reconhecedor.onresult = (ev) => {
+    let final = '', parcial = '';
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      if (ev.results[i].isFinal) final += ev.results[i][0].transcript;
+      else parcial += ev.results[i][0].transcript;
+    }
+    if (final.trim()) {
+      const atual = campoMensagem.value.trim();
+      campoMensagem.value = (atual ? atual + ' ' : '') + final.trim();
+      document.getElementById('erro-contato-msg').textContent = '';
+    }
+    statusDitado.textContent = parcial ? '🎙️ Ouvindo: ' + parcial : '🎙️ Ouvindo... fale sua mensagem. Toque de novo para parar.';
+  };
+  reconhecedor.onerror = (ev) => {
+    if (ev.error === 'no-speech') return;
+    const msgs = {
+      'not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+      'service-not-allowed': 'Permissão do microfone negada. Libere o microfone no cadeado da barra de endereço.',
+      'audio-capture': 'Nenhum microfone encontrado neste aparelho.',
+      'network': 'O ditado precisa de internet. Verifique a conexão.'
+    };
+    ditadoAtivo = true; pararDitado();
+    statusDitado.textContent = msgs[ev.error] || 'Não foi possível usar o microfone agora. Tente novamente.';
+  };
+  reconhecedor.onend = () => {
+    if (ditadoAtivo) { try { reconhecedor.start(); } catch (err) {} }
+  };
+  try {
+    reconhecedor.start();
+    ditadoAtivo = true;
+    btnDitado.setAttribute('aria-pressed', 'true');
+    btnDitado.textContent = '⏹️ Parar de falar';
+    statusDitado.textContent = '🎙️ Ouvindo... fale sua mensagem. Toque de novo para parar.';
+  } catch (err) {
+    statusDitado.textContent = 'Não foi possível iniciar o microfone. Tente novamente.';
+  }
+}
+
+btnDitado.addEventListener('click', () => (ditadoAtivo ? pararDitado() : iniciarDitado()));
+document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
+  pararDitado();
+  atualizarRemetenteContato();
+}));
+
+/* Área de ONGs (página 9) */
+document.getElementById('btn-ong-parceria').addEventListener('click', () => {
+  navegarPara('pag-10');
+  document.getElementById('contato-assunto').value = 'ong';
+  if (!campoMensagem.value.trim()) {
+    campoMensagem.value = 'Olá! Represento a ONG ______ e temos interesse em uma parceria para divulgar o HyperAcess.';
+  }
+  setTimeout(() => campoMensagem.focus(), 400);
+});
+document.getElementById('btn-copiar-pix').addEventListener('click', () => {
+  const chave = document.getElementById('chave-pix').textContent;
+  const status = document.getElementById('status-pix');
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(chave)
+      .then(() => { status.textContent = '✅ Chave PIX copiada!'; })
+      .catch(() => { status.textContent = 'Copie a chave: ' + chave; });
+  } else {
+    status.textContent = 'Copie a chave: ' + chave;
+  }
+});
+
+if (new URLSearchParams(location.search).get('enviado') === '1') {
+  navegarPara('pag-10');
+  const params = new URLSearchParams(location.search);
+  document.getElementById('retorno-contato').textContent = '✅ Mensagem enviada ao suporte! Protocolo ' + (params.get('protocolo') || '') + '. ' +
+    (params.get('copia') === '1' ? 'Uma cópia foi enviada para o seu e-mail.' : 'Enviada como Anônimo.');
+  history.replaceState(null, '', location.pathname);
+}
+
+document.querySelectorAll('.chip-sugestao').forEach(chip => {
+  chip.addEventListener('click', () => {
+    processarPerguntaChat(chip.getAttribute('data-pergunta'));
+  });
+});
