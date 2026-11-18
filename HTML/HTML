@@ -1,1 +1,774 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HyperAcess - Mapeamento Urbano Inclusivo de São Paulo e ABC para pessoas com deficiência e idosos.">
+  <meta name="theme-color" content="#0A2540">
+  <title>HyperAcess — Mapeamento Urbano Inclusivo (SP e ABC)</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+
+  <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+
+  <a href="#conteudo-principal" class="link-atalho">Saltar para o conteúdo principal</a>
+
+  <!-- BARRA SUPERIOR DE ACESSIBILIDADE -->
+  <div class="barra-acessibilidade" role="region" aria-label="Ferramentas de Acessibilidade">
+    <div class="container">
+      <span>♿ Acessibilidade WCAG:</span>
+      <div class="acess-grupo">
+        <button type="button" class="btn-acess" id="btn-fonte-menos" aria-label="Diminuir tamanho da fonte">A-</button>
+        <button type="button" class="btn-acess" id="btn-fonte-reset" aria-label="Tamanho de fonte padrão">A</button>
+        <button type="button" class="btn-acess" id="btn-fonte-mais" aria-label="Aumentar tamanho da fonte">A+</button>
+        <button type="button" class="btn-acess" id="btn-contraste" aria-pressed="false">Alto Contraste</button>
+        <button type="button" class="btn-acess" id="btn-escuro" aria-pressed="false">Modo Escuro</button>
+        <button type="button" class="btn-acess" id="btn-daltonismo" aria-pressed="false">Daltonismo: Desligado</button>
+        <button type="button" class="btn-acess" id="btn-ouvir-pagina" aria-pressed="false">🔊 Ouvir Página</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO E NAVEGAÇÃO SPA -->
+  <header class="cabecalho-principal">
+    <div class="container header-inner">
+      <a href="#pag-1" class="logo-brand" data-nav="pag-1">
+        <div class="logo-icon" aria-hidden="true">HA</div>
+        <div class="logo-text">
+          <strong>HyperAcess</strong>
+          <span>Mobilidade Inclusiva · SP &amp; ABC</span>
+        </div>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <ul>
+          <li><button type="button" class="nav-link ativo" data-nav="pag-1" aria-current="page">1. Início</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-2">2. Quem Somos</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-3">3. Mapa</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-4">4. Chamados</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-5">5. Rotas</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-6">6. Alertas GPS</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-7">7. Perfil</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-8">8. Prefeituras</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-9">9. Ajuda &amp; Vídeo</button></li>
+          <li><button type="button" class="nav-link" data-nav="pag-10">10. Contato</button></li>
+        </ul>
+      </nav>
+
+      <button type="button" class="btn-menu-mobile" id="btn-abrir-drawer" aria-expanded="false" aria-controls="drawer-mobile">
+        ☰ Menu
+      </button>
+    </div>
+  </header>
+
+  <!-- GAVETA MOBILE -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="mobile-drawer" id="drawer-mobile" aria-label="Menu de navegação móvel" aria-hidden="true">
+    <div class="drawer-header">
+      <strong>Menu HyperAcess</strong>
+      <button type="button" class="btn-secondary" id="btn-fechar-drawer" style="min-height:40px; padding:6px 12px;">✕</button>
+    </div>
+    <ul>
+      <li><button type="button" class="nav-link ativo" data-nav="pag-1">1. Início (Home)</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-2">2. Quem Somos &amp; ODS</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-3">3. Mapa Satélite (Google Earth)</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-4">4. Abrir Chamado</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-5">5. Rotas Acessíveis</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-6">6. Lembretes e Alertas</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-7">7. Perfil e Acessibilidade</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-8">8. Painel Prefeituras</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-9">9. Ajuda (FAQ) &amp; Vídeo</button></li>
+      <li><button type="button" class="nav-link" data-nav="pag-10">10. Fale Conosco</button></li>
+    </ul>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL (10 PÁGINAS SPA) -->
+  <main id="conteudo-principal" class="container" tabindex="-1">
+
+    <!-- ==================== PÁGINA 1: HOME ==================== -->
+    <section id="pag-1" class="spa-page ativa" aria-labelledby="titulo-pag-1">
+      <div class="hero-banner">
+        <div>
+          <span class="badge-tag" style="background:rgba(255,255,255,0.16); color:#FFF; border-color:rgba(255,255,255,0.3);">São Paulo &amp; Grande ABC</span>
+          <h1 id="titulo-pag-1">Caminhos mais seguros, acessíveis e autônomos para todos.</h1>
+          <p>O HyperAcess mapeia colaborativamente buracos, falta de rampas, pisos táteis danificados e semáforos sonoros, calculando rotas acessíveis e enviando alertas por voz, som e vibração em tempo real.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn-primary" data-nav="pag-3">🛰️ Explorar Mapa Satélite</button>
+            <button type="button" class="btn-secondary" data-nav="pag-4">📢 Reportar Obstáculo</button>
+            <button type="button" class="btn-secondary" data-nav="pag-9">🎬 Assistir Demonstração</button>
+          </div>
+        </div>
+        <div class="card" style="color:var(--text-primary);">
+          <h3>📊 Impacto em Tempo Real</h3>
+          <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">Indicadores consolidados da rede colaborativa:</p>
+          <div style="margin-bottom:12px;">
+            <div class="stat-number" id="contador-ocorrencias">21</div>
+            <span>Ocorrências mapeadas em 9 regiões</span>
+          </div>
+          <div>
+            <div class="stat-number" style="color:var(--cor-piso);">94%</div>
+            <span>Índice de rotas alternativas seguras</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-cards">
+        <article class="card">
+          <h3>👥 18,6 Milhões de Brasileiros</h3>
+          <p>Possuem algum tipo de deficiência (IBGE, PNAD Contínua). Calçadas irregulares e falta de guias rebaixadas restringem o direito de ir e vir.</p>
+        </article>
+        <article class="card">
+          <h3>👴 +32 Milhões de Idosos</h3>
+          <p>Pessoas com 60 anos ou mais precisam de pisos regulares, iluminação adequada e travessias seguras para evitar quedas e acidentes.</p>
+        </article>
+        <article class="card">
+          <h3>🔔 Alertas Multissensoriais</h3>
+          <p>Notificações antecipadas via áudio sintético, leitura por voz (Web Speech API), vibração tátil e alto contraste visual.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 2: QUEM SOMOS ==================== -->
+    <section id="pag-2" class="spa-page" aria-labelledby="titulo-pag-2">
+      <div class="page-header">
+        <span class="badge-tag">Institucional &amp; ODS ONU</span>
+        <h1 id="titulo-pag-2">Quem Somos &amp; Missão Social</h1>
+        <p>Projeto acadêmico e social desenvolvido na Universidade Cidade de São Paulo (UNICID — 2026) voltado à inclusão urbana e digital.</p>
+      </div>
+
+      <div class="grid-cards">
+        <article class="card">
+          <h3>🎯 Nossa Missão</h3>
+          <p>Transformar relatos cidadãos em inteligência urbana acessível, apoiando pessoas com deficiência visual, auditiva, motora e idosos em São Paulo e no ABC Paulista.</p>
+        </article>
+        <article class="card">
+          <h3>⚖️ Base Legal &amp; Técnica</h3>
+          <p>Alinhado à <strong>Lei Brasileira de Inclusão (Lei nº 13.146/2015)</strong>, à norma técnica <strong>ABNT NBR 9050</strong> e às diretrizes internacionais de acessibilidade digital <strong>WCAG 2.1</strong>.</p>
+        </article>
+        <article class="card">
+          <h3>🌍 Objetivos de Desenvolvimento Sustentável</h3>
+          <p><strong>ODS 11:</strong> Cidades e Comunidades Sustentáveis.<br><strong>ODS 10:</strong> Redução das Desigualdades.<br><strong>ODS 3:</strong> Saúde e Bem-Estar.</p>
+        </article>
+      </div>
+
+      <div class="card">
+        <h2>Equipe Desenvolvedora (UNICID — ADS / CC / Eng. 2026)</h2>
+        <div class="tabela-resp" style="margin-top:12px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Integrante</th>
+                <th>RA</th>
+                <th>Papel no Projeto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Lucas de Moraes Covelo</strong></td>
+                <td>47563923</td>
+                <td>Coordenação, Escopo, Arquitetura SPA e Documentação</td>
+              </tr>
+              <tr>
+                <td><strong>Pedro Henrique de Oliveira</strong></td>
+                <td>47487909</td>
+                <td>Acessibilidade WCAG, JavaScript, Assistente Virtual e Voz</td>
+              </tr>
+              <tr>
+                <td><strong>Marcos Vinicius Calixto Emerenciano</strong></td>
+                <td>47411996</td>
+                <td>Layout Responsivo, CSS Grid/Flexbox, Mapa Satélite e Deploy</td>
+              </tr>
+              <tr>
+                <td><strong>Nathan Caue Sanchez Martins</strong></td>
+                <td>47458984</td>
+                <td>Desenvolvedor Front-End &amp; Módulos JavaScript: Implementação de armazenamento no localStorage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 3: MAPA DE RISCOS (VISÃO SATÉLITE GOOGLE EARTH) ==================== -->
+    <section id="pag-3" class="spa-page" aria-labelledby="titulo-pag-3">
+      <div class="page-header">
+        <span class="badge-tag">Geolocalização Satélite · Estilo Google Earth</span>
+        <h1 id="titulo-pag-3">Mapa Satélite de Riscos e Acessibilidade</h1>
+        <p>Visualize calçadas, esquinas e barreiras urbanas por imagem de satélite de alta definição com rótulos de ruas em São Paulo e no Grande ABC.</p>
+      </div>
+
+      <div class="mapa-controles">
+        <select id="filtro-categoria" aria-label="Filtrar ocorrências por tipo">
+          <option value="todos">Todas as categorias (21 pontos)</option>
+          <option value="buraco">Buraco / Calçada Danificada</option>
+          <option value="rampa">Falta de Rampa / Guia Alta</option>
+          <option value="piso">Piso Tátil Ausente ou Quebrado</option>
+          <option value="semaforo">Semáforo Sem Sinal Sonoro</option>
+          <option value="obra">Obra / Obstrução na Calçada</option>
+        </select>
+
+        <select id="filtro-regiao" aria-label="Filtrar ocorrências por região">
+          <option value="todas">Todas as regiões (SP &amp; ABC)</option>
+          <option value="Centro SP">Centro SP (Sé / Paulista)</option>
+          <option value="Zona Leste">Zona Leste (Tatuapé / Penha)</option>
+          <option value="Zona Sul">Zona Sul (Vila Mariana / Santo Amaro)</option>
+          <option value="Zona Oeste">Zona Oeste (Pinheiros / Lapa)</option>
+          <option value="Zona Norte">Zona Norte (Santana)</option>
+          <option value="Santo André">Santo André (ABC)</option>
+          <option value="São Bernardo">São Bernardo do Campo (ABC)</option>
+          <option value="São Caetano">São Caetano do Sul (ABC)</option>
+        </select>
+
+        <button type="button" class="btn-primary" id="btn-centralizar-sp">🌍 Visão Aérea SP / ABC</button>
+        <button type="button" class="btn-secondary" id="btn-voar-paulista">✈️ Voar para Av. Paulista</button>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <h2 style="font-size:1.15rem; margin-bottom:6px;">📍 Marcar uma ocorrência no mapa</h2>
+        <p style="color:var(--text-secondary); margin-bottom:12px;">1. Escolha o sinalizador do defeito. 2. Toque em <strong>Marcar no mapa</strong>. 3. Toque no local exato do problema.</p>
+        <div class="sinalizadores" role="group" aria-label="Tipo de defeito">
+          <button type="button" class="btn-sinalizador ativo" data-tipo="buraco" aria-pressed="true"><span class="pino-badge" style="background:var(--cor-buraco);">B</span> Buraco / Desnível</button>
+          <button type="button" class="btn-sinalizador" data-tipo="rampa" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-rampa);">R</span> Falta de Rampa</button>
+          <button type="button" class="btn-sinalizador" data-tipo="piso" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-piso);">P</span> Piso Tátil</button>
+          <button type="button" class="btn-sinalizador" data-tipo="semaforo" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-semaforo);">S</span> Semáforo Sonoro</button>
+          <button type="button" class="btn-sinalizador" data-tipo="obra" aria-pressed="false"><span class="pino-badge" style="background:var(--cor-obra);">O</span> Obra / Obstrução</button>
+        </div>
+        <div class="marcar-linha">
+          <input type="text" id="marcar-descricao" maxlength="120" placeholder="Descrição (opcional). Ex.: buraco em frente ao nº 300" aria-label="Descrição da ocorrência (opcional)">
+          <button type="button" class="btn-primary" id="btn-modo-marcar" aria-pressed="false">📍 Marcar no mapa</button>
+          <button type="button" class="btn-secondary" id="btn-marcar-centro">🎯 Marcar no centro do mapa</button>
+          <button type="button" class="btn-secondary" id="btn-limpar-marcacoes">🗑️ Limpar minhas marcações</button>
+        </div>
+        <p id="status-marcacao" role="status" aria-live="polite" style="margin-top:10px; font-weight:700;"></p>
+      </div>
+
+      <div class="mapa-wrapper">
+        <div class="mapa-camadas-barra">
+          <span>🛰️ Modo de Visualização: <strong id="nome-camada-ativa">Satélite Híbrido (Estilo Google Earth)</strong></span>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-camada ativa" data-camada="hibrido">🛰️ Satélite + Ruas</button>
+            <button type="button" class="btn-camada" data-camada="satelite">🌍 Satélite Puro</button>
+            <button type="button" class="btn-camada" data-camada="mapa">🗺️ Mapa Urbano</button>
+          </div>
+        </div>
+        <div id="mapa-leaflet" role="region" aria-label="Mapa satélite interativo de ocorrências urbanas"></div>
+      </div>
+
+      <div class="legenda-mapa" aria-label="Legenda dos marcadores do mapa">
+        <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-buraco);">B</span> Buraco / Desnível</span>
+        <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-rampa);">R</span> Falta de Rampa</span>
+        <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-piso);">P</span> Piso Tátil</span>
+        <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-semaforo);">S</span> Semáforo Sonoro</span>
+        <span class="legenda-item"><span class="pino-badge" style="background:var(--cor-obra);">O</span> Obra / Obstrução</span>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h2 id="titulo-chamados-regiao" style="font-size:1.15rem; margin-bottom:10px;">📋 Chamados abertos — Todas as regiões</h2>
+        <ul class="lista-chamados-regiao" id="lista-chamados-regiao"></ul>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 4: CHAMADOS ==================== -->
+    <section id="pag-4" class="spa-page" aria-labelledby="titulo-pag-4">
+      <div class="page-header">
+        <span class="badge-tag">Colaboração Cidadã</span>
+        <h1 id="titulo-pag-4">Registrar Chamado de Barreira Urbana</h1>
+        <p>Reporte um problema em menos de 1 minuto. Seu rascunho é salvo automaticamente no navegador e adicionado ao mapa satélite.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:24px;">
+        <form id="form-chamado" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="chamado-nome">Seu Nome (ou Apelido) *</label>
+              <input type="text" id="chamado-nome" name="nome" placeholder="Ex.: Pedro Henrique" required>
+              <span class="erro-campo" id="erro-nome" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="chamado-categoria">Tipo de Barreira *</label>
+              <select id="chamado-categoria" name="categoria" required>
+                <option value="">Selecione...</option>
+                <option value="buraco">Buraco ou Calçada Quebrada</option>
+                <option value="rampa">Ausência de Rampa de Acessibilidade</option>
+                <option value="piso">Piso Tátil Danificado / Obstruído</option>
+                <option value="semaforo">Semáforo Sem Alerta Sonoro</option>
+                <option value="obra">Obra sem Passagem Segura</option>
+              </select>
+              <span class="erro-campo" id="erro-categoria" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="chamado-regiao">Região / Município *</label>
+              <select id="chamado-regiao" name="regiao" required>
+                <option value="">Selecione a região...</option>
+                <option value="Centro SP">Centro SP</option>
+                <option value="Zona Leste">Zona Leste</option>
+                <option value="Zona Sul">Zona Sul</option>
+                <option value="Zona Oeste">Zona Oeste</option>
+                <option value="Zona Norte">Zona Norte</option>
+                <option value="Santo André">Santo André</option>
+                <option value="São Bernardo">São Bernardo do Campo</option>
+                <option value="São Caetano">São Caetano do Sul</option>
+              </select>
+              <span class="erro-campo" id="erro-regiao" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="chamado-endereco">Endereço ou Ponto de Referência *</label>
+              <input type="text" id="chamado-endereco" name="endereco" placeholder="Ex.: Av. Paulista, 1578 - próximo ao metrô" required>
+              <span class="erro-campo" id="erro-endereco" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="chamado-descricao">Descrição Detalhada *</label>
+            <textarea id="chamado-descricao" name="descricao" rows="3" placeholder="Descreva o tamanho do obstáculo e como ele afeta cadeirantes ou deficientes visuais..." required></textarea>
+            <span class="erro-campo" id="erro-descricao" aria-live="polite"></span>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <button type="submit" class="btn-primary">📨 Enviar Chamado e Gerar Protocolo</button>
+            <button type="button" class="btn-secondary" id="btn-limpar-rascunho">🗑️ Limpar Rascunho</button>
+          </div>
+        </form>
+
+        <div id="retorno-chamado" role="status" aria-live="polite" style="margin-top:16px; font-weight:700;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Últimos Chamados Registrados</h2>
+        <div class="tabela-resp" style="margin-top:12px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Protocolo</th>
+                <th>Categoria</th>
+                <th>Região / Local</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="lista-chamados-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 5: ROTAS ACESSÍVEIS ==================== -->
+    <section id="pag-5" class="spa-page" aria-labelledby="titulo-pag-5">
+      <div class="page-header">
+        <span class="badge-tag">Navegação Inteligente</span>
+        <h1 id="titulo-pag-5">Comparador de Rotas Acessíveis</h1>
+        <p>Compare 3 opções de trajeto avaliando rampas, regularidade do piso tátil e desvios de barreiras.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:24px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="rota-origem">Ponto de Partida</label>
+            <input type="text" id="rota-origem" value="Estação Tatuapé (Metrô/CPTM)">
+          </div>
+          <div class="form-group">
+            <label for="rota-destino">Destino</label>
+            <input type="text" id="rota-destino" value="UNICID — Campus Tatuapé">
+          </div>
+          <div class="form-group">
+            <label for="rota-perfil">Perfil de Mobilidade</label>
+            <select id="rota-perfil">
+              <option value="cadeirante">Cadeirante / Mobilidade Reduzida</option>
+              <option value="visual">Pessoa com Deficiência Visual</option>
+              <option value="idoso">Idoso / Carrinho de Bebê</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" class="btn-primary" id="btn-calcular-rotas">🧭 Comparar 3 Trajetos</button>
+        <p id="status-rotas" role="status" aria-live="polite" style="margin-top:12px; font-weight:700;"></p>
+      </div>
+
+      <div class="grid-cards" id="resultado-rotas">
+        <article class="card" style="border:2px solid var(--cor-piso);">
+          <span class="badge-tag" style="background:var(--cor-piso); color:#FFF;">⭐ Rota Recomendada (98% Acessível)</span>
+          <h3>Trajeto A — Via Corredor Tátil</h3>
+          <p><strong>Tempo estimado:</strong> 11 min (780 m)</p>
+          <p><strong>Infraestrutura:</strong> 100% com guias rebaixadas, piso tátil direcional contínuo e sem buracos reportados.</p>
+        </article>
+        <article class="card">
+          <span class="badge-tag">Rota Intermediária (76% Acessível)</span>
+          <h3>Trajeto B — Via Avenida Principal</h3>
+          <p><strong>Tempo estimado:</strong> 9 min (650 m)</p>
+          <p><strong>Atenção:</strong> 1 semáforo sem alerta sonoro e fluxo intenso de pedestres no horário de pico.</p>
+        </article>
+        <article class="card">
+          <span class="badge-tag" style="background:var(--cor-buraco); color:#FFF;">Não Recomendada (42% Acessível)</span>
+          <h3>Trajeto C — Caminho Mais Curto</h3>
+          <p><strong>Tempo estimado:</strong> 8 min (590 m)</p>
+          <p><strong>Alerta Crítico:</strong> 2 buracos na calçada e obra bloqueando a passagem de cadeira de rodas.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 6: LEMBRETES E ALERTAS GPS ==================== -->
+    <section id="pag-6" class="spa-page" aria-labelledby="titulo-pag-6">
+      <div class="page-header">
+        <span class="badge-tag">Segurança em Movimento</span>
+        <h1 id="titulo-pag-6">Alertas Antecipados por GPS e Simulador</h1>
+        <p>Configure a distância de aviso e teste os 4 canais de alerta (Bipe Sonoro, Voz, Vibração e Banner Visual).</p>
+      </div>
+
+      <div class="card" style="margin-bottom:24px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="distancia-alerta">Distância de Antecipação do Alerta</label>
+            <select id="distancia-alerta">
+              <option value="15">15 metros antes do obstáculo</option>
+              <option value="30" selected>30 metros antes do obstáculo (Padrão)</option>
+              <option value="50">50 metros antes do obstáculo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Canais Ativos</label>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; padding-top:8px;">
+              <label><input type="checkbox" id="chk-bipe" checked> 🔊 Bipe Sonoro</label>
+              <label><input type="checkbox" id="chk-voz" checked> 🗣️ Narração por Voz</label>
+              <label><input type="checkbox" id="chk-vibrar" checked> 📳 Vibração (Celular)</label>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <button type="button" class="btn-primary" id="btn-simular-alerta">🚨 Simular Percurso e Alerta</button>
+          <button type="button" class="btn-secondary" id="btn-usar-gps">📡 Usar Meu GPS Real</button>
+        </div>
+
+        <div id="painel-alerta-visual" role="alert" aria-live="assertive" style="margin-top:18px; padding:16px; border-radius:var(--r-md); background:var(--bg-surface-alt); border:2px solid var(--border-color); font-weight:700;">
+          Aguardando simulação ou leitura de GPS...
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 7: PERFIL E ACESSIBILIDADE ==================== -->
+    <section id="pag-7" class="spa-page" aria-labelledby="titulo-pag-7">
+      <div class="page-header">
+        <span class="badge-tag">Preferências Salvas</span>
+        <h1 id="titulo-pag-7">Perfil de Acessibilidade do Usuário</h1>
+        <p>Suas configurações ficam gravadas automaticamente no dispositivo via <code>localStorage</code>.</p>
+      </div>
+
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="perfil-necessidade">Necessidade Específica Principal</label>
+            <select id="perfil-necessidade">
+              <option value="visual">Deficiência Visual / Baixa Visão</option>
+              <option value="motora">Mobilidade Reduzida / Cadeirante</option>
+              <option value="auditiva">Deficiência Auditiva</option>
+              <option value="idoso">Idoso / Mobilidade Assistida</option>
+              <option value="apoiador">Cidadão Voluntário / Apoiador</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="perfil-bairro">Bairro / Cidade Base</label>
+            <input type="text" id="perfil-bairro" placeholder="Ex.: Penha / Vila Esperança - São Paulo">
+          </div>
+          <div class="form-group">
+            <label for="perfil-telefone">Telefone (SP) — opcional</label>
+            <input type="tel" id="perfil-telefone" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(11) 91234-5678" aria-describedby="dica-perfil-telefone erro-perfil-telefone">
+            <span class="dica-campo" id="dica-perfil-telefone">Celular ou fixo do estado de São Paulo, com DDD de 11 a 19.</span>
+            <span class="erro-campo" id="erro-perfil-telefone" aria-live="polite"></span>
+          </div>
+          <div class="form-group">
+            <label for="perfil-email">E-mail — opcional</label>
+            <input type="email" id="perfil-email" autocomplete="email" placeholder="seuemail@gmail.com" aria-describedby="dica-perfil-email erro-perfil-email">
+            <span class="dica-campo" id="dica-perfil-email">Gmail, Outlook, Hotmail, Live, Yahoo, iCloud, UOL, BOL, Terra ou e-mail institucional (.edu.br / .gov.br). É o remetente das mensagens do Fale Conosco.</span>
+            <span class="erro-campo" id="erro-perfil-email" aria-live="polite"></span>
+          </div>
+        </div>
+        <button type="button" class="btn-primary" id="btn-salvar-perfil">💾 Salvar Preferências</button>
+        <p id="status-perfil" role="status" aria-live="polite" style="margin-top:12px; font-weight:700;"></p>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 8: PAINEL PREFEITURAS ==================== -->
+    <section id="pag-8" class="spa-page" aria-labelledby="titulo-pag-8">
+      <div class="page-header">
+        <span class="badge-tag">Gestão Pública &amp; Dados Abertos</span>
+        <h1 id="titulo-pag-8">Painel de Inteligência Urbana para Prefeituras</h1>
+        <p>Indicadores de demandas críticas por categoria na Região Metropolitana de São Paulo e ABC.</p>
+      </div>
+
+      <div class="card">
+        <h2>Distribuição de Chamados por Tipo de Infraestrutura</h2>
+        <div style="margin-top:18px;" id="graficos-prefeitura">
+          <div class="barra-grafico-wrap">
+            <div class="barra-grafico-label"><span>Buracos e Calçadas Irregulares</span><span>38%</span></div>
+            <div class="barra-grafico-track"><div class="barra-grafico-fill" style="width:38%; background:var(--cor-buraco);"></div></div>
+          </div>
+          <div class="barra-grafico-wrap">
+            <div class="barra-grafico-label"><span>Falta de Rampas / Guias Rebaixadas</span><span>26%</span></div>
+            <div class="barra-grafico-track"><div class="barra-grafico-fill" style="width:26%; background:var(--cor-rampa);"></div></div>
+          </div>
+          <div class="barra-grafico-wrap">
+            <div class="barra-grafico-label"><span>Piso Tátil Ausente ou Danificado</span><span>19%</span></div>
+            <div class="barra-grafico-track"><div class="barra-grafico-fill" style="width:19%; background:var(--cor-piso);"></div></div>
+          </div>
+          <div class="barra-grafico-wrap">
+            <div class="barra-grafico-label"><span>Semáforos Sem Sinal Sonoro</span><span>11%</span></div>
+            <div class="barra-grafico-track"><div class="barra-grafico-fill" style="width:11%; background:var(--cor-semaforo);"></div></div>
+          </div>
+          <div class="barra-grafico-wrap">
+            <div class="barra-grafico-label"><span>Obras e Obstruções Temporárias</span><span>6%</span></div>
+            <div class="barra-grafico-track"><div class="barra-grafico-fill" style="width:6%; background:var(--cor-obra);"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 9: AJUDA (FAQ) & VÍDEO DEMONSTRATIVO FUNCIONAL ==================== -->
+    <section id="pag-9" class="spa-page" aria-labelledby="titulo-pag-9">
+      <div class="page-header">
+        <span class="badge-tag">Central de Ajuda &amp; Demonstração</span>
+        <h1 id="titulo-pag-9">Perguntas Frequentes (FAQ) e Vídeo Guia Interativo</h1>
+        <p>Assista ao vídeo demonstrativo animado com narração em áudio sincronizada e legendas em português.</p>
+      </div>
+
+      <!-- PLAYER DE VÍDEO INTERATIVO FUNCIONAL (RODA DIRETO NO NAVEGADOR SEM DEPENDER DE ARQUIVO EXTERNO) -->
+      <div class="video-box">
+        <h2>🎬 Vídeo Demonstrativo HyperAcess (Com Áudio e Legendas)</h2>
+        <p style="margin-bottom:12px; color:var(--text-secondary);">Clique em <strong>Iniciar Vídeo</strong> para assistir à animação explicativa com narração em voz e legendas sincronizadas.</p>
+
+        <div class="player-wrapper">
+          <canvas id="canvas-video-demo" width="960" height="420" role="img" aria-label="Player de vídeo demonstrativo animado do HyperAcess"></canvas>
+          <div class="legenda-video-overlay" id="legenda-video-texto">Clique em "▶️ Iniciar Vídeo com Áudio" para assistir à demonstração.</div>
+          <div class="barra-progresso-video" id="barra-video-click" title="Progresso do vídeo">
+            <div class="barra-progresso-video-fill" id="barra-video-fill"></div>
+          </div>
+        </div>
+
+        <div class="video-controles-extra">
+          <button type="button" class="btn-primary" id="btn-video-play-pause" aria-pressed="false">▶️ Iniciar Vídeo com Áudio</button>
+          <button type="button" class="btn-secondary" id="btn-video-reiniciar">🔄 Reiniciar</button>
+          <button type="button" class="btn-secondary" id="btn-video-mudo" aria-pressed="false">🔊 Áudio: Ligado</button>
+          <span id="status-video-audio" aria-live="polite" style="font-weight:700; font-size:0.9rem;">Pronto para reproduzir (00:00 / 00:24)</span>
+        </div>
+      </div>
+
+      <!-- IFRAME: VÍDEO OFICIAL DO IBGE SOBRE A POPULAÇÃO IDOSA -->
+      <div class="video-box" id="video-ibge">
+        <h2>📊 IBGE Explica: o envelhecimento da população brasileira</h2>
+        <p style="margin-bottom:12px; color:var(--text-secondary);">Vídeo oficial do IBGE sobre o que o Censo 2022 revela a respeito da população idosa, um dos públicos que o HyperAcess ajuda a se deslocar com mais segurança.</p>
+        <div class="player-wrapper" style="max-width:760px; margin:0 auto;">
+          <iframe class="iframe-video" src="https://www.youtube-nocookie.com/embed/msJa5llwsT4" title="Vídeo do IBGE: O que os dados do Censo revelam sobre o envelhecimento da população? (IBGE Explica Censo 2022 #03)" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p style="margin-top:10px;"><a href="https://youtu.be/msJa5llwsT4?si=1ZbN_0JzAGl782CY" target="_blank" rel="noopener">Assistir direto no YouTube</a> (canal oficial do IBGE)</p>
+      </div>
+
+      <!-- PESQUISA E NOTÍCIAS DE FONTES OFICIAIS -->
+      <div class="card" id="pesquisas-noticias" style="margin-bottom:24px;">
+        <span class="badge-tag">Fontes Oficiais</span>
+        <h2 style="margin-top:8px;">🔎 Pesquisas e notícias sobre pessoas com deficiência</h2>
+        <p>Dados de órgãos públicos sobre quem o HyperAcess pode ajudar: pessoas com deficiência física, visual, auditiva ou intelectual, pessoas com autismo e idosos.</p>
+        <div class="ong-grid">
+          <article class="card">
+            <h3>📘 Pesquisa · IBGE</h3>
+            <p><strong>Censo Demográfico 2022: Pessoas com deficiência e pessoas diagnosticadas com transtorno do espectro autista</strong>, resultados preliminares da amostra (IBGE, 2025).</p>
+            <a class="btn-secondary fonte-link" href="https://biblioteca.ibge.gov.br/visualizacao/livros/liv102178.pdf" target="_blank" rel="noopener">Abrir a pesquisa (PDF)</a>
+          </article>
+          <article class="card">
+            <h3>📰 Notícia · Agência Brasil</h3>
+            <p><strong>Brasil tem 14,4 milhões de pessoas com deficiência</strong> (23/05/2025). São 7,3% da população com 2 anos ou mais; as maiores dificuldades são enxergar (7,9 milhões) e andar ou subir degraus (5,2 milhões).</p>
+            <a class="btn-secondary fonte-link" href="https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2025-05/brasil-tem-144-milhoes-de-pessoas-com-deficiencia" target="_blank" rel="noopener">Ler a notícia</a>
+          </article>
+          <article class="card">
+            <h3>📰 Notícia · Agência IBGE</h3>
+            <p><strong>Pessoas com deficiência têm menor acesso à educação, ao trabalho e à renda</strong> (PNAD Contínua 2022): 18,6 milhões de pessoas com deficiência, 8,9% da população com 2 anos ou mais.</p>
+            <a class="btn-secondary fonte-link" href="https://agenciadenoticias.ibge.gov.br/pt/agencia-noticias/37317-pessoas-com-deficiencia-tem-menor-acesso-a-educacao-ao-trabalho-e-a-renda.html" target="_blank" rel="noopener">Ler a notícia</a>
+          </article>
+        </div>
+      </div>
+
+      <h2>Perguntas Frequentes</h2>
+      <details class="faq-item" open>
+        <summary>1. O HyperAcess é gratuito para cidadãos e voluntários?</summary>
+        <p>Sim! O uso da plataforma para consultar o mapa satélite de riscos, traçar rotas acessíveis, receber alertas GPS e registrar chamados urbanos é 100% gratuito.</p>
+      </details>
+      <details class="faq-item">
+        <summary>2. Como funciona o aviso sonoro e por vibração antes de um buraco?</summary>
+        <p>Na aba <strong>Alertas GPS</strong>, você define a distância (15m, 30m ou 50m). Quando o GPS detecta proximidade com uma ocorrência mapeada, o navegador emite um bipe, fala o tipo de obstáculo e vibra o aparelho.</p>
+      </details>
+      <details class="faq-item">
+        <summary>3. Meus dados e chamados ficam salvos se eu fechar o navegador?</summary>
+        <p>Sim. Utilizamos <code>localStorage</code> para manter suas preferências de contraste, tamanho de fonte, modo escuro/daltonismo e o histórico local dos seus chamados.</p>
+      </details>
+      <details class="faq-item">
+        <summary>4. Como funciona o botão de voz da IA no Assistente Virtual?</summary>
+        <p>A IA responde qualquer dúvida sobre o site por texto e voz. Basta clicar no botão <strong>🗣️ Ouvir / Pausar IA</strong> no topo do chat (ou clicar novamente na mesma função) para iniciar ou parar a fala imediatamente.</p>
+      </details>
+
+      <div class="card" id="area-ongs" style="margin-top:24px;">
+        <span class="badge-tag">Para ONGs e Instituições</span>
+        <h2 style="margin-top:8px;">🤝 Sua ONG pode caminhar com a gente</h2>
+        <p>Acessibilidade se constrói em rede. Convidamos ONGs, coletivos e associações que trabalham com pessoas com deficiência, idosos e mobilidade urbana a se unirem ao HyperAcess por uma causa melhor: cidades onde todos possam ir e vir com segurança e autonomia.</p>
+        <div class="ong-grid">
+          <article class="card">
+            <h3>📣 Parceria de divulgação</h3>
+            <p>Divulgue o HyperAcess para o público da sua ONG e ajude a mapear mais calçadas, rampas e pisos táteis. Em troca, sua instituição aparece como parceira e recebe os dados da sua região.</p>
+            <button type="button" class="btn-primary" id="btn-ong-parceria" style="margin-top:10px;">Quero ser parceira</button>
+          </article>
+          <article class="card">
+            <h3>💸 Apoio por transferência</h3>
+            <p>Doações ajudam a manter o site no ar e a levar o projeto a mais bairros.</p>
+            <div class="dados-pix">
+              <span><strong>Chave PIX (e-mail):</strong> <span id="chave-pix">suportehyperacess@gmail.com</span></span>
+              <span><strong>Favorecido:</strong> Projeto HyperAcess (UNICID)</span>
+              <span><strong>Banco, agência e conta:</strong> enviados pela equipe por e-mail, mediante pedido no Fale Conosco.</span>
+            </div>
+            <button type="button" class="btn-secondary" id="btn-copiar-pix">📋 Copiar chave PIX</button>
+            <p id="status-pix" role="status" aria-live="polite" style="margin-top:8px; font-weight:700;"></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 10: FALE CONOSCO ==================== -->
+    <section id="pag-10" class="spa-page" aria-labelledby="titulo-pag-10">
+      <div class="page-header">
+        <span class="badge-tag">Canal Direto</span>
+        <h1 id="titulo-pag-10">Fale Conosco &amp; Parcerias</h1>
+        <p>Envie sugestões, dúvidas institucionais ou solicitações de integração com prefeituras e ONGs.</p>
+      </div>
+
+      <div class="card">
+        <form id="form-contato" action="https://formsubmit.co/suportehyperacess@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" id="contato-subject" value="HyperAcess — Nova mensagem pelo Fale Conosco">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_autoresponse" value="Olá! Recebemos sua mensagem no HyperAcess. Nossa equipe vai responder por este e-mail em breve. Abaixo está uma cópia do que você enviou.">
+          <input type="hidden" name="_next" id="contato-next" value="">
+          <input type="hidden" name="_url" id="contato-url" value="">
+          <input type="text" name="_honey" style="display:none;" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <!-- Estrutura do e-mail: Protocolo, Remetente, Tipo de mensagem, Nome e Mensagem -->
+          <input type="hidden" name="Protocolo" id="contato-protocolo" value="">
+          <input type="hidden" name="Remetente" id="contato-remetente-campo" value="Anônimo">
+          <input type="hidden" name="email" id="contato-email-remetente" value="" disabled>
+          <input type="hidden" name="Tipo de mensagem" id="contato-assunto-texto" value="">
+          <div class="form-grid">
+            <div class="form-group">
+              <span style="font-weight:700; font-size:0.95rem;">Remetente</span>
+              <p class="remetente-box" id="contato-remetente" aria-live="polite">Anônimo</p>
+              <span class="dica-campo">Usamos o e-mail cadastrado no seu Perfil. Sem e-mail cadastrado, a mensagem vai como "Anônimo". <button type="button" class="link-inline" data-nav="pag-7">Cadastrar e-mail no Perfil</button></span>
+            </div>
+            <div class="form-group">
+              <label for="contato-nome">Nome (opcional)</label>
+              <input type="text" id="contato-nome" name="Nome" placeholder="Digite seu nome">
+              <span class="erro-campo" id="erro-contato-nome" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contato-assunto">Tipo de mensagem *</label>
+            <select id="contato-assunto">
+              <option value="melhoria">Sugestão de Melhoria</option>
+              <option value="denuncia">Denúncia</option>
+              <option value="acessibilidade">Sugestão de Acessibilidade</option>
+              <option value="duvida">Dúvida sobre a plataforma</option>
+              <option value="prefeitura">Parceria com Prefeitura / Órgão Público</option>
+              <option value="ong">Voluntariado / Parceria com ONG</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contato-mensagem">Mensagem *</label>
+            <textarea id="contato-mensagem" name="Mensagem" rows="4" required placeholder="Escreva sua mensagem ou toque em 🎤 Falar a mensagem..."></textarea>
+            <div class="ditado-linha">
+              <button type="button" class="btn-secondary" id="btn-ditado" aria-pressed="false" aria-controls="contato-mensagem">🎤 Falar a mensagem</button>
+              <span class="dica-campo" id="status-ditado" aria-live="polite">Use o microfone do computador ou do celular para ditar o texto.</span>
+            </div>
+            <span class="erro-campo" id="erro-contato-msg" aria-live="polite"></span>
+          </div>
+
+          <button type="submit" class="btn-primary" id="btn-enviar-contato">✉️ Enviar Mensagem</button>
+        </form>
+        <p id="retorno-contato" role="status" aria-live="polite" style="margin-top:14px; font-weight:700;"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- WIDGET ASSISTENTE VIRTUAL IA (COM CONTROLE PLAY/PAUSE DA FALA AO CLICAR NOVAMENTE) -->
+  <button type="button" class="chat-launcher" id="btn-abrir-chat" aria-expanded="false" aria-controls="janela-chat">
+    💬 Assistente IA HyperAcess
+  </button>
+
+  <section class="chat-janela" id="janela-chat" aria-label="Assistente Virtual HyperAcess" aria-hidden="true">
+    <div class="chat-topo">
+      <strong>🤖 Assistente IA</strong>
+      <div class="chat-topo-acoes">
+        <button type="button" class="btn-chat-voz" id="btn-ia-voz-toggle" aria-pressed="false" title="Clique para ligar ou desligar a narração da IA">🔇 Narração IA: Desligada</button>
+        <button type="button" id="btn-fechar-chat" aria-label="Fechar assistente" style="background:none; border:none; color:#FFF; font-size:1.1rem; cursor:pointer; font-weight:700; padding:4px 8px;">✕</button>
+      </div>
+    </div>
+
+    <div class="chat-mensagens" id="chat-mensagens" role="log" aria-live="polite">
+      <div class="msg-bot">
+        Olá! Sou a IA do <strong>HyperAcess</strong>. Respondo qualquer dúvida sobre o site e também leio em voz alta — clique em <strong>Narração IA</strong> para ligar (e de novo para desligar).
+      </div>
+    </div>
+
+    <div class="chat-sugestoes" aria-label="Perguntas rápidas">
+      <button type="button" class="chip-sugestao" data-pergunta="Como funciona o HyperAcess?">O que é o site?</button>
+      <button type="button" class="chip-sugestao" data-pergunta="Como usar o mapa satélite estilo Google Earth?">Mapa Satélite</button>
+      <button type="button" class="chip-sugestao" data-pergunta="Como registrar um chamado?">Abrir chamado</button>
+      <button type="button" class="chip-sugestao" data-pergunta="Quais recursos de acessibilidade existem?">Acessibilidade</button>
+    </div>
+
+    <form class="chat-form" id="form-chat">
+      <label for="input-chat" class="link-atalho">Digite sua dúvida sobre o site</label>
+      <input type="text" id="input-chat" placeholder="Pergunte qualquer coisa sobre o site..." autocomplete="off" required>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <!-- RODAPÉ -->
+  <footer class="rodape">
+    <div class="container">
+      <div class="rodape-grid">
+        <div>
+          <h3>HyperAcess</h3>
+          <p style="font-size:0.9rem; color:#CBD5E1;">Mapeamento Urbano Inclusivo de São Paulo e Grande ABC. Autonomia e segurança para pessoas com deficiência e idosos.</p>
+        </div>
+        <div>
+          <h3>Navegação Rápida</h3>
+          <ul>
+            <li><button type="button" class="link-rodape" data-nav="pag-1">1. Início</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-3">3. Mapa Satélite</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-4">4. Registrar Chamado</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-5">5. Rotas Acessíveis</button></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Suporte &amp; Institucional</h3>
+          <ul>
+            <li><button type="button" class="link-rodape" data-nav="pag-2">2. Quem Somos &amp; Equipe</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-8">8. Painel Prefeituras</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-9">9. Ajuda &amp; Vídeo</button></li>
+            <li><button type="button" class="link-rodape" data-nav="pag-10">10. Fale Conosco</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="rodape-copy">
+        © 2026 HyperAcess — Projeto Acadêmico UNICID (Análise e Desenvolvimento de Sistemas). Desenvolvido por Lucas de Moraes Covelo, Pedro Henrique de Oliveira e Marcos Vinicius Calixto Emerenciano.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <script src="../JavaScript/script.js"></script>
+</body>
+</html>
